@@ -21,7 +21,7 @@ fine; only kBytes of capacity required), no further hardware is necessary.
 2) usb_device (fully functional for the Teensy 2.0 board)
 
 usb_device is a firmware for Microchip/AVR ATmega MCUs that can act as USB
-devices (currenty ATmega32U4 and AT90USB128x are supported).
+devices (currently ATmega32U4 and AT90USB128x are supported).
 
 A supported board with the firmware installed will register as a regular USB
 flash drive when plugged in (albeit one with a tiny 33kByte FAT12 partition).
@@ -29,8 +29,8 @@ flash drive when plugged in (albeit one with a tiny 33kByte FAT12 partition).
 It will produce a script file SWITCH.GRB that corresponds to one of the
 generated script files for the regular flash drives; however, you can control
 which script (and therefore which boot choice) through pin connections on the
-MCU. In practice, a 1-of-n or a binary encoder switch can be used to pick the
-OS you want to boot.
+MCU. In practice, a 1-of-n switch or a binary encoder switch can be used to
+pick the OS you want to boot.
 
-Instructions will be added here how to use the board/firmware without the
+Instructions will be added here on how to use the board/firmware without the
 command-line tool.
