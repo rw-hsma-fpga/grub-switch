@@ -1,0 +1,10 @@
+#1 005        # seconds to display boot switch choice
+#2 white/blue # highlight color for boot switch choice
+#### Boot choices (GRUB menuentry titles), increasing from 1:
+GNU/Linux
+Windows Boot Manager
+BeOS
+MS-DOS 3.3
+NeXT
+
+

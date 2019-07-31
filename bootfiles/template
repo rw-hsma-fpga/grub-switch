@@ -1,0 +1,28 @@
+### ONLY CHANGE BELOW IF YOU KNOW WHAT YOU'RE DOING ###
+
+# set boot choice by making it the menu default 
+set default="$grubswitch_choice"
+
+# make sure menu isn't displayed, instant default boot
+set timeout_style=menu
+set timeout=0
+
+# print highlighted boot choice 
+clear
+
+echo -n 'Booting '
+
+old_color="$color_normal"                        # save normal color
+if [ -n "${grubswitch_choice_color}" ]; then
+   set color_normal="$grubswitch_choice_color"   # highlight if defined
+fi
+
+echo $grubswitch_choice
+
+set color_normal="$old_color"                    # restore normal color
+echo -n 'continues in '
+
+# wait for specified number of seconds, display countdown
+sleep --interruptible --verbose $grubswitch_sleep_secs
+
+# returning to grub.cfg, executing specified default entry

@@ -1,0 +1,14 @@
+#.gitignore
+.directory
+.vscode
+.vscode/**
+
+bootfiles/boot.*
+
+usb_device/build/**
+
+usb_device/*.hex
+usb_device/*.map
+usb_device/*.elf
+
+
