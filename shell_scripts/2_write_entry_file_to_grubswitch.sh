@@ -61,10 +61,7 @@ fi
 
 # mounting, copying, unmounting
 echo "mounting GRUB Switch..."
-if [ -e grub-switch-mount ]
-then rmdir grub-switch-mount ; fi
-
-if mkdir grub-switch-mount; then :
+if mkdir -p grub-switch-mount; then :
 else 1>&2 echo "ERROR: Creating mount path failed"; return 1; fi
 
 if mount -U 1985-1955 grub-switch-mount; then : 

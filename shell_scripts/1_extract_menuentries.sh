@@ -44,6 +44,7 @@ else
 fi
 
 ### printing default options and comments into '.entries.txt'
+echo -e "writing initial parameters to\e[1m .entries.txt\e[0m ..."
 echo "### configuration parameters" > .entries.txt
 echo "#1 003        # seconds to display boot choice" >> .entries.txt
 echo "#2 white/blue # highlight color that is used for the boot choice" >> .entries.txt
