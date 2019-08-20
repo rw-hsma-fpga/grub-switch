@@ -1,5 +1,10 @@
 #!/bin/bash
 
+CURR_DIR=`pwd`
+BOOTFILES_DIR="../bootfiles/"
+
+## read .entries.txt file
+## divide been parameters for boot message and boot entries
 OLD_IFS=$IFS
 IFS=$'\t\n'
 unset boot_entries
@@ -31,6 +36,9 @@ do
 done < .entries.txt
 IFS=$OLD_IFS
 
+
+
+## TEMPORARY DEBUG OUTPUT - REMOVE LATER
 echo "Parameter #1:"
 echo "${param1}"
 echo "-------------------"
@@ -47,24 +55,20 @@ echo
 echo -n "Number of boot entries:"
 echo "${#boot_entries[@]}"
 echo
+#######################################
 
-
-#for (( i = 0 ; i < ${#boot_entries[@]}; i++ ))
-#do
-#	echo "${i}: ${boot_entries[$i]}" 
-#done
 
 
 ## delete old bootfiles
 for j in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
 do
-	rm -rf ../bootfiles/boot.${j}
+	rm -rf ${BOOTFILES_DIR}/boot.${j}
 done
 
 
 ## delete old hashes, remake folder
-rm -rf ../bootfiles/grub_switch_hashes
-mkdir -p ../bootfiles/grub_switch_hashes
+rm -rf ${BOOTFILES_DIR}/grub_switch_hashes
+mkdir -p ${BOOTFILES_DIR}/grub_switch_hashes
 
 
 ## make new bootfiles
@@ -73,19 +77,18 @@ do
 	let "j=i+1"
 
 	# make bootfile folder
-	mkdir -p ../bootfiles/boot.${j}
+	mkdir -p ${BOOTFILES_DIR}/boot.${j}
 
 	# make SWITCH.GRB file
-	echo -e "grubswitch_sleep_secs='${param1}'\r"       >  ../bootfiles/boot.${j}/SWITCH.GRB
-	echo -e "grubswitch_choice_color='${param2}'\r"     >> ../bootfiles/boot.${j}/SWITCH.GRB
-	echo -e "grubswitch_choice='${boot_entries[$i]}'\r" >> ../bootfiles/boot.${j}/SWITCH.GRB
+	echo -e "grubswitch_sleep_secs='${param1}'\r"       >  ${BOOTFILES_DIR}/boot.${j}/SWITCH.GRB
+	echo -e "grubswitch_choice_color='${param2}'\r"     >> ${BOOTFILES_DIR}/boot.${j}/SWITCH.GRB
+	echo -e "grubswitch_choice='${boot_entries[$i]}'\r" >> ${BOOTFILES_DIR}/boot.${j}/SWITCH.GRB
  
-	cat ../bootfiles/template                           >> ../bootfiles/boot.${j}/SWITCH.GRB
+	cat ${BOOTFILES_DIR}/template                           >> ${BOOTFILES_DIR}/boot.${j}/SWITCH.GRB
 
 
 	# make corresponding hash file
-	CURR_DIR=`pwd`
-	cd ../bootfiles/boot.${j}/
+	cd ${BOOTFILES_DIR}/boot.${j}/
 	sha512sum SWITCH.GRB > ../grub_switch_hashes/${j}.sha512
 	cd $CURR_DIR
 
@@ -103,7 +106,7 @@ done
 # make hashfile for empty SWITCH.GRB case
 rm -f SWITCH.GRB ## TODO: check, rename existing
 touch SWITCH.GRB ## new and empty
-sha512sum SWITCH.GRB > ../bootfiles/grub_switch_hashes/0.sha512
+sha512sum SWITCH.GRB > ${BOOTFILES_DIR}/grub_switch_hashes/0.sha512
 rm -f SWITCH.GRB ## remove again
 
 echo

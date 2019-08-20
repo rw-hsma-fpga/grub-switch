@@ -43,23 +43,80 @@ else
 	return 1
 fi
 
+
 ### printing default options and comments into '.entries.txt'
 echo -e "writing initial parameters to\e[1m .entries.txt\e[0m ..."
 echo "### configuration parameters" > .entries.txt
-echo "#1 003        # seconds to display boot choice" >> .entries.txt
+echo "#1 005        # seconds to display boot choice" >> .entries.txt
 echo "#2 white/blue # highlight color that is used for the boot choice" >> .entries.txt
 echo "### GRUB switch choices 1..15 (0x1..0xF): an empty, non-comment line" >> .entries.txt
 echo "### means that choice leads to the regular GRUB menu, as does 0" >> .entries.txt
 
-### The real magic: extracting all menuentry titles with a regular expression:
-###    zero or more tabs at the beginning of the line
-###    the word "menuentry", followed by a space and an apostrophe
-###     the title to be extracted: multiple characters, anything but an apostrophe
-###    an apostrophe and a space, followed by anything until the end of the line
-### Results written one each per line into .entries.txt
-### Note: '.entries.txt' is hidden and only visible with 'ls -a' option
 
-cat ${CFG_FILE_PATH} | sed -n 's/^\o011*menuentry\o040\o047\([^\o047]*\)\o047\o040.*$/\1/p' >> .entries.txt
+
+### read config file
+### find menuentry, submenu and closing brace '}' lines
+OLD_IFS=$IFS
+IFS=$'\t\n'
+unset boot_entries
+menuentry_open=false
+submenu_level=0
+
+# The real magic is extracting all submenu and menuentry titles with regular expressions:
+#    zero or more tabs at the beginning of the line
+#    the word "submenu" or "menuentry", followed by a space and an apostrophe
+#     the title to be extracted: multiple characters, anything but an apostrophe
+#    an apostrophe and a space, followed by anything until the end of the line
+# Results written one each per line into .entries.txt with submenu hierarchy>
+# Note: '.entries.txt' is hidden and only visible with 'ls -a' option
+while read line
+do
+	# menuentry
+	if [[ $line =~ ^\t*menuentry.*$ ]]
+	then
+		entry_hierarchy=""
+		#echo $line
+		menuentry_open=true
+		menuentry=`echo ${line} | sed -n 's/^\o011*menuentry\o040\o047\([^\o047]*\)\o047\o040.*$/\1/p'`
+
+		for (( i=1 ; i<=${submenu_level} ; i++ ))
+		do
+			entry_hierarchy="${entry_hierarchy}${submenu[${i}]}>"
+		done
+
+		entry_hierarchy="${entry_hierarchy}${menuentry}"
+		echo $entry_hierarchy >> .entries.txt
+	fi
+
+	# submenu
+	if [[ $line =~ ^\t*submenu.*$ ]]
+	then
+		#echo $line
+		let submenu_level++
+		submenu[${submenu_level}]=`echo ${line} | sed -n 's/^\o011*submenu\o040\o047\([^\o047]*\)\o047\o040.*$/\1/p'`
+		
+	fi
+
+	# }
+	if [[ $line =~ ^\t*}.*$ ]]
+	then
+		if [[ true = $menuentry_open ]]
+		then
+			menuentry_open=false
+			#echo $line
+		else
+			if [[ "${submenu_level}" -gt "0" ]]
+			then
+				let submenu_level--
+				#echo $line
+			fi
+		fi
+	fi
+
+done < ${CFG_FILE_PATH}
+IFS=$OLD_IFS
+
+
 
 
 ### make sure that the owner of .entries.txt is local user (should be able to edit)
@@ -69,4 +126,3 @@ then
 	chown $local_owner:$local_owner .entries.txt
 	chmod 644 .entries.txt
 fi
-

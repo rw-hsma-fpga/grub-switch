@@ -4,10 +4,8 @@
 ### GRUB switch choices 1..15 (0x1..0xF): an empty, non-comment line
 ### means that choice leads to the regular GRUB menu, as does 0
 GNU/Linux
-GNU/Linux, with Linux 5.0.0-25-generic
-
-GNU/Linux, with Linux 5.0.0-25-generic (recovery mode)
-GNU/Linux, with Linux 5.0.0-23-generic
-
-GNU/Linux, with Linux 5.0.0-23-generic (recovery mode)
+Advanced options for GNU/Linux>GNU/Linux, with Linux 5.0.0-25-generic
+Advanced options for GNU/Linux>GNU/Linux, with Linux 5.0.0-25-generic (recovery mode)
+Advanced options for GNU/Linux>Extra sub menu just for kicks>GNU/Linux, with Linux 5.0.0-23-generic
+Advanced options for GNU/Linux>GNU/Linux, with Linux 5.0.0-23-generic (recovery mode)
 Memtest86 (64-Bit)
