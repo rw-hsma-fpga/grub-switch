@@ -4,6 +4,8 @@
 .vscode/**
 
 bootfiles/boot.*
+bootfiles/boot.*/*
+bootfiles/grub_switch_hashes/*
 
 usb_device/build/**
 
