@@ -1,0 +1,55 @@
+#!/bin/sh
+exec tail -n +3 $0
+### COLORTEST ###
+
+menuentry 'Colortest' --class gnu-linux --class gnu --class os {
+
+    clear
+
+    old_color="$color_normal"                        # save normal color
+
+    grubcolors="light-gray/black"
+    set color_normal="$grubcolors" ; echo -n "$grubcolors" ; set color_normal="$old_color" ; echo
+    grubcolors="white/black"
+    set color_normal="$grubcolors" ; echo -n "$grubcolors" ; set color_normal="$old_color" ; echo
+    grubcolors="white/red"
+    set color_normal="$grubcolors" ; echo -n "$grubcolors" ; set color_normal="$old_color" ; echo
+    grubcolors="white/green"
+    set color_normal="$grubcolors" ; echo -n "$grubcolors" ; set color_normal="$old_color" ; echo
+    grubcolors="white/blue"
+    set color_normal="$grubcolors" ; echo -n "$grubcolors" ; set color_normal="$old_color" ; echo
+    grubcolors="white/dark-gray"
+    set color_normal="$grubcolors" ; echo -n "$grubcolors" ; set color_normal="$old_color" ; echo
+    grubcolors="red/black"
+    set color_normal="$grubcolors" ; echo -n "$grubcolors" ; set color_normal="$old_color" ; echo
+    grubcolors="yellow/black"
+    set color_normal="$grubcolors" ; echo -n "$grubcolors" ; set color_normal="$old_color" ; echo
+    grubcolors="light-blue/black"
+    set color_normal="$grubcolors" ; echo -n "$grubcolors" ; set color_normal="$old_color" ; echo
+    grubcolors="blue/black"
+    set color_normal="$grubcolors" ; echo -n "$grubcolors" ; set color_normal="$old_color" ; echo
+    grubcolors="dark-gray/black"
+    set color_normal="$grubcolors" ; echo -n "$grubcolors" ; set color_normal="$old_color" ; echo
+    grubcolors="red/white"
+    set color_normal="$grubcolors" ; echo -n "$grubcolors" ; set color_normal="$old_color" ; echo
+    grubcolors="blue/white"
+    set color_normal="$grubcolors" ; echo -n "$grubcolors" ; set color_normal="$old_color" ; echo
+    grubcolors="dark-gray/white"
+    set color_normal="$grubcolors" ; echo -n "$grubcolors" ; set color_normal="$old_color" ; echo
+    grubcolors="yellow/red"
+    set color_normal="$grubcolors" ; echo -n "$grubcolors" ; set color_normal="$old_color" ; echo
+    grubcolors="yellow/green"
+    set color_normal="$grubcolors" ; echo -n "$grubcolors" ; set color_normal="$old_color" ; echo
+    grubcolors="yellow/blue"
+    set color_normal="$grubcolors" ; echo -n "$grubcolors" ; set color_normal="$old_color" ; echo
+    grubcolors="yellow/dark-gray"
+    set color_normal="$grubcolors" ; echo -n "$grubcolors" ; set color_normal="$old_color" ; echo
+    grubcolors="blue/yellow"
+    set color_normal="$grubcolors" ; echo -n "$grubcolors" ; set color_normal="$old_color" ; echo
+    grubcolors="dark-gray/yellow"
+    set color_normal="$grubcolors" ; echo -n "$grubcolors" ; set color_normal="$old_color" ; echo
+
+    # wait for specified number of seconds, display countdown
+    sleep --interruptible --verbose 50
+}
+
