@@ -1,12 +1,12 @@
-#!/bin/sh
+#!/bin/bash
 
 ### Script to move the update script 99_grub_switch for grub.cfg to correct folder
 ### (something like /etc/grub.d - will be extracted from existing grub.cfg)
 
-if [ -n "${1}" ]
+if [[ -n "${1}" ]]
 then
 	CFG_FILE_PATH=$1
-	if [ -e $CFG_FILE_PATH ]
+	if [[ -e $CFG_FILE_PATH ]]
 	then	:
 	else
 		1>&2 echo -e "ERROR: \e[1m${CFG_FILE_PATH}\e[0m is not a file"
@@ -15,16 +15,16 @@ then
 else
 	CFG_FILE_PATH=""
 	# check default locations
-	if [ -e '/boot/grub2/grub.cfg' ]
+	if [[ -e '/boot/grub2/grub.cfg' ]]
 	then
 		CFG_FILE_PATH="/boot/grub2/grub.cfg"
 	fi
-	if [ -e '/boot/grub/grub.cfg' ]
+	if [[ -e '/boot/grub/grub.cfg' ]]
 	then
 		CFG_FILE_PATH="/boot/grub/grub.cfg"
 	fi
 
-	if [ -z $CFG_FILE_PATH ]
+	if [[ -z $CFG_FILE_PATH ]]
 	then
 		1>&2 echo -e "ERROR: No\e[1m grub.cfg\e[0m specified or found in default locations"
 		return 1
@@ -32,7 +32,7 @@ else
 fi
 
 
-if [ -r $CFG_FILE_PATH ]
+if [[ -r $CFG_FILE_PATH ]]
 then	:
 else
 	1>&2 echo -n -e "ERROR: \e[1m${CFG_FILE_PATH}\e[0m is not readable by user \e[1m"

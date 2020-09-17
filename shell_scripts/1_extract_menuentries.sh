@@ -1,9 +1,12 @@
-#!/bin/sh
+#!/bin/bash
 
 ### Script to extract all menuentry titles from 'grub.cfg', write them to '.entries.txt' file
 ### Default parameters for choice display time and choice highlight color will also be added
 
-if [ -n "${1}" ]
+CURR_DIR=`pwd`
+BOOTFILES_DIR="../bootfiles/"
+
+if [[ -n "${1}" ]]
 then
 	CFG_FILE_PATH=$1
 	if [ -e $CFG_FILE_PATH ]
@@ -15,16 +18,16 @@ then
 else
 	CFG_FILE_PATH=""
 	# check default locations
-	if [ -e '/boot/grub2/grub.cfg' ]
+	if [[ -e '/boot/grub2/grub.cfg' ]]
 	then
 		CFG_FILE_PATH="/boot/grub2/grub.cfg"
 	fi
-	if [ -e '/boot/grub/grub.cfg' ]
+	if [[ -e '/boot/grub/grub.cfg' ]]
 	then
 		CFG_FILE_PATH="/boot/grub/grub.cfg"
 	fi
 
-	if [ -z $CFG_FILE_PATH ]
+	if [[ -z $CFG_FILE_PATH ]]
 	then
 		1>&2 echo -e "ERROR: No\e[1m grub.cfg\e[0m specified or found in default locations"
 		return 1
@@ -32,7 +35,7 @@ else
 fi
 
 
-if [ -r $CFG_FILE_PATH ]
+if [[ -r $CFG_FILE_PATH ]]
 then	:
 else
 	1>&2 echo -n -e "ERROR: \e[1m${CFG_FILE_PATH}\e[0m is not readable by user \e[1m"
@@ -44,13 +47,16 @@ else
 fi
 
 
-### printing default options and comments into '.entries.txt'
-echo -e "writing initial parameters to\e[1m .entries.txt\e[0m ..."
-echo "### configuration parameters" > .entries.txt
-echo "#1 005        # seconds to display boot choice" >> .entries.txt
-echo "#2 white/blue # highlight color that is used for the boot choice" >> .entries.txt
-echo "### GRUB switch choices 1..15 (0x1..0xF): an empty, non-comment line" >> .entries.txt
-echo "### means that choice leads to the regular GRUB menu, as does 0" >> .entries.txt
+### printing default options and comments into '.entries.txt.all' und 'grubmenu_all_entries.lst'
+echo -e "writing initial parameters to\e[1m .entries.txt.all\e[0m ..."
+echo "### configuration parameters" > ${BOOTFILES_DIR}/.entries.txt.all
+echo "#1 005        # seconds to display boot choice" >> ${BOOTFILES_DIR}/.entries.txt.all
+echo "#2 white/blue # highlight color that is used for the boot choice" >> ${BOOTFILES_DIR}.entries.txt.all
+echo "### GRUB switch choices 1..15 (0x1..0xF): an empty, non-comment line" >> ${BOOTFILES_DIR}/.entries.txt.all
+echo "### means that choice leads to the regular GRUB menu, as does 0" >> ${BOOTFILES_DIR}/.entries.txt.all
+
+### printing title comment into grubmenu_all_entries.lst
+echo "### All entries, extracted from current GRUB menu" > ${BOOTFILES_DIR}/grubmenu_all_entries.lst
 
 
 
@@ -68,7 +74,7 @@ submenu_level=0
 #     the title to be extracted: multiple characters, anything but an apostrophe
 #    an apostrophe and a space, followed by anything until the end of the line
 # Results written one each per line into .entries.txt with submenu hierarchy>
-# Note: '.entries.txt' is hidden and only visible with 'ls -a' option
+# Note: '.entries.txt.all' is hidden and only visible with 'ls -a' option
 while read line
 do
 	# menuentry
@@ -85,7 +91,8 @@ do
 		done
 
 		entry_hierarchy="${entry_hierarchy}${menuentry}"
-		echo $entry_hierarchy >> .entries.txt
+		echo $entry_hierarchy >> ${BOOTFILES_DIR}/.entries.txt.all
+		echo $entry_hierarchy >> ${BOOTFILES_DIR}/grubmenu_all_entries.lst
 	fi
 
 	# submenu
@@ -119,10 +126,14 @@ IFS=$OLD_IFS
 
 
 
-### make sure that the owner of .entries.txt is local user (should be able to edit)
+### make sure that the owner of entry files is local user (should be able to edit)
+### FIX: Got to BOOTFILES_DIR/ for ls user extraction
 if [ root = $USER ]
 then
+	cd ${BOOTFILES_DIR}
 	local_owner=`ls -ld | awk 'NR==1 {print $3}'` 
-	chown $local_owner:$local_owner .entries.txt
-	chmod 644 .entries.txt
+	chown $local_owner:$local_owner .entries.txt.all
+	chown $local_owner:$local_owner grubmenu_all_entries.lst
+	chmod 644 .entries.txt.all
+	cd ${CURR_DIR}
 fi

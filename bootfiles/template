@@ -26,3 +26,4 @@ echo -n 'continues in '
 sleep --interruptible --verbose $grubswitch_sleep_secs
 
 # returning to grub.cfg, executing specified default entry
+

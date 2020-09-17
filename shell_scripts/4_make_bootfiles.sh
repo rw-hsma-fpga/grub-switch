@@ -33,7 +33,7 @@ do
 		fi
 	fi
 
-done < .entries.txt
+done < ${BOOTFILES_DIR}/.entries.txt
 IFS=$OLD_IFS
 
 
@@ -90,7 +90,7 @@ do
 	# make corresponding hash file
 	cd ${BOOTFILES_DIR}/boot.${j}/
 	sha512sum SWITCH.GRB > ../grub_switch_hashes/${j}.sha512
-	cd $CURR_DIR
+	cd ${CURR_DIR}
 
 
 	# TODO: Adjust ownerships if currently root
@@ -126,3 +126,12 @@ echo
 echo "(if you want no hash checking, run script 5_* anyway (as root)"
 echo " to remove old hashes)"
 
+
+
+### make sure that the owner of all generated files is local user (easier handling)
+if [[ root = $USER ]]
+then
+	local_owner=`ls -ld | awk 'NR==1 {print $3}'` 
+	chown -R $local_owner:$local_owner ${BOOTFILES_DIR}
+	chmod -R 744 ${BOOTFILES_DIR}
+fi
