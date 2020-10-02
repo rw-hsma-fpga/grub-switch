@@ -12,6 +12,7 @@ TARGET_NAME = GRUB_SWITCH
 PROJECT = $(TARGET_NAME)_$(BOARD)
 TARGET = $(PROJECT).elf
 CC = avr-gcc
+MCU = atmega32u4
 BOARDCFG = $(BOARD).mk
 
 
@@ -43,8 +44,7 @@ HEX_EEPROM_FLAGS += --change-section-lma .eeprom=0
 # Include Directories
 INCLUDES =  -I"conf" -I"main" -I"./"
 
-# Include Source files list and part informations
-include mk/$(BOARDCFG)
+# Include Source files list
 include mk/sources.mk
 
 

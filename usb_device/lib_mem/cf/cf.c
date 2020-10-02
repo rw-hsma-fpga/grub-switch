@@ -148,7 +148,13 @@ Bool cf_read_sector (U32 pos, Uint16 nb_sector)
 
             // root directory except file sizes of 'SWITCH.GRB', '.entries.txt'
             else if ((curr_read_addr >= 0x0400) && (curr_read_addr <= 0x04bf))
-               Usb_write_byte(pgm_read_byte(dir_table + curr_read_addr - 0x0400));
+            {
+               U8 dir_table_buf = pgm_read_byte(dir_table + curr_read_addr - 0x0400);
+               if (curr_read_addr == 0x046b)  // if .entries.txt attributes
+                  if (0 == read_wrprot_pin()) // if write protect switched on (pin low)
+                     dir_table_buf |= 0x1;    // set read-only attribute
+               Usb_write_byte(dir_table_buf);
+            }
 
 
             // 'SWITCH.GRB' boot file: Parameters from EEPROM file, template from PROGMEM
@@ -214,6 +220,8 @@ Bool cf_write_sector (U32 pos, Uint16 nb_sector)
    // Set the global memory ptr at a Byte address.
    U16 sector_address = (pos << CF_LOG2_FAT12_SECTOR_SIZE);
 
+   Bool write_protected = (0 == read_wrprot_pin());
+
    Led_on();
 
    do
@@ -235,39 +243,48 @@ Bool cf_write_sector (U32 pos, Uint16 nb_sector)
 
          U8 usb_rx_buffer[64];
 
-         for(j=0;j<64;j++)
+         if (write_protected)
          {
-            usb_rx_buffer[j] = Usb_read_byte();
-
-            // file size of '.entries.txt' in root directory
-            if (curr_write_addr == ENTRIES_TXT_SIZE_ADDR)
-            {
-               U16 file_size;
-
-               LSB(file_size) = usb_rx_buffer[j];
-               j++; curr_write_addr++; // double-byte access, skip one loop iteration
+            // empty buffer, don't use data though
+            for(j=0;j<64;j++)
                usb_rx_buffer[j] = Usb_read_byte();
-               MSB(file_size) = usb_rx_buffer[j];
+         }
+         else
+         {
+            for(j=0;j<64;j++)
+            {
+               usb_rx_buffer[j] = Usb_read_byte();
 
-               // limit file size to maximum if stored too big
-               if (file_size > 960)
-                  file_size = 960;
+               // file size of '.entries.txt' in root directory
+               if (curr_write_addr == ENTRIES_TXT_SIZE_ADDR)
+               {
+                  U16 file_size;
 
-               set_entryfile_size(file_size);
+                  LSB(file_size) = usb_rx_buffer[j];
+                  j++; curr_write_addr++; // double-byte access, skip one loop iteration
+                  usb_rx_buffer[j] = Usb_read_byte();
+                  MSB(file_size) = usb_rx_buffer[j];
 
-               eeprom_write_word((uint16_t*)1022, file_size);
+                  // limit file size to maximum if stored too big
+                  if (file_size > 960)
+                     file_size = 960;
 
-               parse_entry_file();
-               build_bootfile_parameters(get_boot_choice());
+                  set_entryfile_size(file_size);
+
+                  eeprom_write_word((uint16_t*)1022, file_size);
+
+                  parse_entry_file();
+                  build_bootfile_parameters(get_boot_choice());
+               }
+
+               curr_write_addr++;
             }
 
-            curr_write_addr++;
+            // copy 64 bytes to EEPROM if it was file .entries.txt
+            U16 last_block_address = curr_write_addr - 64;
+            if ( (last_block_address >= ENTRIES_TXT_ADDR) && (last_block_address < (ENTRIES_TXT_ADDR + 960) ))
+               eeprom_write_block((U8*)usb_rx_buffer, (U8*)(last_block_address-ENTRIES_TXT_ADDR), 64);
          }
-
-         // copy 64 bytes to EEPROM if it was file .entries.txt
-         U16 last_block_address = curr_write_addr - 64;
-         if ( (last_block_address >= ENTRIES_TXT_ADDR) && (last_block_address < (ENTRIES_TXT_ADDR + 960) ))
-            eeprom_write_block((U8*)usb_rx_buffer, (U8*)(last_block_address-ENTRIES_TXT_ADDR), 64);
 
          Usb_ack_receive_out();  // USB EPOUT read acknowledgement.
    

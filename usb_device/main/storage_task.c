@@ -88,6 +88,7 @@ void usb_mass_storage_csw (void);
 void storage_task_init(void)
 {
    Led_init();
+   set_wrprot_input_pullup();
    cf_mem_init();    // Init the hw/sw ressources required to drive the DF.
    Usb_enable_sof_interrupt();
 }

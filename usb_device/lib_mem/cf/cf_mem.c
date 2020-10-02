@@ -101,7 +101,7 @@ Ctrl_status cf_read_capacity( U32 _MEM_TYPE_SLOW_ *u32_nb_sector )
 //!
 Bool  cf_wr_protect(void)
 {
-   return CF_FAT12_WRITE_PROTECTED;
+   return ( CF_FAT12_WRITE_PROTECTED || (0 == read_wrprot_pin()) );
 }
 
 
