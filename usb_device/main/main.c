@@ -126,11 +126,21 @@
 
 int main(void)
 {
-   wdtdrv_disable();
-   Clear_prescaler();
-   scheduler();
+  // watchdog disable
+  wdtdrv_disable();
 
-   return 0;
+  // clear timing
+  Clear_prescaler();
+
+  // deactive JTAG (twice inside 4 cycles)
+  U8 mcucr_buf = (MCUCR | (1 << JTD));
+  MCUCR = mcucr_buf;
+  MCUCR = mcucr_buf;
+
+  // start tasks
+  scheduler();
+
+  return 0;
 }
 
 //! \name Procedure to speed up the startup code
