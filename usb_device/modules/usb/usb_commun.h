@@ -49,7 +49,7 @@
 
 //! \name Product Identifiant according by ATMEL
 //! @{
-#define  PID_GrubSwitch                         0x1955 // suggested   
+#define  PID_GrubSwitch                         0x2015 // register with pidcodes.github.com
 #define  PID_MegaHIDGeneric                     0x2013
 #define  PID_MegaHIDKeyboard                    0x2017
 #define  PID_MegaCDC                            0x2018

@@ -198,7 +198,7 @@ U8 get_boot_choice(void)
         return (all_pins &= 0x0F);
 }
 
-U8 get_raw_boot_pins(void)
+U16 get_raw_boot_pins(void)
 {
     return current_choice_pins;
 }
