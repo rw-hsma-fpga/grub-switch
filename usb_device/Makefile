@@ -8,12 +8,13 @@ OUTPUT = build
 BOARD = TEENSY20
 
 # General Flags
-TARGET_NAME = GRUB_SWITCH
-PROJECT = $(TARGET_NAME)_$(BOARD)
-TARGET = $(PROJECT).elf
 CC = avr-gcc
 MCU = atmega32u4
-BOARDCFG = $(BOARD).mk
+TARGET_NAME = GRUB_SWITCH
+
+PROJECT = $(TARGET_NAME)_$(BOARD)
+TARGET = $(PROJECT).elf
+#BOARDCFG = $(BOARD).mk
 
 
 # Options common to compile, link and assembly rules
@@ -46,12 +47,15 @@ INCLUDES =  -I"conf" -I"main" -I"./"
 
 # Include Source files list
 include mk/sources.mk
-
+include boards/boards.mk
 
 ## Build
+#allboards: 
+
 .PHONY: all
 all: $(TARGET) $(PROJECT).hex size
 	@echo "Target board: $(BOARD)"
+	@echo ""
 
 ## Clean target
 .PHONY: clean

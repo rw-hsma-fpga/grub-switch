@@ -20,6 +20,9 @@
 #define  WRPROT_PORT        E
 #define  WRPROT_PIN         6
 
+#define  AUX0_PORT          D // unconnected, not actually
+#define  AUX0_PIN           1 // required on custom board
+
 #define  CHOICE_PORT1       D
 #define  CHOICE_PIN1        3
 

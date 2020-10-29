@@ -51,7 +51,10 @@
 #define  Led_on()            W1P_EVAL( LED_PORT , LED_PIN )
 #define  Led_off()           W0P_EVAL( LED_PORT , LED_PIN )
 
-
+// set auxiliary output-0 pin
+//(if GND isn't physically close; main purpose ist to be able to put
+// a jumper or switch on the /WR_PROT pin to enable write protect)
+#define  init_aux0_output()   SOP_EVAL( AUX0_PORT , AUX0_PIN ) ; W0P_EVAL( AUX0_PORT , AUX0_PIN )
 
 #endif // _BOARDS_H_
 
