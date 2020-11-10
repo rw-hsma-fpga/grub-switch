@@ -3,7 +3,12 @@
 
 // add additional board header files here
 #include "boards/include/teensy20.h"
-#include "boards/include/grubsw_custom.h"
+#include "boards/include/customhw_reva.h"
+#include "boards/include/arduino_micro.h"
+#include "boards/include/itsybitsy_3v.h"
+#include "boards/include/itsybitsy_5v.h"
+#include "boards/include/promicro_3v.h"
+#include "boards/include/promicro_5v.h"
 
 
 #ifndef VALID_TARGET_BOARD_DEFINED
@@ -51,10 +56,11 @@
 #define  Led_on()            W1P_EVAL( LED_PORT , LED_PIN )
 #define  Led_off()           W0P_EVAL( LED_PORT , LED_PIN )
 
-// set auxiliary output-0 pin
+// set auxiliary output-0 pins
 //(if GND isn't physically close; main purpose ist to be able to put
-// a jumper or switch on the /WR_PROT pin to enable write protect)
-#define  init_aux0_output()   SOP_EVAL( AUX0_PORT , AUX0_PIN ) ; W0P_EVAL( AUX0_PORT , AUX0_PIN )
+// a jumper or switch on the /WR_PROT and /BM pins)
+#define  init_aux0_output1()   SOP_EVAL( AUX0_PORT1 , AUX0_PIN1 ) ; W0P_EVAL( AUX0_PORT1 , AUX0_PIN1 )
+#define  init_aux0_output2()   SOP_EVAL( AUX0_PORT2 , AUX0_PIN2 ) ; W0P_EVAL( AUX0_PORT2 , AUX0_PIN2 )
 
 #endif // _BOARDS_H_
 

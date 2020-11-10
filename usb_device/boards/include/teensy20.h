@@ -20,8 +20,11 @@
 #define  WRPROT_PORT        F
 #define  WRPROT_PIN         0
 
-#define  AUX0_PORT          F
-#define  AUX0_PIN           1
+#define  AUX0_PORT1         F
+#define  AUX0_PIN1          1
+
+#define  AUX0_PORT2         F
+#define  AUX0_PIN2          1
 
 #define  CHOICE_PORT1       B
 #define  CHOICE_PIN1        1

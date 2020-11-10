@@ -54,28 +54,6 @@
    //! @defgroup PLL_macros PLL Macros
    //! These functions allow to control the PLL
    //! @{
-#define PLLx06          ( (0<<PLLP2) | (1<<PLLP1) | (1<<PLLP0) )
-
-#ifdef __ICCAVR__
-   #if (defined(__AT90USB1287__) || defined(__AT90USB1286__)) 
-      #define PLLx03          ( (1<<PLLP2) | (0<<PLLP1) | (1<<PLLP0) )
-   #elif (defined(__AT90USB647__) || defined(__AT90USB646__) || defined(__ATmega32U6__))
-      #define PLLx03          ( (1<<PLLP2) | (1<<PLLP1) | (0<<PLLP0) )
-   #else
-      #error TARGET should be defined 
-   #endif
-#elif defined __GNUC__
-   #if (defined(__AVR_AT90USB1287__) || defined(__AVR_AT90USB1286__)) 
-      #define PLLx03          ( (1<<PLLP2) | (0<<PLLP1) | (1<<PLLP0) )
-   #elif (defined(__AVR_AT90USB647__) || defined(__AVR_AT90USB646__) || defined(__AVR_ATmega32U6__))
-      #define PLLx03          ( (1<<PLLP2) | (1<<PLLP1) | (0<<PLLP0) )
-   #elif (defined(__AVR_ATmega32U4__))
-      #define PLLx03          ( (1<<PINDIV) )
-   #endif
-#else // Other compiler
-   #error Compiler unknow
-#endif
-
 
       //! @brief Start the PLL at only 48 MHz, regarding CPU frequency
       //! Start the USB PLL with correct clockfactor
@@ -93,9 +71,9 @@
       // Start the PLL in autofactor mode
       // regarding FOSC define
 #if   (FOSC==8000)
-   #define Pll_start_auto()   Start_pll(PLLx06)
+   #define Pll_start_auto()   Start_pll((0<<PINDIV))
 #elif (FOSC==16000)
-   #define Pll_start_auto()   Start_pll(PLLx03)
+   #define Pll_start_auto()   Start_pll((1<<PINDIV))
 #else
    #error   "FOSC should be defined with 8000KHz or 16000KHz in config.h"
 #endif

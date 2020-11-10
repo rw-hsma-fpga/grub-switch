@@ -89,7 +89,8 @@ void storage_task_init(void)
 {
    Led_init();
 
-   init_aux0_output();
+   init_aux0_output1();
+   init_aux0_output2();
    set_wrprot_input_pullup();
 
    cf_mem_init();    // Init the hw/sw ressources required to drive the DF.

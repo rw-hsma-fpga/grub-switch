@@ -1,9 +1,9 @@
-#ifndef GRUBSW_CUSTOM_H
-#define GRUBSW_CUSTOM_H
+#ifndef CUSTOMHW_REVA_H
+#define CUSTOMHW_REVA_H
 
 
 #include "config.h"
-#ifdef TARGET_BOARD_GRUBSW_CUSTOM
+#ifdef TARGET_BOARD_CUSTOMHW_REVA
 
 #define VALID_TARGET_BOARD_DEFINED
 
@@ -20,8 +20,11 @@
 #define  WRPROT_PORT        E
 #define  WRPROT_PIN         6
 
-#define  AUX0_PORT          D // unconnected, not actually
-#define  AUX0_PIN           1 // required on custom board
+#define  AUX0_PORT1         D // unconnected pin, not actually
+#define  AUX0_PIN1          1 // required on custom board
+
+#define  AUX0_PORT2         D // unconnected pin, not actually
+#define  AUX0_PIN2          1 // required on custom board
 
 #define  CHOICE_PORT1       D
 #define  CHOICE_PIN1        3
@@ -57,7 +60,7 @@
 #define  CHOICE_PIN11       5
 
 
-#endif   // TARGET_BOARD==GRUBSW_CUSTOM
+#endif   // TARGET_BOARD==CUSTOMHW_REVA
 
 
-#endif   // GRUBSW_CUSTOM_H
+#endif   // CUSTOMHW_REVA_H
