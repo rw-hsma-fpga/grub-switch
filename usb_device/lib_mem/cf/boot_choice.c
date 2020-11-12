@@ -3,13 +3,23 @@
 #include "boot_choice.h"
 #include <avr/interrupt.h>
 
+static U16 sample_all_pins(void);
+static void filter_all_pins(void);
+
 static U16 sample_choice_pins(void);
 static void filter_choice_pins(void);
+
+#define NUM_CHOICE_PINS 11
+static const U16 choice_mask = ((1 << NUM_CHOICE_PINS) - 1);
+
 
 static pin_mode choice_mode;
 
 static U16 last_choice_pins;
 static U16 current_choice_pins;
+
+static U16 last_input_pins;
+static U16 current_input_pins;
 static U16 pinSamples[3];
 
 static U16 detach_countdown;
@@ -25,7 +35,13 @@ void boot_choice_init(void)
     set_choice_input_pullup(2);
     set_choice_input_pullup(3);
     set_choice_input_pullup(4);
-
+    set_choice_input_pullup(5);
+    set_choice_input_pullup(6);
+    set_choice_input_pullup(7);
+    set_choice_input_pullup(8);
+    set_choice_input_pullup(9);
+    set_choice_input_pullup(10);
+    set_choice_input_pullup(11);
 
 
     if (read_mode_pin()==0) // tied to GND
@@ -35,22 +51,15 @@ void boot_choice_init(void)
     else
     {
         choice_mode = OneOfN;
-
-        set_choice_input_pullup(5);
-        set_choice_input_pullup(6);
-        set_choice_input_pullup(7);
-        set_choice_input_pullup(8);
-        set_choice_input_pullup(9);
-        set_choice_input_pullup(10);
-        set_choice_input_pullup(11);
     }
-    
+
+
     // fill variables with initial pattern
-    current_choice_pins = sample_choice_pins();
-    last_choice_pins    = current_choice_pins;
-    pinSamples[0]      = current_choice_pins;
-    pinSamples[1]      = current_choice_pins;
-    pinSamples[2]      = current_choice_pins;
+    current_input_pins = sample_all_pins(); // current_choice_pins = sample_choice_pins();
+    last_input_pins    = current_input_pins;   // last_choice_pins    = current_choice_pins;
+    pinSamples[0]      = current_input_pins; // current_choice_pins;
+    pinSamples[1]      = current_input_pins; // current_choice_pins;
+    pinSamples[2]      = current_input_pins; // current_choice_pins;
 
     // no USB detach for now
     detach_countdown = 0;
@@ -80,24 +89,93 @@ void boot_choice_init(void)
 
 ISR(TIMER0_COMPA_vect)
 {
-    filter_choice_pins();
-    
-    /*
-    static U8 led_countdown = 200; // 5ms * 200 = 1 sec
+    filter_all_pins();
+}
 
-    if (led_countdown==0)
+
+static U16 sample_all_pins(void)
+{
+    U16 all_pins = 0;
+
+    // assemble pin word
+    all_pins |= (read_choice_pin(11));
+    all_pins <<= 1;
+    all_pins |= (read_choice_pin(10));
+    all_pins <<= 1;
+    all_pins |= (read_choice_pin(9));
+    all_pins <<= 1;
+    all_pins |= (read_choice_pin(8));
+    all_pins <<= 1;
+    all_pins |= (read_choice_pin(7));
+    all_pins <<= 1;
+    all_pins |= (read_choice_pin(6));
+    all_pins <<= 1;
+    all_pins |= (read_choice_pin(5));
+    all_pins <<= 1;
+    all_pins |= (read_choice_pin(4));
+    all_pins <<= 1;
+    all_pins |= (read_choice_pin(3));
+    all_pins <<= 1;
+    all_pins |= (read_choice_pin(2));
+    all_pins <<= 1;
+    all_pins |= (read_choice_pin(1));
+
+    all_pins ^= choice_mask; // invert choice pins - '1' now means tied to ground
+
+    all_pins |= (read_wrprot_pin() << 15);
+    all_pins |= (read_mode_pin() << 14);
+
+    return all_pins;
+}
+
+
+// should be called from Timer IRQ (every 5ms)
+static void filter_all_pins(void)
+{
+    // shift data and acquire new sample
+    pinSamples[2] = pinSamples[1];
+    pinSamples[1] = pinSamples[0];
+    pinSamples[0] = sample_all_pins();
+
+    // detect 3x'1' and adjust current choice
+    U16 samplesANDed = pinSamples[2] & pinSamples[1] & pinSamples[0];
+    current_input_pins = last_input_pins | samplesANDed; // set '1' where three samples were '1'
+
+    // detect 3x'0' and adjust current choice
+    U16 samplesORed = pinSamples[2] & pinSamples[1] & pinSamples[0];
+    current_input_pins = current_input_pins & samplesORed; // set '0' where three samples were '0'
+
+    //
+    if ((current_input_pins & (1 << 14))==0) // tied to GND
     {
-        led_countdown = 200;
-
-        if (Debug_Led_is_on())
-            Debug_Led_off();
-        else
-            Debug_Led_on();
+        choice_mode = Binary;
+    }
+    else
+    {
+        choice_mode = OneOfN;
     }
 
-    led_countdown--;
-    */
+
+    // stable change triggers USB detach and wait
+    if (current_input_pins != last_input_pins)
+    {
+        detach_countdown = 41; // 40x 5msecs = 200msecs
+    }
+    // make stable sample the new normal
+    last_input_pins = current_input_pins;
+
+    // Keep USB detached and count down
+    if (detach_countdown != 0)
+    {
+        Usb_detach();
+
+        detach_countdown--;
+        if (detach_countdown==0)
+            Usb_attach();
+    }
+
 }
+
 
 
 static U16 sample_choice_pins(void)
@@ -105,7 +183,7 @@ static U16 sample_choice_pins(void)
     U16 all_pins = 0;
 
     // assemble pin word
-    if (choice_mode==OneOfN)
+    if (get_choice_mode()==OneOfN)
     {
         all_pins |= (read_choice_pin(11));
         all_pins <<= 1;
@@ -155,12 +233,12 @@ static void filter_choice_pins(void)
     current_choice_pins = current_choice_pins & samplesORed; // set '0' where three samples were '0'
 
     // stable change triggers USB detach and wait
-    if (current_choice_pins != last_choice_pins)
+    if (current_input_pins != last_input_pins) // if (current_choice_pins != last_choice_pins)
     {
         detach_countdown = 41; // 40x 5msecs = 200msecs
     }
     // make stable sample the new normal
-    last_choice_pins = current_choice_pins;
+    last_input_pins = current_input_pins; // last_choice_pins = current_choice_pins;
 
     // Keep USB detached and count down
     if (detach_countdown != 0)
@@ -174,16 +252,16 @@ static void filter_choice_pins(void)
 
 }
 
-// TODO: Change to current_choice_pins
+
 U8 get_boot_choice(void)
 {
     U8 choice;
     U16 all_pins = 0;
 
     // assemble pin word
-    all_pins = current_choice_pins;
+    all_pins = current_input_pins & choice_mask; //current_choice_pins;
 
-    if (choice_mode==OneOfN)
+    if (get_choice_mode()==OneOfN)
     {
         for (choice = 1; choice<12; choice++)
         {
@@ -198,13 +276,15 @@ U8 get_boot_choice(void)
         return (all_pins &= 0x0F);
 }
 
+
 U16 get_raw_boot_pins(void)
 {
-    return current_choice_pins;
+    return current_input_pins & choice_mask; // current_choice_pins;
 }
+
 
 pin_mode get_choice_mode(void)
 {
-    return choice_mode;    
+    return choice_mode;
 }
 
