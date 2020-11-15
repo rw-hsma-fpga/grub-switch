@@ -29,7 +29,6 @@ if sleep --interruptible --verbose $grubswitch_sleep_secs
 then
    clear
 else
-#   unset default
    unset timeout
 fi
 
