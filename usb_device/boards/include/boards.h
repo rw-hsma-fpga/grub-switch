@@ -53,8 +53,14 @@
 
 // LED pin macros
 #define  Led_init()          SOP_EVAL( LED_PORT , LED_PIN )
-#define  Led_on()            W1P_EVAL( LED_PORT , LED_PIN )
-#define  Led_off()           W0P_EVAL( LED_PORT , LED_PIN )
+
+#ifdef LED_IS_LOW_ACTIVE
+   #define  Led_on()            W0P_EVAL( LED_PORT , LED_PIN )
+   #define  Led_off()           W1P_EVAL( LED_PORT , LED_PIN )
+#else
+   #define  Led_on()            W1P_EVAL( LED_PORT , LED_PIN )
+   #define  Led_off()           W0P_EVAL( LED_PORT , LED_PIN )
+#endif
 
 // set auxiliary output-0 pins
 //(if GND isn't physically close; main purpose ist to be able to put

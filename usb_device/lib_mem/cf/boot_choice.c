@@ -3,26 +3,26 @@
 #include "boot_choice.h"
 #include <avr/interrupt.h>
 
-static U16 sample_all_pins(void);
-static void filter_all_pins(void);
-
-static U16 sample_choice_pins(void);
-static void filter_choice_pins(void);
 
 #define NUM_CHOICE_PINS 11
 static const U16 choice_mask = ((1 << NUM_CHOICE_PINS) - 1);
 
+#define WRPROT_WORD_POS 15
+#define RDMODE_WORD_POS 14
+
+
+static U16 sample_all_pins(void);
+static void filter_all_pins(void);
+
 
 static pin_mode choice_mode;
 
-static U16 last_choice_pins;
-static U16 current_choice_pins;
-
 static U16 last_input_pins;
 static U16 current_input_pins;
-static U16 pinSamples[3];
+static U16 inputSamples[3];
 
 static U16 detach_countdown;
+
 
 // prepare port pins for boot choice
 void boot_choice_init(void)
@@ -55,11 +55,12 @@ void boot_choice_init(void)
 
 
     // fill variables with initial pattern
-    current_input_pins = sample_all_pins(); // current_choice_pins = sample_choice_pins();
-    last_input_pins    = current_input_pins;   // last_choice_pins    = current_choice_pins;
-    pinSamples[0]      = current_input_pins; // current_choice_pins;
-    pinSamples[1]      = current_input_pins; // current_choice_pins;
-    pinSamples[2]      = current_input_pins; // current_choice_pins;
+    current_input_pins = sample_all_pins();
+    last_input_pins    = current_input_pins;
+    inputSamples[0]    = current_input_pins;
+    inputSamples[1]    = current_input_pins;
+    inputSamples[2]    = current_input_pins;
+
 
     // no USB detach for now
     detach_countdown = 0;
@@ -122,8 +123,8 @@ static U16 sample_all_pins(void)
 
     all_pins ^= choice_mask; // invert choice pins - '1' now means tied to ground
 
-    all_pins |= (read_wrprot_pin() << 15);
-    all_pins |= (read_mode_pin() << 14);
+    all_pins |= (read_wrprot_pin() << WRPROT_WORD_POS);
+    all_pins |= (read_mode_pin() << RDMODE_WORD_POS);
 
     return all_pins;
 }
@@ -133,20 +134,20 @@ static U16 sample_all_pins(void)
 static void filter_all_pins(void)
 {
     // shift data and acquire new sample
-    pinSamples[2] = pinSamples[1];
-    pinSamples[1] = pinSamples[0];
-    pinSamples[0] = sample_all_pins();
+    inputSamples[2] = inputSamples[1];
+    inputSamples[1] = inputSamples[0];
+    inputSamples[0] = sample_all_pins();
 
     // detect 3x'1' and adjust current choice
-    U16 samplesANDed = pinSamples[2] & pinSamples[1] & pinSamples[0];
+    U16 samplesANDed = inputSamples[2] & inputSamples[1] & inputSamples[0];
     current_input_pins = last_input_pins | samplesANDed; // set '1' where three samples were '1'
 
     // detect 3x'0' and adjust current choice
-    U16 samplesORed = pinSamples[2] & pinSamples[1] & pinSamples[0];
+    U16 samplesORed = inputSamples[2] & inputSamples[1] & inputSamples[0];
     current_input_pins = current_input_pins & samplesORed; // set '0' where three samples were '0'
 
-    //
-    if ((current_input_pins & (1 << 14))==0) // tied to GND
+
+    if ((current_input_pins & (1 << RDMODE_WORD_POS))==0) // tied to GND
     {
         choice_mode = Binary;
     }
@@ -177,89 +178,12 @@ static void filter_all_pins(void)
 }
 
 
-
-static U16 sample_choice_pins(void)
-{
-    U16 all_pins = 0;
-
-    // assemble pin word
-    if (get_choice_mode()==OneOfN)
-    {
-        all_pins |= (read_choice_pin(11));
-        all_pins <<= 1;
-        all_pins |= (read_choice_pin(10));
-        all_pins <<= 1;
-        all_pins |= (read_choice_pin(9));
-        all_pins <<= 1;
-        all_pins |= (read_choice_pin(8));
-        all_pins <<= 1;
-        all_pins |= (read_choice_pin(7));
-        all_pins <<= 1;
-        all_pins |= (read_choice_pin(6));
-        all_pins <<= 1;
-        all_pins |= (read_choice_pin(5));
-        all_pins <<= 1;
-
-        all_pins ^= 0x00FE; // invert pins so far - '1' now means tied to ground
-    }
-    // used in both modes
-    all_pins |= (read_choice_pin(4));
-    all_pins <<= 1;
-    all_pins |= (read_choice_pin(3));
-    all_pins <<= 1;
-    all_pins |= (read_choice_pin(2));
-    all_pins <<= 1;
-    all_pins |= (read_choice_pin(1));
-
-    all_pins ^= 0x000F; // invert lowest 4 pins - '1' now means tied to ground
-
-    return all_pins;
-}
-
-// should be called from Timer IRQ (every 5ms)
-static void filter_choice_pins(void)
-{
-    // shift data and acquire new sample
-    pinSamples[2] = pinSamples[1];
-    pinSamples[1] = pinSamples[0];
-    pinSamples[0] = sample_choice_pins();
-
-    // detect 3x'1' and adjust current choice
-    U16 samplesANDed = pinSamples[2] & pinSamples[1] & pinSamples[0];
-    current_choice_pins = last_choice_pins | samplesANDed; // set '1' where three samples were '1'
-
-    // detect 3x'0' and adjust current choice
-    U16 samplesORed = pinSamples[2] & pinSamples[1] & pinSamples[0];
-    current_choice_pins = current_choice_pins & samplesORed; // set '0' where three samples were '0'
-
-    // stable change triggers USB detach and wait
-    if (current_input_pins != last_input_pins) // if (current_choice_pins != last_choice_pins)
-    {
-        detach_countdown = 41; // 40x 5msecs = 200msecs
-    }
-    // make stable sample the new normal
-    last_input_pins = current_input_pins; // last_choice_pins = current_choice_pins;
-
-    // Keep USB detached and count down
-    if (detach_countdown != 0)
-    {
-        Usb_detach();
-
-        detach_countdown--;
-        if (detach_countdown==0)
-            Usb_attach();
-    }
-
-}
-
-
 U8 get_boot_choice(void)
 {
     U8 choice;
     U16 all_pins = 0;
 
-    // assemble pin word
-    all_pins = current_input_pins & choice_mask; //current_choice_pins;
+    all_pins = current_input_pins & choice_mask;
 
     if (get_choice_mode()==OneOfN)
     {
@@ -279,7 +203,7 @@ U8 get_boot_choice(void)
 
 U16 get_raw_boot_pins(void)
 {
-    return current_input_pins & choice_mask; // current_choice_pins;
+    return current_input_pins & choice_mask;
 }
 
 

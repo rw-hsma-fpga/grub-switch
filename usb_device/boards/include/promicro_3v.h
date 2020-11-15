@@ -13,6 +13,7 @@
 
 #define  LED_PORT           D
 #define  LED_PIN            5
+#define  LED_IS_LOW_ACTIVE
 
 #define  MODE_PORT          D
 #define  MODE_PIN           2

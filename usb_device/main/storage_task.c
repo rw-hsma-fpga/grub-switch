@@ -88,6 +88,7 @@ void usb_mass_storage_csw (void);
 void storage_task_init(void)
 {
    Led_init();
+   Led_off();
 
    init_aux0_output1();
    init_aux0_output2();
