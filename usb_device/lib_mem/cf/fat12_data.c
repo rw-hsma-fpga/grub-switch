@@ -62,14 +62,18 @@ const code unsigned char dir_table[0xc0] = {
  // .status    starting at 0x1200 - 18-byte switch status
  // rest all 0x00
 
+static U16 sleep_secs_start[MAX_NUM_ENTRIES];
+static U16 sleep_secs_length[MAX_NUM_ENTRIES];
+
+static U16 highlight_color_start[MAX_NUM_ENTRIES];
+static U16 highlight_color_length[MAX_NUM_ENTRIES];
+
 static U16 entry_start[MAX_NUM_ENTRIES];
 static U16 entry_length[MAX_NUM_ENTRIES];
 
-static unsigned char highlight_color[HIGHLIGHT_COLOR_LENGTH] = "";
-static unsigned char sleep_secs[SLEEP_SECS_LENGTH] = "";
 
 static char bootfile_parameters[200]; // for longest colors, 3-digit sleep and 80-character menuentry titles;
-                               // extend if more parameters become available 
+                                      // extend if more parameters become available 
 
 extern U8 bootfile_template_start;
 extern U8 bootfile_template_end;
@@ -104,25 +108,24 @@ void parse_entry_file()
    U16 entry_file_pos = 0;
 
    U16 i; // general iterator
-   U8  entry_index = 1; // line iterator
+   U8  entry_index = 1; // entry iterator - skips index 0, it's supposed to be empty (GRUB menu)
 
    // reset values to parse
    for(i=0; i<MAX_NUM_ENTRIES; i++)
    {
+      sleep_secs_start[i] = 0;
+      sleep_secs_length[i] = 0;
+      highlight_color_start[i] = 0;
+      highlight_color_length[i] = 0;
       entry_start[i] = 0;
       entry_length[i] = 0;
    }
-   for(i=0; i<HIGHLIGHT_COLOR_LENGTH; i++)
-      highlight_color[i] = '\0';
-   for(i=0; i<SLEEP_SECS_LENGTH; i++)
-      sleep_secs[0] = '\0';
  
    // despite some checking, only well-formed files will reasonably work
  
    do // linewise loop
    {
       // start of line
-      entry_start[entry_index] = entry_file_pos; // init next entry to come up
       U16 line_start = entry_file_pos;
 
       char sample;
@@ -150,43 +153,37 @@ void parse_entry_file()
       }
 
       // process line
-      if (read_entry_file(line_start)=='#') // special parameters
+      if (read_entry_file(line_start)=='#') // special parameters or comment
       {
-         U8 par_pos = 0; 
+         //U8 par_pos = 0; 
          sample = read_entry_file(line_start+1);
          if (sample=='1') // sleep secs
          {
-            while(1)
-            {
-               sample = read_entry_file(line_start+3+par_pos);
-               if ( (sample=='#') || (sample==' ') || (sample=='\r') || (sample=='\n') ||
-                    (par_pos==SLEEP_SECS_LENGTH-1) )
-                    break;
-               sleep_secs[par_pos] = sample;
-               par_pos++;
-            }
+            sleep_secs_start[entry_index]  = line_start + 3;
+            sleep_secs_length[entry_index] = line_end - (line_start + 3);
          }
          else if (sample=='2') // highlight color
          {
-            while(1)
-            {
-               sample = read_entry_file(line_start+3+par_pos);
-               if ( (sample=='#') || (sample==' ') || (sample=='\r') || (sample=='\n') ||
-                    (par_pos==HIGHLIGHT_COLOR_LENGTH-1) )
-                    break;
-               highlight_color[par_pos] = sample;
-               par_pos++;
-            }
+            highlight_color_start[entry_index]  = line_start + 3;
+            highlight_color_length[entry_index] = line_end - (line_start + 3);
          }
-         continue; // next line
+         continue; // next line - also means comments with #... are skipped
       }
       else // menu entry line (can be empty line);
       {
+         entry_start[entry_index]  = line_start;
          entry_length[entry_index] = line_end - line_start;
          entry_index++;
+         if (entry_index < MAX_NUM_ENTRIES)
+         {
+            sleep_secs_start[entry_index]  = sleep_secs_start[entry_index - 1];
+            sleep_secs_length[entry_index] = sleep_secs_length[entry_index - 1];
+            highlight_color_start[entry_index]  = highlight_color_start[entry_index - 1];
+            highlight_color_length[entry_index] = highlight_color_length[entry_index - 1];
+         }
          continue; // next line
       }
-   } while ( (entry_index < MAX_NUM_ENTRIES) &&         // not max number of entries parsed yet
+   } while ( (entry_index < MAX_NUM_ENTRIES) &&       // not max number of entries parsed yet
              (entry_file_pos != entry_file_size) );   // not end of file yet
 } 
 
@@ -209,24 +206,31 @@ void build_bootfile_parameters(U8 choice)
 
    bootfile_parameters_size = 0;
 
+   // Sleep secs parameter on choice display
    for(i=0; bootfile_string1[i]!='\0'; i++)
       bootfile_parameters[bootfile_parameters_size++] = bootfile_string1[i];
 
-   for(i=0; sleep_secs[i]!='\0'; i++)
-      bootfile_parameters[bootfile_parameters_size++] = sleep_secs[i];
+   for(i=0; i<sleep_secs_length[choice]; i++)
+      bootfile_parameters[bootfile_parameters_size++] = read_entry_file(sleep_secs_start[choice] + i);
 
+
+   // highlight color parameter on choice display
    for(i=0; bootfile_string2[i]!='\0'; i++)
       bootfile_parameters[bootfile_parameters_size++] = bootfile_string2[i];
 
-   for(i=0; highlight_color[i]!='\0'; i++)
-      bootfile_parameters[bootfile_parameters_size++] = highlight_color[i];
+   for(i=0; i<highlight_color_length[choice]; i++)
+      bootfile_parameters[bootfile_parameters_size++] = read_entry_file(highlight_color_start[choice] + i);
 
+
+   // Boot choice (boot menu default)
    for(i=0; bootfile_string3[i]!='\0'; i++)
       bootfile_parameters[bootfile_parameters_size++] = bootfile_string3[i];
 
    for(i=0; i<entry_length[choice]; i++)
       bootfile_parameters[bootfile_parameters_size++] = read_entry_file(entry_start[choice] + i);
 
+
+   // separator line
    for(i=0; bootfile_string4[i]!='\0'; i++)
       bootfile_parameters[bootfile_parameters_size++] = bootfile_string4[i];
 
