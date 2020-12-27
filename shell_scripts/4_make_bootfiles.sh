@@ -7,7 +7,14 @@ BOOTFILES_DIR="../bootfiles/"
 ## divide been parameters for boot message and boot entries
 OLD_IFS=$IFS
 IFS=$'\t\n'
+
+unset sleep_secs_entries
+unset highlight_color_entries
 unset boot_entries
+
+sleep_secs_entries[0]=""
+highlight_color_entries[0]=""
+entry_count=0
 
 while read unstripped_line
 do
@@ -18,11 +25,11 @@ do
 	then
 		if [[ $line =~ ^#1.*$ ]]
 		then
-			param1=`echo "${line}" | sed -n 's/^#1\o040\([^\o040#]*\).*$/\1/p'`
+			sleep_secs_entries[$entry_count]=`echo "${line}" | sed -n 's/^#1\o040\([^\o040#]*\).*$/\1/p'`
 		fi
 		if [[ $line =~ ^#2.*$ ]]
 		then
-			param2=`echo "${line}" | sed -n 's/^#2\o040\([^\o040#]*\).*$/\1/p'`
+			highlight_color_entries[$entry_count]=`echo "${line}" | sed -n 's/^#2\o040\([^\o040#]*\).*$/\1/p'`
 		fi
 	else
 		if [[ -n "${line}" ]]
@@ -31,32 +38,21 @@ do
 		else
 			boot_entries+=(".")
 		fi
+		sleep_secs_buf="${sleep_secs_entries[$entry_count]}"
+		highlight_color_buf="${highlight_color_entries[$entry_count]}"
+		let "entry_count=entry_count+1"
+		sleep_secs_entries[${entry_count}]="$sleep_secs_buf"
+		highlight_color_entries[${entry_count}]="$highlight_color_buf"
 	fi
-
 done < ${BOOTFILES_DIR}/.entries.txt
 IFS=$OLD_IFS
 
-
-
-## TEMPORARY DEBUG OUTPUT - REMOVE LATER
-echo "Parameter #1:"
-echo "${param1}"
-echo "-------------------"
-echo "Parameter #2:"
-echo "${param2}"
-echo "-------------------"
-
-for printline in "${boot_entries[@]}"
-do
-	echo "$printline"
-done
 
 echo
 echo -n "Number of boot entries:"
 echo "${#boot_entries[@]}"
 echo
 #######################################
-
 
 
 ## delete old bootfiles
@@ -76,22 +72,24 @@ for (( i = 0 ; i < ${#boot_entries[@]}; i++ ))
 do
 	let "j=i+1"
 
-	# make bootfile folder
-	mkdir -p ${BOOTFILES_DIR}/boot.${j}
+	if [ "${boot_entries[$i]}" != "." ]
+	then
+		# make bootfile folder
+		mkdir -p ${BOOTFILES_DIR}/boot.${j}
 
-	# make SWITCH.GRB file
-	echo -e "grubswitch_sleep_secs='${param1}'\r"       >  ${BOOTFILES_DIR}/boot.${j}/SWITCH.GRB
-	echo -e "grubswitch_choice_color='${param2}'\r"     >> ${BOOTFILES_DIR}/boot.${j}/SWITCH.GRB
-	echo -e "grubswitch_choice='${boot_entries[$i]}'\r" >> ${BOOTFILES_DIR}/boot.${j}/SWITCH.GRB
- 
-	cat ${BOOTFILES_DIR}/template                           >> ${BOOTFILES_DIR}/boot.${j}/SWITCH.GRB
+		# make SWITCH.GRB file
+		echo -e "grubswitch_sleep_secs='${sleep_secs_entries[$i]}'\r"       >  ${BOOTFILES_DIR}/boot.${j}/SWITCH.GRB
+		echo -e "grubswitch_choice_color='${highlight_color_entries[$i]}'\r"     >> ${BOOTFILES_DIR}/boot.${j}/SWITCH.GRB
+		echo -e "grubswitch_choice='${boot_entries[$i]}'\r" >> ${BOOTFILES_DIR}/boot.${j}/SWITCH.GRB
+	
+		cat ${BOOTFILES_DIR}/template                           >> ${BOOTFILES_DIR}/boot.${j}/SWITCH.GRB
 
 
-	# make corresponding hash file
-	cd ${BOOTFILES_DIR}/boot.${j}/
-	sha512sum SWITCH.GRB > ../grub_switch_hashes/${j}.sha512
-	cd ${CURR_DIR}
-
+		# make corresponding hash file
+		cd ${BOOTFILES_DIR}/boot.${j}/
+		sha512sum SWITCH.GRB > ../grub_switch_hashes/${j}.sha512
+		cd ${CURR_DIR}
+	fi
 
 	# TODO: Adjust ownerships if currently root
 

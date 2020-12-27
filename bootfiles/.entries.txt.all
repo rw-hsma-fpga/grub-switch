@@ -1,6 +1,6 @@
 ### configuration parameters
-#1 005        # seconds to display boot choice
-#2 white/blue # highlight color that is used for the boot choice
+#1 005
+#2 white/blue
 ### GRUB switch choices 1..15 (0x1..0xF): an empty, non-comment line
 ### means that choice leads to the regular GRUB menu, as does 0
 GNU/Linux

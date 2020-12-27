@@ -429,17 +429,20 @@ cd ${BOOTFILES_DIR}
 rm -R ./boot.*
 rm -R ./grub_switch_hashes/*
 
+
+#### TODO: change to reflect different times and colors for entries
 # create and fill .entries.txt (for use with custom grubswitch device)
-echo    "### configuration parameters" > ./.entries.txt
+echo "### #1 specifies display time for subsequent entries" > ${BOOTFILES_DIR}/.entries.txt
+echo "### #2 specifies display colors for subsequent entries" > ${BOOTFILES_DIR}/.entries.txt
+echo "### Uncommented lines are GRUB switch choices 1..15 (0x1..0xF)" >> ${BOOTFILES_DIR}/.entries.txt
+echo "### An empty line leads to the GRUB menu, as does choice 0" >> ${BOOTFILES_DIR}/.entries.txt
+
 echo -n "#1 " >> ./.entries.txt
 	printf %03d $SECS >> ./.entries.txt
 	echo "        # seconds to display boot choice" >> ./.entries.txt
 echo -n "#2 " >> ./.entries.txt
 	echo -n "${grubcolors[$colorindex]}" >> ./.entries.txt
 	echo " # highlight color that is used for the boot choice" >> ./.entries.txt
-
-echo "### GRUB switch choices 1..15 (0x1..0xF): an empty, non-comment line" >> ./.entries.txt
-echo "### means that choice leads to the regular GRUB menu, as does 0" >> ./.entries.txt
 
 for j in 1 2 3 4 5 6 7 8 9 a b c d e f
 do
@@ -456,6 +459,8 @@ do
 	# add to .entries.txt
 	echo $CHOICE_ENTRY >> ./.entries.txt
 
+
+	#### TODO: change to reflect different times and colors for entries
 	# create individual boot files (for use with regular USB drives)
 	if [[ -n ${CHOICE_ENTRY} && -f "./template" ]]
 	then

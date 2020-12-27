@@ -49,11 +49,12 @@ fi
 
 ### printing default options and comments into '.entries.txt.all' und 'grubmenu_all_entries.lst'
 echo -e "writing initial parameters to\e[1m .entries.txt.all\e[0m ..."
-echo "### configuration parameters" > ${BOOTFILES_DIR}/.entries.txt.all
-echo "#1 005        # seconds to display boot choice" >> ${BOOTFILES_DIR}/.entries.txt.all
-echo "#2 white/blue # highlight color that is used for the boot choice" >> ${BOOTFILES_DIR}.entries.txt.all
-echo "### GRUB switch choices 1..15 (0x1..0xF): an empty, non-comment line" >> ${BOOTFILES_DIR}/.entries.txt.all
-echo "### means that choice leads to the regular GRUB menu, as does 0" >> ${BOOTFILES_DIR}/.entries.txt.all
+echo "### #1 specifies display time for subsequent entries" > ${BOOTFILES_DIR}/.entries.txt.all
+echo "### #2 specifies display colors for subsequent entries" > ${BOOTFILES_DIR}/.entries.txt.all
+echo "### Uncommented lines are GRUB switch choices 1..15 (0x1..0xF)" >> ${BOOTFILES_DIR}/.entries.txt.all
+echo "### An empty line leads to the GRUB menu, as does choice 0" >> ${BOOTFILES_DIR}/.entries.txt.all
+echo "#1 005" >> ${BOOTFILES_DIR}/.entries.txt.all
+echo "#2 white/blue" >> ${BOOTFILES_DIR}.entries.txt.all
 
 ### printing title comment into grubmenu_all_entries.lst
 echo "### All entries, extracted from current GRUB menu" > ${BOOTFILES_DIR}/grubmenu_all_entries.lst

@@ -1,10 +1,12 @@
 ### configuration parameters
-#1 000        # seconds to display boot choice
-#2 light-gray/black # highlight color that is used for the boot choice
+#1 005
+#2 light-gray/black
 ### GRUB switch choices 1..15 (0x1..0xF): an empty, non-comment line
 ### means that choice leads to the regular GRUB menu, as does 0
 GNU/Linux
+#2 white/blue
 Advanced options for GNU/Linux>GNU/Linux, with Linux 5.0.0-36-generic
+#1 003
 Advanced options for GNU/Linux>GNU/Linux, with Linux 5.0.0-36-generic (recovery mode)
 
 
