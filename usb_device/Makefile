@@ -51,7 +51,7 @@ OBJECTS  = $(CSRCS:.c=.o) $(ASSRCS:.S=.o)
 
 .PHONY: all
 all: $(PROJECT).elf $(PROJECT).hex size
-	@echo "Target board: $(BOARD)"
+	@echo "Target built: $(BOARD)"
 	@echo ""
 
 ## Clean target

@@ -4,6 +4,7 @@
 // add additional board header files here
 #include "boards/include/teensy20.h"
 #include "boards/include/customhw_reva.h"
+#include "boards/include/customhw_revb.h"
 #include "boards/include/arduino_micro.h"
 #include "boards/include/itsybitsy_3v.h"
 #include "boards/include/itsybitsy_5v.h"
