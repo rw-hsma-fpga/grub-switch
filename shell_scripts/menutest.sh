@@ -426,8 +426,9 @@ done # while - DISPLAY SECONDS AND COLOR CONFIGURATION
 clear
 
 cd ${BOOTFILES_DIR}
-rm -R ./boot.*
-rm -R ./grub_switch_hashes/*
+rm -Rf ./boot.*
+rm -Rf ./grub_switch_hashes/*
+mkdir ./grub_switch_hashes
 
 
 #### TODO: change to reflect different times and colors for entries
