@@ -263,7 +263,6 @@ fi
 
 
 
-
 ### show status menu
 show_status_menu
 
