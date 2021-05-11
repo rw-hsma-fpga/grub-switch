@@ -72,8 +72,8 @@ unset last_sudo_date
 
 clear
 echo -e -n "$fBOLD"
-echo "7 - Install GRUBswitch into grub.cfg"	
-echo "------------------------------------"
+echo "8 - Remove GRUBswitch from grub.cfg"	
+echo "-----------------------------------"
 echo -e -n "$fPLAIN"
 check_request_sudo
 
@@ -124,12 +124,6 @@ else
 	exit -1
 fi
 
-if [[ -r "./modifier_script/99_grub_switch" ]]
-then :
-else
-	echo "ERROR: Modifier script does not exist" >&2
-	exit -1
-fi
 
 
 ### Ask for write confirmation
@@ -141,12 +135,11 @@ do
 	GET_KEY
 	case ${INPUT} in
 			"y")
-				sudo cp ./modifier_script/99_grub_switch $CFG_SCRIPTS_DIR/
-				sudo chmod +x $CFG_SCRIPTS_DIR/99_grub_switch
+				sudo rm -rf $CFG_SCRIPTS_DIR/99_grub_switch
 				# message to update GRUB
-				echo ; echo "GRUBswitch modifier script installed" ; echo
+				echo ; echo "GRUBswitch modifier script removed" ; echo
 				sudo update-grub
-				echo ; echo -e "${fBOLD}grub.cfg${fPLAIN} re-generated with GRUBswitch" ; echo
+				echo ; echo -e "${fBOLD}grub.cfg${fPLAIN} re-generated without GRUBswitch" ; echo
 				break
 				;;
 			"n")

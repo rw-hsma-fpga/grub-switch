@@ -464,17 +464,16 @@ do
 				echo "------------------------------------"
 				echo -e -n "$fPLAIN"
 				check_request_sudo_write
-				./_7_install_grubswitch.sh
+				./_7_install_grubswitch.sh -g $GRUB_CFG_DIR -s $CFG_SCRIPTS_DIR
 				;;
 			"8")
 				clear
 				echo -e -n "$fBOLD"
-				echo "8 -   Remove GRUBswitch from grub.cfg"	
-				echo "-------------------------------------"
+				echo "8 - Remove GRUBswitch from grub.cfg"	
+				echo "-----------------------------------"
 				echo -e -n "$fPLAIN"
 				check_request_sudo_write
-				./_8_remove_grubswitch.sh
-				;;
+				./_8_remove_grubswitch.sh -g $GRUB_CFG_DIR -s $CFG_SCRIPTS_DIR
 				;;
 			"9")
 				#
