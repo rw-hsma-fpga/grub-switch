@@ -1,4 +1,9 @@
 #!/bin/bash
+if [ "${BASH_SOURCE[0]}" != "$0" ]; then
+	echo; echo "Please execute this script, don't source it"
+	echo "(sourcing pollutes the environment with variables)."; echo
+	return; fi
+
 
 # path variables
 CURR_DIR=`pwd`
@@ -157,7 +162,7 @@ if [[ ${NUM_ENTRIES} = "0" ]]
 then
 	clear
 	echo "No entries found. Aborting."
-	return
+	exit -1
 fi
 
 
@@ -207,7 +212,7 @@ while [[ ${REPEAT_LIST_CONFIG} = true ]] ; do
 				let "CURRENT_POS=( $CURRENT_POS + $NUM_ENTRIES - 1 ) % $NUM_ENTRIES" ;;
 			"q")	clear
 				echo "Exited without saving."
-				return ;;
+				exit ;;
 			"Enter")
 				break ;;
 			"Delete")
@@ -274,7 +279,7 @@ while [[ ${REPEAT_LIST_CONFIG} = true ]] ; do
 		case ${INPUT} in
 				"q")	clear
 					echo "Exited without saving."
-					return ;;
+					exit ;;
 				"Enter")
 					REPEAT_LIST_CONFIG=false
 					break ;;
@@ -317,7 +322,7 @@ while [[ ${REPEAT_DISPLAY_CONFIG} = true ]] ; do
 		case ${INPUT} in
 				"q")	clear
 					echo "Exited without saving."
-					return ;;
+					exit ;;
 				"Enter")
 					#REPEAT_DISPLAY_CONFIG=false
 					break ;;
@@ -398,7 +403,7 @@ while [[ ${REPEAT_DISPLAY_CONFIG} = true ]] ; do
 					"q")
 						clear
 						echo "Exited without saving."
-						return ;;
+						exit ;;
 					"Enter")
 						REPEAT_DISPLAY_CONFIG=false
 						break ;;

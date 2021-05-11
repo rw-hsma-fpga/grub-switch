@@ -55,7 +55,7 @@ echo $SCRIPT_DIR_PATH
 # TODO MUST BE ROOT IN ANY CASE
 
 # install script, make executable
-cp ./99_grub_switch $SCRIPT_DIR_PATH/
+cp ./modifier_script/99_grub_switch $SCRIPT_DIR_PATH/
 chmod +x $SCRIPT_DIR_PATH/99_grub_switch
 
 # message to update GRUB
