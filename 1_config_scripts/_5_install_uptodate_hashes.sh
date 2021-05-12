@@ -4,7 +4,16 @@ if [ "${BASH_SOURCE[0]}" != "$0" ]; then
 	echo "(sourcing pollutes the environment with variables)."; echo
 	return; fi
 
+if [[ "`pwd`" =~ ^.*/1_config_scripts$ ]]; then : ; else
+	echo "ERROR: Script not started from  shell_scripts  directory" >&2
+	echo ; exit; fi
+
 . _shared_objects.sh
+
+
+#### _5_install_uptodate_hashes.sh ####
+## copies ../bootfiles/grub_switch_hashes to boot dir
+
 
 
 # keyboard polling function... puts key name in $INPUT; empty if no interesting key
@@ -37,7 +46,7 @@ check_request_sudo
 
 
 ### parse commandline parameters for grub dir
-get_path_arguments
+get_path_arguments $@
 
 
 ### check writability of GRUB directories
@@ -49,9 +58,7 @@ then
 fi
 
 
-### check work path, template availability
-check_in_script_path
-
+### check hash dir availability
 if [[ -e "../bootfiles/grub_switch_hashes" ]]
 then :
 else

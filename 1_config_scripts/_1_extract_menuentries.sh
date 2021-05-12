@@ -4,7 +4,12 @@ if [ "${BASH_SOURCE[0]}" != "$0" ]; then
 	echo "(sourcing pollutes the environment with variables)."; echo
 	return; fi
 
+if [[ "`pwd`" =~ ^.*/1_config_scripts$ ]]; then : ; else
+	echo "ERROR: Script not started from  shell_scripts  directory" >&2
+	echo ; exit; fi
+
 . _shared_objects.sh
+
 
 #### _1_extract_menuentries.sh ###
 ## Script to extract all menuentry titles from 'grub.cfg' and write them to
@@ -21,8 +26,7 @@ BOOTFILES_DIR="../bootfiles/"
 
 
 ### parse commandline parameters for grub dirs, check existence/access
-get_path_arguments
-
+get_path_arguments $@
 
 ### check grub.cfg existence and readability, acquire sudo if required
 GRUB_CFG_PATH="${GRUB_CFG_DIR}/grub.cfg"
@@ -55,9 +59,7 @@ else
 fi
 
 
-### check work path, bootfiles availability
-check_in_script_path
-
+### check bootfiles availability
 if [[ -e "../bootfiles/" ]]
 then :
 else

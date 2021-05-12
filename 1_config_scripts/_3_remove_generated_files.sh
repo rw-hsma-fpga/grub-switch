@@ -4,9 +4,15 @@ if [ "${BASH_SOURCE[0]}" != "$0" ]; then
 	echo "(sourcing pollutes the environment with variables)."; echo
 	return; fi
 
+if [[ "`pwd`" =~ ^.*/1_config_scripts$ ]]; then : ; else
+	echo "ERROR: Script not started from  shell_scripts  directory" >&2
+	echo ; exit; fi
+
 . _shared_objects.sh
 
 
+#### _3_remove_generated_files ####
+## removes .entries.txt, boot.*/*, grub_switch hashes
 
 
 clear
@@ -16,10 +22,7 @@ echo "---------------------------------------------------"
 echo -e -n "${fPLAIN}"
 echo
 
-
-### check work path, bootfiles availability
-check_in_script_path
-
+### check bootfiles availability
 if [[ -e "../bootfiles/" ]]
 then :
 else
@@ -32,6 +35,6 @@ echo -e "Removed \e[1m.entries.txt\e[0m ..."
 rm -Rf ../bootfiles/boot.*
 echo -e "Removed \e[1mboot.*/SWITCH.GRB\e[0m ..."
 rm -Rf ../bootfiles/grub_switch_hashes
-echo -e "Removed \e[1grub_switch_hashes/*\e[0m ..."
+echo -e "Removed \e[1mgrub_switch_hashes/*\e[0m ..."
 
 EXIT_WITH_KEYPRESS

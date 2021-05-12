@@ -4,7 +4,7 @@ if [ "${BASH_SOURCE[0]}" != "$0" ]; then
 	echo "(sourcing pollutes the environment with variables)."; echo
 	return; fi
 
-if [[ "`pwd`" =~ ^.*/shell_scripts$ ]]; then : ; else
+if [[ "`pwd`" =~ ^.*/1_config_scripts$ ]]; then : ; else
 	echo "ERROR: Script not started from  shell_scripts  directory" >&2
 	echo ; exit; fi
 
@@ -22,7 +22,7 @@ if [[ "`pwd`" =~ ^.*/shell_scripts$ ]]; then : ; else
 # keyboard polling function... puts key name in $INPUT; empty if no interesting key
 function GET_KEYPRESS () {
 
-	OLD_IFS=$IFS
+	local OLD_IFS=$IFS
 	IFS=''
 
 	INPUT=""
@@ -252,14 +252,6 @@ function check_or_find_paths {
 
 ### UNSET/INIT RELEVANT VARIABLES
 
-unset LAST_SUDO_STATE
-unset LAST_SUDO_DATE
-
-unset GRUB_CFG_DIR
-unset GRUB_CFG_PATH
-
-unset CFG_SCRIPTS_DIR
-
 SUDO_WRITE_STATE="INACTIVE"
 
 
@@ -284,7 +276,7 @@ fi
 
 
 ### parse commandline parameters for grub dirs, check existence/access
-get_path_arguments
+get_path_arguments $@
 check_or_find_paths
 if [ "$?" -ne "0" ]
 then

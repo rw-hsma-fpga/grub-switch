@@ -4,25 +4,17 @@ if [ "${BASH_SOURCE[0]}" != "$0" ]; then
 	echo "(sourcing pollutes the environment with variables)."; echo
 	return; fi
 
+if [[ "`pwd`" =~ ^.*/1_config_scripts$ ]]; then : ; else
+	echo "ERROR: Script not started from  shell_scripts  directory" >&2
+	echo ; exit; fi
+
+. _shared_objects.sh
 
 
+#### _7_install_grubswitch.sh ####
+## copies modifier script to /etc/...
+## runs update-grub
 
-# terminal format macros
-fPLAIN="\e[0m"
-fBOLD="\e[1m"
-
-
-# keypress polling function
-function GET_ANY_KEYPRESS () {
-
-	OLD_IFS=$IFS
-	IFS=''
-
-	read -s -N 1 KEY
-	until [[ -z ${KEY} ]]; do read -s -t 0.1 -N 1 KEY; done # keyboard flush
-
-	IFS=$OLD_IFS
-} # END function GET_ANY_KEYPRESS
 
 
 # keyboard polling function... puts key name in $INPUT; empty if no interesting key
@@ -45,30 +37,6 @@ function GET_KEY () {
 } # END function GET_KEY
 
 
-function check_request_sudo {
-	local sudostate=`sudo -n whoami 2> /dev/null`
-
-	if [ "$sudostate" = "root" ]
-	then :
-	else
-		sudostate=`sudo whoami`
-	fi
-
-	if [ "$sudostate" = "root" ]
-	then
-		last_sudo_state="ACTIVE"
-	else
-		last_sudo_state="INACTIVE"
-	fi
-	last_sudo_date=`date`
-}
-
-
-
-unset last_sudo_state
-unset last_sudo_date
-
-
 
 clear
 echo -e -n "$fBOLD"
@@ -78,25 +46,9 @@ echo -e -n "$fPLAIN"
 check_request_sudo
 
 
-### parse commandline parameters for grub dirs, check existence/access
-GRUB_CFG_DIR=""
-CFG_SCRIPTS_DIR=""
-OPTIND=1
-while getopts ":g:s:" callarg
-do
-	case ${callarg} in
-		g)
-			GRUB_CFG_DIR=${OPTARG}
-			#echo "grub.cfg dir specified as ${GRUB_CFG_DIR}"
-			;;
-		s)
-			CFG_SCRIPTS_DIR=${OPTARG}
-			#echo "script dir for cfg-building specified as ${CFG_SCRIPTS_DIR}"
-			;;
-		*)
-			;;
-	esac
-done
+### parse commandline parameters for grub dir and script dir
+get_path_arguments $@
+
 
 
 ### check writability of GRUB directories
@@ -104,31 +56,23 @@ sudo test -w "${GRUB_CFG_DIR}"
 if [ "$?" -ne "0" ]
 then
 	echo "ERROR: GRUB boot directory not writable" >&2
-	exit -1	
+	EXIT_WITH_KEYPRESS
 fi
 
 sudo test -w "${CFG_SCRIPTS_DIR}"
 if [ "$?" -ne "0" ]
 then
 	echo "ERROR: GRUB script directory not writable" >&2
-	exit -1	
+	EXIT_WITH_KEYPRESS
 fi
 
 
-### check work path, template availability
-CURR_DIR=`pwd`
-if [[ "$CURR_DIR" =~ ^.*/shell_scripts$ ]]
-then :
-else
-	echo "ERROR: Script not started from  shell_scripts  directory" >&2
-	exit -1
-fi
-
+### check modifier script availability
 if [[ -r "./modifier_script/99_grub_switch" ]]
 then :
 else
 	echo "ERROR: Modifier script does not exist" >&2
-	exit -1
+	EXIT_WITH_KEYPRESS
 fi
 
 
@@ -143,7 +87,6 @@ do
 			"y")
 				sudo cp ./modifier_script/99_grub_switch $CFG_SCRIPTS_DIR/
 				sudo chmod +x $CFG_SCRIPTS_DIR/99_grub_switch
-				# message to update GRUB
 				echo ; echo "GRUBswitch modifier script installed" ; echo
 				sudo update-grub
 				echo ; echo -e "${fBOLD}grub.cfg${fPLAIN} re-generated with GRUBswitch" ; echo
@@ -160,7 +103,4 @@ do
 done
 
 
-echo
-echo "Press any key to return to main menu."
-echo
-GET_ANY_KEYPRESS
+EXIT_WITH_KEYPRESS
