@@ -127,4 +127,66 @@ function get_path_arguments {
 }
 
 
+function GET_KEY () {
+
+	local OLD_IFS=$IFS
+	IFS=''
+
+	INPUT=""
+	read -s -N 1 KEY
+	case $KEY in
+	[1-9])
+		INPUT=$KEY
+		until [[ -z ${KEY} ]]; do read -s -t 0.1 -N 1 KEY; done # keyboard flush
+		;;
+	[a-fnqyA-F])
+		KEY=`echo ${KEY,,}`
+		INPUT=$KEY
+		until [[ -z ${KEY} ]]; do read -s -t 0.1 -N 1 KEY; done # keyboard flush
+		;;
+	$'\n')
+		INPUT="Enter"
+		until [[ -z ${KEY} ]]; do read -s -t 0.1 -N 1 KEY; done # keyboard flush
+		;;
+	$'\177')
+		INPUT="Backspace"
+		until [[ -z ${KEY} ]]; do read -s -t 0.1 -N 1 KEY; done # keyboard flush
+		;;
+	$'\e')
+		INPUT="Escape"
+		read -s -t 0.1 -N 1 KEY # read second char after \e
+		if [[ -n ${KEY} ]]
+		then
+		INPUT=""
+			if [[ ${KEY} = '[' ]]
+			then
+				read -s -t 0.1 -N 1 KEY # read third char after \e[
+				case ${KEY} in
+					'D')	INPUT="CursorLeft" ;;
+					'C')	INPUT="CursorRight" ;;
+					'A')	INPUT="CursorUp" ;;
+					'B')	INPUT="CursorDown" ;;
+					'H')	INPUT="Pos1" ;;
+					'F')	INPUT="End" ;;
+					# 4-char cases
+					[2356])
+					    if [[ ${KEY} = '5' ]]; then INPUT="PageUp"; fi
+						if [[ ${KEY} = '6' ]]; then INPUT="PageDown"; fi
+						if [[ ${KEY} = '3' ]]; then INPUT="Delete"; fi
+						if [[ ${KEY} = '2' ]]; then INPUT="Insert"; fi
+						# common check for '~' 
+						read -s -t 0.1 -N 1 KEY
+						if [[ ${KEY} != '~' ]]
+						then INPUT=""
+						fi
+						;;
+				esac
+			fi
+		fi
+		until [[ -z ${KEY} ]]; do read -s -t 0.1 -N 1 KEY; done # keyboard flush
+		;;
+	esac
+
+	IFS=$OLD_IFS
+} # END function GET_KEY
 

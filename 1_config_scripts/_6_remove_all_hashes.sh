@@ -14,29 +14,6 @@ if [[ "`pwd`" =~ ^.*/1_config_scripts$ ]]; then : ; else
 #### _6_remove_all_hashes.sh ####
 ## removes grub_switch_hashes from boot dir
 
-
-
-# keyboard polling function... puts key name in $INPUT; empty if no interesting key
-function GET_KEY () {
-
-	OLD_IFS=$IFS
-	IFS=''
-
-	INPUT=""
-	read -s -N 1 KEY
-	case $KEY in
-	[yn])
-		KEY=`echo ${KEY,,}`
-		INPUT=$KEY
-		until [[ -z ${KEY} ]]; do read -s -t 0.1 -N 1 KEY; done # keyboard flush
-		;;
-	esac
-
-	IFS=$OLD_IFS
-} # END function GET_KEY
-
-
-
 clear
 echo -e -n "$fBOLD"
 echo "6 - Remove all hashes"	

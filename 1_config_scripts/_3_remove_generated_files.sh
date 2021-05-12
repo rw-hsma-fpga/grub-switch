@@ -14,7 +14,6 @@ if [[ "`pwd`" =~ ^.*/1_config_scripts$ ]]; then : ; else
 #### _3_remove_generated_files ####
 ## removes .entries.txt, boot.*/*, grub_switch hashes
 
-
 clear
 echo -e -n "${fBOLD}"
 echo "3 -   Remove generated files (bootfiles and hashes)"
@@ -30,6 +29,7 @@ else
 	EXIT_WITH_KEYPRESS
 fi
 
+### delete files
 rm -Rf ../bootfiles/.entries.txt
 echo -e "Removed \e[1m.entries.txt\e[0m ..."
 rm -Rf ../bootfiles/boot.*

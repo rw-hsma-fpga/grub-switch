@@ -19,29 +19,6 @@ if [[ "`pwd`" =~ ^.*/1_config_scripts$ ]]; then : ; else
 
 ### FUNCTIONS
 
-# keyboard polling function... puts key name in $INPUT; empty if no interesting key
-function GET_KEYPRESS () {
-
-	local OLD_IFS=$IFS
-	IFS=''
-
-	INPUT=""
-	read -s -N 1 KEY
-	case $KEY in
-	[1-9])
-		INPUT=$KEY
-		until [[ -z ${KEY} ]]; do read -s -t 0.1 -N 1 KEY; done # keyboard flush
-		;;
-	[q])
-		KEY=`echo ${KEY,,}`
-		INPUT=$KEY
-		until [[ -z ${KEY} ]]; do read -s -t 0.1 -N 1 KEY; done # keyboard flush
-		;;
-	esac
-
-	IFS=$OLD_IFS
-} # END function GET_KEYPRESS
-
 function show_status_menu {
 
 	clear
@@ -320,7 +297,7 @@ do
 	echo
 	echo
 
-	GET_KEYPRESS
+	GET_KEY
 
 	case ${INPUT} in
 			"q")
@@ -332,7 +309,7 @@ do
 				./_1_extract_menuentries.sh -g $GRUB_CFG_DIR
 				;;
 			"2")
-				#
+				./_2_configure_and_generate_bootfiles.sh
 				;;
 			"3")
 				./_3_remove_generated_files.sh

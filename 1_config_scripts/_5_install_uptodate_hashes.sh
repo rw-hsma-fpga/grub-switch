@@ -14,29 +14,6 @@ if [[ "`pwd`" =~ ^.*/1_config_scripts$ ]]; then : ; else
 #### _5_install_uptodate_hashes.sh ####
 ## copies ../bootfiles/grub_switch_hashes to boot dir
 
-
-
-# keyboard polling function... puts key name in $INPUT; empty if no interesting key
-function GET_KEY () {
-
-	local OLD_IFS=$IFS
-	IFS=''
-
-	INPUT=""
-	read -s -N 1 KEY
-	case $KEY in
-	[yn])
-		KEY=`echo ${KEY,,}`
-		INPUT=$KEY
-		until [[ -z ${KEY} ]]; do read -s -t 0.1 -N 1 KEY; done # keyboard flush
-		;;
-	esac
-
-	IFS=$OLD_IFS
-} # END function GET_KEY
-
-
-
 clear
 echo -e -n "$fBOLD"
 echo "5 - Install up-to-date hashes"	
