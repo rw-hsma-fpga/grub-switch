@@ -4,29 +4,14 @@ if [ "${BASH_SOURCE[0]}" != "$0" ]; then
 	echo "(sourcing pollutes the environment with variables)."; echo
 	return; fi
 
+. _shared_objects.sh
 
 # path variables
 CURR_DIR=`pwd`
 BOOTFILES_DIR="../bootfiles/"
 #TODO: Check existence of bootfiles folder, template
 
-# terminal format macros
-fPLAIN="\e[0m"
-fBOLD="\e[1m"
-fUNBOLD="\e[22m"
-fDIM="\e[2m"
-fUNDIM="\e[22m"
-fREVERSE="\e[7m"
-# color format macros
-fgDEFAULT="\e[39m" ; bgDEFAULT="\e[49m"
-fgBLACK="\e[30m" ; fgRED="\e[31m" ; fgGREEN="\e[32m" ; fgYELLOW="\e[33m"
-fgBLUE="\e[34m" ; fgMAGENTA="\e[35m" ; fgCYAN="\e[36m" ; fgLIGHTGRAY="\e[37m"
-fgDARKGRAY="\e[90m" ; fgLIGHTRED="\e[91m" ; fgLIGHTGREEN="\e[92m" ; fgLIGHTYELLOW="\e[93m"
-fgLIGHTBLUE="\e[94m" ; fgLIGHTMAGENTA="\e[95m" ; fgLIGHTCYAN="\e[96m" ; fgWHITE="\e[97m"
-bgBLACK="\e[40m" ; bgRED="\e[41m" ; bgGREEN="\e[42m" ; bgYELLOW="\e[43m"
-bgBLUE="\e[44m" ; bgMAGENTA="\e[45m" ; bgCYAN="\e[46m" ; bgLIGHTGRAY="\e[47m"
-bgDARKGRAY="\e[100m" ; bgLIGHTRED="\e[101m" ; bgLIGHTGREEN="\e[102m" ; bgLIGHTYELLOW="\e[103m"
-bgLIGHTBLUE="\e[104m" ; bgLIGHTMAGENTA="\e[105m" ; bgLIGHTCYAN="\e[106m" ; bgWHITE="\e[107m"
+
 
 # make available color combinations and corresponding grubcolor strings
 termcolors=() ; grubcolors=();
@@ -59,7 +44,7 @@ termcolors+=( "${fgLIGHTYELLOW}${bgDARKGRAY}" ) ;grubcolors+=( "yellow/dark-gray
 # keyboard polling function... puts key name in $INPUT; empty if no interesting key
 function GET_KEYPRESS () {
 
-	OLD_IFS=$IFS
+	local OLD_IFS=$IFS
 	IFS=''
 
 	INPUT=""

@@ -4,23 +4,7 @@ if [ "${BASH_SOURCE[0]}" != "$0" ]; then
 	echo "(sourcing pollutes the environment with variables)."; echo
 	return; fi
 
-
-
-# terminal format macros
-fPLAIN="\e[0m"
-fBOLD="\e[1m"
-
-# keypress polling function
-function GET_ANY_KEYPRESS () {
-
-	OLD_IFS=$IFS
-	IFS=''
-
-	read -s -N 1 KEY
-	until [[ -z ${KEY} ]]; do read -s -t 0.1 -N 1 KEY; done # keyboard flush
-
-	IFS=$OLD_IFS
-} # END function GET_ANY_KEYPRESS
+. _shared_objects.sh
 
 
 
@@ -34,19 +18,13 @@ echo
 
 
 ### check work path, bootfiles availability
-CURR_DIR=`pwd`
-if [[ "$CURR_DIR" =~ ^.*/shell_scripts$ ]]
-then :
-else
-	echo "ERROR: Script not started from  shell_scripts  directory" >&2
-	exit -1
-fi
+check_in_script_path
 
 if [[ -e "../bootfiles/" ]]
 then :
 else
 	echo "ERROR: ../bootfiles/ path not present" >&2
-	exit -1
+	EXIT_WITH_KEYPRESS
 fi
 
 rm -Rf ../bootfiles/.entries.txt
@@ -56,8 +34,4 @@ echo -e "Removed \e[1mboot.*/SWITCH.GRB\e[0m ..."
 rm -Rf ../bootfiles/grub_switch_hashes
 echo -e "Removed \e[1grub_switch_hashes/*\e[0m ..."
 
-
-echo
-echo "Press any key to return to main menu."
-echo
-GET_ANY_KEYPRESS
+EXIT_WITH_KEYPRESS
