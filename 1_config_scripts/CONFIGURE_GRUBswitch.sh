@@ -321,9 +321,7 @@ do
 				echo "-----------------------------------------------"
 				echo -e -n "$fPLAIN"
 				check_request_sudo_write_state
-				echo "going" ; sleep 0.5
 				./_4_write_entries_to_usb_device.sh
-				echo "gone" ; sleep 5
 				;;
 			"5")
 				clear
