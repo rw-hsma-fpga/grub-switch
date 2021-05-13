@@ -5,7 +5,7 @@ if [ "${BASH_SOURCE[0]}" != "$0" ]; then
 	return; fi
 
 if [[ "`pwd`" =~ ^.*/1_config_scripts$ ]]; then : ; else
-	echo "ERROR: Script not started from  shell_scripts  directory" >&2
+	echo -e "ERROR: Script not started from \e[1m1_config_scripts\e[0m directory" >&2
 	echo ; exit; fi
 
 . _shared_objects.sh

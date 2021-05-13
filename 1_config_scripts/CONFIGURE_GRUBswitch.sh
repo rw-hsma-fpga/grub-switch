@@ -5,7 +5,7 @@ if [ "${BASH_SOURCE[0]}" != "$0" ]; then
 	return; fi
 
 if [[ "`pwd`" =~ ^.*/1_config_scripts$ ]]; then : ; else
-	echo "ERROR: Script not started from  shell_scripts  directory" >&2
+	echo -e "ERROR: Script not started from \e[1m1_config_scripts\e[0m directory" >&2
 	echo ; exit; fi
 
 . _shared_objects.sh
@@ -313,10 +313,17 @@ do
 				;;
 			"3")
 				./_3_remove_generated_files.sh
-				#
 				;;
 			"4")
-				#
+				clear
+				echo -e -n "$fBOLD"
+				echo "4 - Write .entries.txt to GRUBswitch USB device"	
+				echo "-----------------------------------------------"
+				echo -e -n "$fPLAIN"
+				check_request_sudo_write_state
+				echo "going" ; sleep 0.5
+				./_4_write_entries_to_usb_device.sh
+				echo "gone" ; sleep 5
 				;;
 			"5")
 				clear
