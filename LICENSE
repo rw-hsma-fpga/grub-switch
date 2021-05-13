@@ -5,13 +5,14 @@ SECTIONS:
 -------------------------------------------------------------------------------
 1) License for Atmel-derived MCU-code
 
-Most of the firmware code in the "usb_device" subdirectory is adapted from the
+Most of the firmware code in the "2_usb_device" subdirectory is adapted from the
 Microchip/Atmel application note AVR273 on how to implement a USB Mass Storage
 Device on ATmega devices; the original code can be downloaded here:
 http://www.atmel.com/Images/AVR273_USB_Mass_Storage.zip
 
 Correspondingly, all source files retaining the below copyright notice by
 Atmel are subject to its rules and restrictions.
+(NOTE: Atmel Corporation has been part of Microchip Technology Inc. since 2016)
 
 
 /* Copyright (c) 2009 Atmel Corporation. All rights reserved.
@@ -48,11 +49,10 @@ Atmel are subject to its rules and restrictions.
 -------------------------------------------------------------------------------
 2) License for all other sources
  
-All other files, including the entire source code in subdirectory
-"grub-switch-configure", are subject to the "MIT license":
+All other files are subject to the "MIT license":
 
 
-Copyright (c) 2019 Ruediger Willenberg
+Copyright (c) 2019-2021 Ruediger Willenberg
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
