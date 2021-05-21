@@ -56,7 +56,7 @@ function show_status_menu {
 	echo -e -n "$fPLAIN"
 	echo
 
-	echo -e -n "$fgLIGHTBLUE"
+	echo -e -n "$fgDEFAULT"
 	# grubmenu_all_entries.lst
 	echo "Extracted list of GRUB menu entries  (../bootfiles/grubmenu_all_entries.lst): "
 	if [[ -f "../bootfiles/grubmenu_all_entries.lst" ]]
@@ -98,7 +98,7 @@ function show_status_menu {
 	echo -e -n "$fgDEFAULT"
 
 	# grub_switch_hashes/*
-	echo -e -n "$fgGREEN"
+	echo -e -n "$fgCYAN"
 	echo "Permitted SWITCH.GRB file hashes  (${GRUB_CFG_DIR}/grub_switch_hashes/*):"
 	if [[ -e "${GRUB_CFG_DIR}/grub_switch_hashes/" ]]
 	then
@@ -111,7 +111,7 @@ function show_status_menu {
 	echo -e -n "$fgDEFAULT"
 
 	# grub.cfg
-	echo -e -n "$fgRED"
+	echo -e -n "$fgGREEN"
 	echo "GRUB menu config file  (${GRUB_CFG_DIR}/grub.cfg):"
 	if [[ -f "${GRUB_CFG_DIR}/grub.cfg" ]]
 	then
@@ -275,19 +275,19 @@ do
 	echo "--------"
 	echo -e -n "$fPLAIN"
 	echo
-	echo -e -n "$fgLIGHTBLUE"
+	echo -e -n "$fgDEFAULT"
 	echo "1 - Extract all menu entries from grub.cfg"
 	echo "2 - Configure GRUBswitch order and generate bootfiles and hashes"
 	echo "3 -   Remove generated files"
 	echo "4 - Write GRUBswitch bootfile to GRUBswitch USB device        (requires sudo)"
 	echo -e -n "$fgDEFAULT"
 	echo
-	echo -e -n "$fgGREEN"
+	echo -e -n "$fgCYAN"
 	echo "5 - Install up-to-date hashes for permitted SWITCH.GRB files  (requires sudo)"
 	echo "6 -   Remove all hashes, no permission checking               (requires sudo)"
 	echo -e -n "$fgDEFAULT"
 	echo
-	echo -e -n "$fgRED"
+	echo -e -n "$fgGREEN"
 	echo "7 - Install GRUBswitch into grub.cfg                          (requires sudo)"
 	echo "8 -   Remove GRUBswitch from grub.cfg                         (requires sudo)"
 	echo -e -n "$fgDEFAULT"

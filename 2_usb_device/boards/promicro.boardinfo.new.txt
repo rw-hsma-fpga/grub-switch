@@ -1,0 +1,175 @@
+
+
+1-OF-N MODE w/ rotary switch: (Motto: "This one goes to 11!")
+-------------------------------------------------------------
+
+To choose this mode, pin B6 needs to stay UNCONNECTED.
+
+The Write Protection against modifying boot entry configurations is
+activated by tieing pin F4 to F1 or GND
+
+
+                 /WR_PROT              +--------------------+
+                     ?                 |   +-------------+  |
+                   |   |               |   |   +------+  |  |
+                   |   |               |   |   |      |  |  |
+.------------------+---+---------------+---+---+--.   |  |  |
+|  O   O   O   O   O   O   O   O   O   O   O   O  |   |  |  |
+| RAW GND RST VCC F4  F5  F6  F7  B1  B3  B2  B6  |   |  |  |
+|                                                 |   |  |  |
+|                                                 |   |  |  |
+|=========#                                       |   |  |  |
+| USB     #                                       |   |  |  |
+|         #                                       |   |  |  |
+| MICRO-B #                                       |   |  |  |
+|=========#                                       |   |  |  |
+|                                                 |   |  |  |
+|                                                 |   |  |  |
+|                                                 |   |  |  |
+| D3  D2  GND GND D1  D0  D4  C6  D7  E6  B4  B5  |   |  |  |
+|  O   O   O   O   O   O   O   O   O   O   O   O  |   |  |  o [11/0xB]
+'--------------+---+---+---+---+---+---+---+---+--'   |  +o [10/0xA]
+               |   |   |   |   |   |   |   |   |      +--o [9]
+               |   |   |   |   |   |   |   |   +--------o [8]
+               |   |   |   |   |   |   |   +-----------o [7]
+               |   |   |   |   |   |   +---------------o [6]          x-----o
+               |   |   |   |   |   +-------------------o [5]         /      |
+               |   |   |   |   +------------------------o [4]       /       |
+               |   |   |   +-----------------------------o [3]     /        |
+               |   |   +----------------------------------o [2]   /         |
+               |   +----------------------------------------o [1]           |
+               |                                              o [0] Menu    |
+               |                                                            |
+               +------------------------------------------------------------+
+
+
+
+
+Common rotary switches have up to 12 positions; the assumption behind this
+wiring is that Position 0 is the default, i.e. 0 reflects "no choice, please go
+to the GRUB menu" (This also means that a board with no attached wiring will
+default to going to the menu). Therefore Position 0 is not connected and has no
+corresponding pin. Connecting pins from B0..C7 to GND/0V therefore reflects
+choices 1..11 (hexadecimal 0x1..0xB).
+
+In 1-of-n mode, no higher choice than 11/0xB is possible/will be sampled.
+On the other hand, most systems will have a lot less choices, maybe just two
+(non-default Positions 1 and 2) which can be implemented with smaller rotary
+switches or even an on-off-on switch; not connecting the higher-order pins
+to anything has no impact.
+
+If a different switch type or wiring is used and leads to several pins being
+connected, only the lowest-order pin will be recognized, so if pin B2 and D0
+are both tied to GND, the device will identify the choice as '3'.
+
+
+1-OF-N MODE  with  on/off/on toggle switch:
+-------------------------------------------
+
+To choose this mode, pin B6 needs to stay UNCONNECTED.
+
+The Write Protection against modifying boot entry configurations is
+activated by tieing pin F4 to F1 or GND
+
+
+                 /WR_PROT
+                     ?  
+                   |   |
+                   |   |
+.--+---+---+---+---+---+---+---+---+---+---+---+--.
+|  O   O   O   O   O   O   O   O   O   O   O   O  |
+| RAW GND RST VCC F4  F5  F6  F7  B1  B3  B2  B6  |
+|                                                 |
+|                                                 |
+|=========#                                       |
+| USB     #                                       |
+|         #                                       |
+| MICRO-B #                                       |
+|=========#                                       |
+|                                                 |
+|                                                 |
+|                                                 |           
+| D3  D2  GND GND D1  D0  D4  C6  D7  E6  B4  B5  |
+|  O   O   O   O   O   O   O   O   O   O   O   O  |
+'--------------+---+---+--------------------------'
+               |   |   |
+               |   |   |             #####               [1]
+               |   |   +-----------o=#   #          //// 
+               |   |                 #   #||    ////
+               +---|---------------o=#   #||////         [0] Menu
+                   |                 #   #||
+                   +---------------o=#   #               
+                                     #####               [2]
+
+
+BINARY MODE:
+------------
+
+To choose this mode, pin B6 needs to be tied to B5 or GND.
+
+The Write Protection against modifying boot entry configurations is
+activated by tieing pin F4 to F1 (or GND)
+
+                .---------------.
+                |               |
+             +--+ 2    ---    4 +--+
+             |  |     /   \     |  |
+             |  | C  | --> |  C +--------------+  
+             |  |     \   /     |  |           |
+          +-----+ 8    ---    1 +----------+   |
+          |  |  |               |  |       |   |
+          |  |  '---------------'  |       |   |
+          |  +---------------------|---+   |   |
+          |                        |   |   |   |
+          +--------------------+   |   |   |   |
+                               |   |   |   |   |
+
+                 /WR_PROT
+                     ?  
+                   |   |
+                   |   |
+.------------------+---+--------------------------.
+|  O   O   O   O   O   O   O   O   O   O   O   O  |
+| RAW GND RST VCC F4  F5  F6  F7  B1  B3  B2  B6  |
+|                                                 |
+|                                                 |
+|=========#                                       |
+| USB     #                                       |
+|         #                                       |
+| MICRO-B #                                       |
+|=========#                                       |
+|                                                 |
+|                                                 |
+|                                                 |           
+| D3  D2  GND GND D1  D0  D4  C6  D7  E6  B4  B5  |
+|  O   O   O   O   O   O   O   O   O   O   O   O  |
+'------+---+---+---+---+---+---+------------------'
+       |   |   |   |   |   |   |
+       |   |   |   |   |   |   +-----------------------+
+       +---+   |   |   |   |                           |
+        /BM    |   |   +---------------------------+   |
+               |   |       |                       |   |
+               |   |       |   .---------------.   |   |
+               |   |       |   |               |   |   |
+               |   +-----------+ 1    ---    8 +-------+
+               |           |   |     /   \     |   |
+               +---------------+ C  | <-- |  C |   |
+                           |   |     \   /     |   |
+                           +---+ 4    ---    2 +---+
+                               |               |
+                               '---------------'
+
+
+
+Common binary-encoding rotary switches have 10 to 16 positions and connect
+the corresponding bit values 1,2,4,8 [LSB..MSB] to the 'C'-contacts; using the
+device's binary mode means tying the four pins B0..B3 [LSB..MSB] to GND/0V
+to encode the corresponding boot choices 0(default, menu) up to 15(hex 0xF).
+Obviously a binary-affine person can also use four separate switches or a
+bank of DIP switches to encode the choice number herself.
+(Reminder: The device interpretes a pin tied to GND as a '1', so all four
+connections mean choice 15/0xF, while no connection means 0; therefore, again,
+an otherwise unconnected board will yield to the GRUB menu if it is in binary
+mode (B0 tied to GND)
+
+

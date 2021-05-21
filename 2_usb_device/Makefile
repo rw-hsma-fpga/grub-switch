@@ -13,7 +13,6 @@ MCU = atmega32u4
 TARGET_NAME = GRUB_SWITCH
 
 PROJECT = $(TARGET_NAME)_$(BOARD)
-#BOARDCFG = $(BOARD).mk
 
 
 # Options common to compile, link and assembly rules

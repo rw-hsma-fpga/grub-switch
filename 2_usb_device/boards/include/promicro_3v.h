@@ -54,11 +54,11 @@
 #define  CHOICE_PORT9       B
 #define  CHOICE_PIN9        6
 
-#define  CHOICE_PORT10      F
-#define  CHOICE_PIN10       7
+#define  CHOICE_PORT10      B
+#define  CHOICE_PIN10       2
 
-#define  CHOICE_PORT11      F
-#define  CHOICE_PIN11       6
+#define  CHOICE_PORT11      B
+#define  CHOICE_PIN11       3
 
 
 #endif   // TARGET_BOARD==PROMICRO_3V
