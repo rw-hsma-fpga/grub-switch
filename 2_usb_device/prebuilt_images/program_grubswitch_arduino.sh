@@ -39,6 +39,22 @@ fi
 
 
 
+echo
+echo "Push board reset twice to enter bootloader mode;"
+echo "then press key within 5 secs to proceed with programming"
+echo
+
+OLD_IFS=$IFS
+IFS=''
+
+read -s -N 1 KEY
+until [[ -z ${KEY} ]]; do read -s -t 0.1 -N 1 KEY; done # keyboard flush
+
+IFS=$OLD_IFS
+sleep 0.5
+
+
+
 for f in /dev/tty*
 do
 	TTYTIME=`stat -c %Y ${f}`

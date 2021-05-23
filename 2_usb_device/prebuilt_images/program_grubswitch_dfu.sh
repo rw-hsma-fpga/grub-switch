@@ -39,6 +39,22 @@ fi
 
 
 
+echo
+echo "Push PROG button to let board enter DFU bootloader mode;"
+echo "then press key to proceed with programming"
+echo
+
+OLD_IFS=$IFS
+IFS=''
+
+read -s -N 1 KEY
+until [[ -z ${KEY} ]]; do read -s -t 0.1 -N 1 KEY; done # keyboard flush
+
+IFS=$OLD_IFS
+sleep 0.5
+
+
+
 ATMEGA=`lsusb | grep "atmega32u4 DFU"`
 
 if [ "${ATMEGA}" = "" ]

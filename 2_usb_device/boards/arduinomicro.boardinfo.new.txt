@@ -1,110 +1,114 @@
+PROGRAMMING ARDUINO MICRO WITH THE FIRMWARE (IN LINUX)
+======================================================
 
+To program the Arduino Micro under Linux, you need to install the command-line
+tool "avrdude", for example in Ubuntu Linux with
 
-1-OF-N MODE w/ rotary switch: (Motto: "This one goes to 11!")
--------------------------------------------------------------
-
-To choose this mode, pin B6 needs to stay UNCONNECTED.
-
-The Write Protection against modifying boot entry configurations is
-activated by tieing pin F4 to F1 or GND
-
+> sudo apt-get install avrdude
 
 
 
-   +-----------------------------------------o [11/0xB]
-   |   +-----------------------------------o [10/0xA]
-   |   |   +------------------------------o [9]
-   |   |   |   +-------------------------o [8]
-   |   |   |   |   +--------------------o [7]
-   |   |   |   |   |   +----------------o [6]          x-----o
-   |   |   |   |   |   |   +------------o [5]         /      |
-   |   |   |   |   |   |   |   +---------o [4]       /       |
-   |   |   |   |   |   |   |   |   +------o [3]     /        |
-   |   |   |   |   |   |   |   |   |   +---o [2]   /         |
-   |   |   |   |   |   |   |   |   |   |   +-o [1]           |
-   |   |   |   |   |   |   |   |   |   |   |   o [0] Menu    |
-   |   |   |   |   |   |   |   |   |   |   |                 |
-   |   |   |   |   |   |   |   |   |   |   |   +-------------+
-   |   |   |   |   |   |   |   |   |   |   |   |
-.--+---+---+---+---+---+---+---+---+---+---+---+-----------------------.
+
+
+SWITCH CONNECTIONS
+==================
+
+1-OF-N MODE  with  ON/OFF/ON toggle switch:
+-------------------------------------------
+
+To choose this mode, pin PF1 needs to stay UNCONNECTED.
+
+The Write Protect against modifying boot entry configurations is activated
+by tieing/jumpering pin PF6 to GND or PF7 (adjacent output fixed to low).
+
+Using a three-position on/off/on switch permits choosing between two
+OS options, while the neutral middle position leads to the GRUB menu
+
+
+                                                     #####               [1]
+                                       .-----------o=#   #          ////
+                                       |             #   #||    ////
+                                       |       .---o=#   #||////         [0] Menu
+                                       |       |     #   #||
+                                       |   .---|---o=#   #
+                                       |   |   |     #####               [2]
+                                       |   |   |
+                                       |   |   |
+.--------------------------------------+---+---+-----------------------.
 |  O   O   O   O   O   O   O   O   O   O   O   O   O   O   O   O   O   |
-| D6  B7  B6  B5  B4  E6  D7  C6  D4  D0  D1  GND RST D2  D1  B0  B2   |
-|                                                                      |
+|  12  11  10  9   8   7   6   5   4   3   2  GND RST RX  TX  SS  MOSI | 
+| PD6 PB7 PB6 PB5 PB4 PE6 PD7 PC6 PD4 PD0 PD1         PD2 PD1 PB0 PB2  |
 |                                                                      |
 |                                                                      |
 |=========#                                                            |
 | USB     #                                                            |
-|         #                                                            |
+|         #                    ARDUINO MICRO                           |
 | MICRO-B #                                                            |
 |=========#                                                            |
 |                                                                      |
 |                                                                      |
-|                                                                      |           
-| C7  3V3 AREF F7 F6  F5  F4  F1  F0          5V0 RST GND VIN B3  B1   |
+| PC7         PF7 PF6 PF5 PF4 PF1 PF0                         PB3  PB1 |
+|  13 3V3 AREF A0  A1  A2  A3  A4  A5         5V0 RST GND VIN MISO SCK |
 |  O   O   O   O   O   O   O   O   O   O   O   O   O   O   O   O   O   |
 '--------------+---+---------------------------------------------------'
                |   |
                |   |
-                 ?         
+                 ?
              /WR_PROT
 
 
 
-Common rotary switches have up to 12 positions; the assumption behind this
-wiring is that Position 0 is the default, i.e. 0 reflects "no choice, please go
-to the GRUB menu" (This also means that a board with no attached wiring will
-default to going to the menu). Therefore Position 0 is not connected and has no
-corresponding pin. Connecting pins from B0..C7 to GND/0V therefore reflects
-choices 1..11 (hexadecimal 0x1..0xB).
+1-OF-N MODE with rotary switch: (Motto: "This one goes to 11!")
+---------------------------------------------------------------
 
-In 1-of-n mode, no higher choice than 11/0xB is possible/will be sampled.
-On the other hand, most systems will have a lot less choices, maybe just two
-(non-default Positions 1 and 2) which can be implemented with smaller rotary
-switches or even an on-off-on switch; not connecting the higher-order pins
-to anything has no impact.
+To choose this mode, pin PF1 needs to stay UNCONNECTED.
 
-If a different switch type or wiring is used and leads to several pins being
-connected, only the lowest-order pin will be recognized, so if pin B2 and D0
-are both tied to GND, the device will identify the choice as '3'.
+The Write Protect against modifying boot entry configurations is activated
+by tieing/jumpering pin PF6 to GND or PF7 (adjacent output fixed to low).
+
+Common rotary switches have up to 12 positions (some can be limited to fewer
+positions with a mechanical keyring). Keeping the first position [0] unconnected
+permits choosing the GRUB menu and leaves 11 boot choices, which is the maximum
+number of pins sampled. Connecting one of the pins from PD1..PD6 to GND
+therefore reflects boot choices 1..11 (hexadecimal 0x1..0xB). Accidentally
+connecting multiple pins results in the lowest-order entry being chosen.
 
 
-1-OF-N MODE  with  on/off/on toggle switch:
--------------------------------------------
-
-To choose this mode, pin B6 needs to stay UNCONNECTED.
-
-The Write Protection against modifying boot entry configurations is
-activated by tieing pin F4 to F1 or GND
-
-                                                     #####               [1]
-                                       +-----------o=#   #          //// 
-                                       |             #   #||    ////
-                                       |       +---o=#   #||////         [0] Menu
-                                       |       |     #   #||
-                                       |   +-------o=#   #               
-                                       |   |   |     #####               [2]
-                                       |   |   |    
-                                       |   |   |    
-.--------------------------------------+---+---+-----------------------.
+   .-----------------------------------------o [11/0xB]
+   |   .-----------------------------------o [10/0xA]
+   |   |   .------------------------------o [9]
+   |   |   |   .-------------------------o [8]
+   |   |   |   |   .--------------------o [7]
+   |   |   |   |   |   .----------------o [6]          x-----o
+   |   |   |   |   |   |   .------------o [5]         /      |
+   |   |   |   |   |   |   |   .---------o [4]       /       |
+   |   |   |   |   |   |   |   |   .------o [3]     /        |
+   |   |   |   |   |   |   |   |   |   .---o [2]   /         |
+   |   |   |   |   |   |   |   |   |   |   .-o [1]           |
+   |   |   |   |   |   |   |   |   |   |   |   o [0] Menu    |
+   |   |   |   |   |   |   |   |   |   |   |                 |
+   |   |   |   |   |   |   |   |   |   |   |   .-------------'
+   |   |   |   |   |   |   |   |   |   |   |   |
+.--+---+---+---+---+---+---+---+---+---+---+---+-----------------------.
 |  O   O   O   O   O   O   O   O   O   O   O   O   O   O   O   O   O   |
-| D6  B7  B6  B5  B4  E6  D7  C6  D4  D0  D1  GND RST D2  D1  B0  B2   |
-|                                                                      |
+|  12  11  10  9   8   7   6   5   4   3   2  GND RST RX  TX  SS  MOSI |
+| PD6 PB7 PB6 PB5 PB4 PE6 PD7 PC6 PD4 PD0 PD1         PD2 PD1 PB0 PB2  |
 |                                                                      |
 |                                                                      |
 |=========#                                                            |
 | USB     #                                                            |
-|         #                                                            |
+|         #                    ARDUINO MICRO                           |
 | MICRO-B #                                                            |
 |=========#                                                            |
 |                                                                      |
 |                                                                      |
-|                                                                      |           
-| C7  3V3 AREF F7 F6  F5  F4  F1  F0          5V0 RST GND VIN B3  B1   |
+| PC7         PF7 PF6 PF5 PF4 PF1 PF0                         PB3  PB1 |
+|  13 3V3 AREF A0  A1  A2  A3  A4  A5         5V0 RST GND VIN MISO SCK |
 |  O   O   O   O   O   O   O   O   O   O   O   O   O   O   O   O   O   |
 '--------------+---+---------------------------------------------------'
                |   |
                |   |
-                 ?         
+                 ?
              /WR_PROT
 
 
@@ -112,58 +116,53 @@ activated by tieing pin F4 to F1 or GND
 BINARY MODE:
 ------------
 
-To choose this mode, pin B6 needs to be tied to B5 or GND.
+To choose this mode, pin PF1 needs to be tied to PF0 or GND.
 
-The Write Protection against modifying boot entry configurations is
-activated by tieing pin F4 to F1 (or GND)
+The Write Protect against modifying boot entry configurations is activated
+by tieing/jumpering pin PF6 to GND or PF7 (adjacent output fixed to low).
+
+Common binary-encoding rotary switches have 10 to 16 positions and connect
+the corresponding bit values 1,2,4,8 [LSB..MSB] to the 'C'-contacts; using the
+device's binary mode means tying the four pins PD1..PC6 [LSB..MSB] to GND/0V
+to encode the corresponding boot choices 0(GRUB Menu) up to 15(0xF).
+Obviously a proper nerd can also use four separate switches to encode the
+choice in binary herself.
+(Reminder: The device interpretes a pin tied to GND as a '1', so all four
+connections mean choice 15/0xF, while no connection means 0.
+
 
                 .---------------.
                 |               |
-             +--+ 2    ---    4 +--+
+             .--+ 2    ---    4 +--.
              |  |     /   \     |  |
-             |  | C  | --> |  C +--------------+  
+             |  | C  | --> |  C +--|-----------.
              |  |     \   /     |  |           |
-          +-----+ 8    ---    1 +----------+   |
+          .--|--+ 8    ---    1 +--|-------.   |
           |  |  |               |  |       |   |
           |  |  '---------------'  |       |   |
-          |  +---------------------|---+   |   |
+          |  '---------------------|---.   |   |
           |                        |   |   |   |
-          +--------------------+   |   |   |   |
+          '--------------------.   |   |   |   |
                                |   |   |   |   |
 .------------------------------+---+---+---+---+-----------------------.
 |  O   O   O   O   O   O   O   O   O   O   O   O   O   O   O   O   O   |
-| D6  B7  B6  B5  B4  E6  D7  C6  D4  D0  D1  GND RST D2  D1  B0  B2   |
-|                                                                      |
+|  12  11  10  9   8   7   6   5   4   3   2  GND RST RX  TX  SS  MOSI |
+| PD6 PB7 PB6 PB5 PB4 PE6 PD7 PC6 PD4 PD0 PD1         PD2 PD1 PB0 PB2  |
 |                                                                      |
 |                                                                      |
 |=========#                                                            |
 | USB     #                                                            |
-|         #                                                            |
+|         #                    ARDUINO MICRO                           |
 | MICRO-B #                                                            |
 |=========#                                                            |
 |                                                                      |
 |                                                                      |
-|                                                                      |           
-| C7  3V3 AREF F7 F6  F5  F4  F1  F0          5V0 RST GND VIN B3  B1   |
+| PC7         PF7 PF6 PF5 PF4 PF1 PF0                         PB3  PB1 |
+|  13 3V3 AREF A0  A1  A2  A3  A4  A5         5V0 RST GND VIN MISO SCK |
 |  O   O   O   O   O   O   O   O   O   O   O   O   O   O   O   O   O   |
 '--------------+---+-----------+---+-----------------------------------'
                |   |           |   |
-               |   |           |   |
-                 ?             +---+
-             /WR_PROT           /BM
-
-
-
-
-Common binary-encoding rotary switches have 10 to 16 positions and connect
-the corresponding bit values 1,2,4,8 [LSB..MSB] to the 'C'-contacts; using the
-device's binary mode means tying the four pins B0..B3 [LSB..MSB] to GND/0V
-to encode the corresponding boot choices 0(default, menu) up to 15(hex 0xF).
-Obviously a binary-affine person can also use four separate switches or a
-bank of DIP switches to encode the choice number herself.
-(Reminder: The device interpretes a pin tied to GND as a '1', so all four
-connections mean choice 15/0xF, while no connection means 0; therefore, again,
-an otherwise unconnected board will yield to the GRUB menu if it is in binary
-mode (B0 tied to GND)
-
+               |   |           '---'
+                 ?              /BM
+             /WR_PROT
 
