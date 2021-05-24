@@ -38,28 +38,30 @@
 #define  CHOICE_PORT4       F
 #define  CHOICE_PIN4        5
 
-// not connectable
+// bottom pads
 
 #define  CHOICE_PORT5       D
-#define  CHOICE_PIN5        4
+#define  CHOICE_PIN5        0
 
 #define  CHOICE_PORT6       D
-#define  CHOICE_PIN6        4
+#define  CHOICE_PIN6        1
 
 #define  CHOICE_PORT7       D
-#define  CHOICE_PIN7        4
+#define  CHOICE_PIN7        2
 
 #define  CHOICE_PORT8       D
-#define  CHOICE_PIN8        4
+#define  CHOICE_PIN8        3
 
-#define  CHOICE_PORT9       D
-#define  CHOICE_PIN9        4
+// not easily connectable (test pads)
 
-#define  CHOICE_PORT10      D
-#define  CHOICE_PIN10       4
+#define  CHOICE_PORT9       B
+#define  CHOICE_PIN9        3
 
-#define  CHOICE_PORT11      D
-#define  CHOICE_PIN11       4
+#define  CHOICE_PORT10      B
+#define  CHOICE_PIN10       1
+
+#define  CHOICE_PORT11      B
+#define  CHOICE_PIN11       2
 
 
 #endif   // TARGET_BOARD==DFR_BEETLE

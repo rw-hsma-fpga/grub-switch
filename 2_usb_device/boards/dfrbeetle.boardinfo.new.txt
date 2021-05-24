@@ -1,74 +1,17 @@
+SWITCH CONNECTIONS
+==================
 
-
-1-OF-N MODE w/ rotary switch: (Motto: "This one goes to 11!")
--------------------------------------------------------------
-
-To choose this mode, pin B6 needs to stay UNCONNECTED.
-
-The Write Protection against modifying boot entry configurations is
-activated by tieing pin F4 to F1 or GND
-
-
-
-
-                                                       o [11/0xB]
-                                                     o [10/0xA]
-                                                    o [9]
-                                                   o [8]
-                                                  o [7]
-                                                  o [6]          x-----o
-                                                  o [5]         /      |
-                  .--------------------------------o [4]       /       |
-                  |         .-----------------------o [3]     /        |
-                  |         |         .--------------o [2]   /         |
-     ___________  |  _____  |  _____  |  ____        .-o [1]           |
-    |   |   |   \_|_/     \_|_/     \_|_/    |       |   o [0] Menu    |
-    | -+5V- |     O         O         O     _|_      |                 |
-    |   |   |    A2        A1        A0    /   \     |                 |
-    |-------/    PF5       PF6       PF7  /  |  \    |                 |
-    |                                    |  GND  |---|-----------------'
-|=========#                               \  |  /|   |
-| USB     #                                \___/ |   |
-|         #         DFRobot Beetle          ___  |   |
-| MICRO-B #                                /   \ |   |
-|=========#                               /  |  \|   |
-    |                                    | -+5V- |   |
-    |-------\    PB7       PB6       PB5  \  |  /    |
-    |   |   |    D11       D10       D9    \___/     |
-    |  GND  |    _O_       _O_       _O_     |       |
-    |___|___|___/ | \_____/   \_____/ | \____|       |
-        |         |                   |              |
-        |         |                   |              |
-        | /WR_PROT|                   '--------------'
-             ?       
-
-
-
-Common rotary switches have up to 12 positions; the assumption behind this
-wiring is that Position 0 is the default, i.e. 0 reflects "no choice, please go
-to the GRUB menu" (This also means that a board with no attached wiring will
-default to going to the menu). Therefore Position 0 is not connected and has no
-corresponding pin. Connecting pins from B0..C7 to GND/0V therefore reflects
-choices 1..11 (hexadecimal 0x1..0xB).
-
-In 1-of-n mode, no higher choice than 11/0xB is possible/will be sampled.
-On the other hand, most systems will have a lot less choices, maybe just two
-(non-default Positions 1 and 2) which can be implemented with smaller rotary
-switches or even an on-off-on switch; not connecting the higher-order pins
-to anything has no impact.
-
-If a different switch type or wiring is used and leads to several pins being
-connected, only the lowest-order pin will be recognized, so if pin B2 and D0
-are both tied to GND, the device will identify the choice as '3'.
-
-
-1-OF-N MODE  with  on/off/on toggle switch:
+1-OF-N MODE  with  ON/OFF/ON toggle switch:
 -------------------------------------------
 
-To choose this mode, pin B6 needs to stay UNCONNECTED.
+To choose this mode, pin PB6 needs to stay UNCONNECTED.
 
-The Write Protection against modifying boot entry configurations is
-activated by tieing pin F4 to F1 or GND
+The Write Protect against modifying boot entry configurations is activated
+by tieing/jumpering pin PB7 to GND.
+
+Using a three-position on/off/on switch permits choosing between two
+OS options, while the neutral middle position leads to the GRUB menu
+
 
                                       .-------------------.
                                       |                   |
@@ -95,13 +38,74 @@ activated by tieing pin F4 to F1 or GND
 
 
 
+1-OF-N MODE with rotary switch: (Motto: "This one goes to 11!")
+---------------------------------------------------------------
+
+To choose this mode, pin PB6 needs to stay UNCONNECTED.
+
+The Write Protect against modifying boot entry configurations is activated
+by tieing/jumpering pin PB7 to GND.
+
+Common rotary switches have up to 12 positions (some can be limited to fewer
+positions with a mechanical keyring). Keeping the first position [0] unconnected
+permits choosing the GRUB menu and in principle leaves 11 boot choices, however
+Beetle only has 8 accessible connection points left, side pads PB5..BF5 for
+positions [1]..[4] and the PCB bottom pads PD0..PD3 for positions [5]..[8]
+Connecting one of those pads to GND through the switch reflects the boot
+choices 1..8. Accidentally connecting multiple pins results in the lowest-order
+entry being chosen.
+
+
+                                                       o [11/0xB]
+                                                     o [10/0xA]
+                                                    o [9]
+                                  PD3/TX  O--------o [8]
+                                  PD2/RX  O-------o [7]
+                                  PD1/SDA O-------o [6]          x-----o
+                                  PD0/SCL O-------o [5]         /      |
+                  .--------------------------------o [4]       /       |
+                  |         .-----------------------o [3]     /        |
+                  |         |         .--------------o [2]   /         |
+     ___________  |  _____  |  _____  |  ____        .-o [1]           |
+    |   |   |   \_|_/     \_|_/     \_|_/    |       |   o [0] Menu    |
+    | -+5V- |     O         O         O     _|_      |                 |
+    |   |   |    A2        A1        A0    /   \     |                 |
+    |-------/    PF5       PF6       PF7  /  |  \    |                 |
+    |                                    |  GND  |---|-----------------'
+|=========#                               \  |  /|   |
+| USB     #                                \___/ |   |
+|         #         DFRobot Beetle          ___  |   |
+| MICRO-B #                                /   \ |   |
+|=========#                               /  |  \|   |
+    |                                    | -+5V- |   |
+    |-------\    PB7       PB6       PB5  \  |  /    |
+    |   |   |    D11       D10       D9    \___/     |
+    |  GND  |    _O_       _O_       _O_     |       |
+    |___|___|___/ | \_____/   \_____/ | \____|       |
+        |         |                   |              |
+        |         |                   |              |
+        | /WR_PROT|                   '--------------'
+             ?       
+
+
+
 BINARY MODE:
 ------------
 
-To choose this mode, pin B6 needs to be tied to B5 or GND.
+To choose this mode, pin PB6 needs to be tied to GND.
 
-The Write Protection against modifying boot entry configurations is
-activated by tieing pin F4 to F1 (or GND)
+The Write Protect against modifying boot entry configurations is activated
+by tieing/jumpering pin PB7 to GND.
+
+Common binary-encoding rotary switches have 10 to 16 positions and connect
+the corresponding bit values 1,2,4,8 [LSB..MSB] to the 'C'-contacts; using the
+device's binary mode means tieing the four pins PB5..PF5 [LSB..MSB] to GND/0V
+as to encode the corresponding boot choices 0(GRUB Menu) up to 15(0xF).
+Obviously a proper nerd can also use four separate switches to encode the
+choice in binary herself!
+(Reminder: The device interprets a pin tied to GND as a '1', so all four
+connections mean choice 15/0xF, while no connection means 0.
+
 
          .---------------.
          |               |
@@ -141,19 +145,3 @@ activated by tieing pin F4 to F1 (or GND)
         |                   |
         '-------------------'
                  /BM
-
-
-
-
-Common binary-encoding rotary switches have 10 to 16 positions and connect
-the corresponding bit values 1,2,4,8 [LSB..MSB] to the 'C'-contacts; using the
-device's binary mode means tying the four pins B0..B3 [LSB..MSB] to GND/0V
-to encode the corresponding boot choices 0(default, menu) up to 15(hex 0xF).
-Obviously a binary-affine person can also use four separate switches or a
-bank of DIP switches to encode the choice number herself.
-(Reminder: The device interpretes a pin tied to GND as a '1', so all four
-connections mean choice 15/0xF, while no connection means 0; therefore, again,
-an otherwise unconnected board will yield to the GRUB menu if it is in binary
-mode (B0 tied to GND)
-
-

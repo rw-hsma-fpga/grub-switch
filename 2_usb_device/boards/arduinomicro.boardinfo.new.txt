@@ -19,7 +19,7 @@ SWITCH CONNECTIONS
 To choose this mode, pin PF1 needs to stay UNCONNECTED.
 
 The Write Protect against modifying boot entry configurations is activated
-by tieing/jumpering pin PF6 to GND or PF7 (adjacent output fixed to low).
+by tieing/jumpering pin PF6 to GND or PF7 (adjacent pad, driving a low level).
 
 Using a three-position on/off/on switch permits choosing between two
 OS options, while the neutral middle position leads to the GRUB menu
@@ -64,12 +64,12 @@ OS options, while the neutral middle position leads to the GRUB menu
 To choose this mode, pin PF1 needs to stay UNCONNECTED.
 
 The Write Protect against modifying boot entry configurations is activated
-by tieing/jumpering pin PF6 to GND or PF7 (adjacent output fixed to low).
+by tieing/jumpering pin PF6 to GND or PF7 (adjacent pad, driving a low level).
 
 Common rotary switches have up to 12 positions (some can be limited to fewer
 positions with a mechanical keyring). Keeping the first position [0] unconnected
 permits choosing the GRUB menu and leaves 11 boot choices, which is the maximum
-number of pins sampled. Connecting one of the pins from PD1..PD6 to GND
+number of pins sampled. Connecting one of the pins PD1..PD6 to GND
 therefore reflects boot choices 1..11 (hexadecimal 0x1..0xB). Accidentally
 connecting multiple pins results in the lowest-order entry being chosen.
 
@@ -116,18 +116,18 @@ connecting multiple pins results in the lowest-order entry being chosen.
 BINARY MODE:
 ------------
 
-To choose this mode, pin PF1 needs to be tied to PF0 or GND.
+To choose this mode, pin PF1 needs to be tied to GND or adjacent pad PF0.
 
 The Write Protect against modifying boot entry configurations is activated
-by tieing/jumpering pin PF6 to GND or PF7 (adjacent output fixed to low).
+by tieing/jumpering pin PF6 to GND or PF7 (adjacent pad, driving a low level).
 
 Common binary-encoding rotary switches have 10 to 16 positions and connect
 the corresponding bit values 1,2,4,8 [LSB..MSB] to the 'C'-contacts; using the
-device's binary mode means tying the four pins PD1..PC6 [LSB..MSB] to GND/0V
-to encode the corresponding boot choices 0(GRUB Menu) up to 15(0xF).
+device's binary mode means tieing the four pins PD1..PC6 [LSB..MSB] to GND/0V
+as to encode the corresponding boot choices 0(GRUB Menu) up to 15(0xF).
 Obviously a proper nerd can also use four separate switches to encode the
-choice in binary herself.
-(Reminder: The device interpretes a pin tied to GND as a '1', so all four
+choice in binary herself!
+(Reminder: The device interprets a pin tied to GND as a '1', so all four
 connections mean choice 15/0xF, while no connection means 0.
 
 
@@ -165,4 +165,3 @@ connections mean choice 15/0xF, while no connection means 0.
                |   |           '---'
                  ?              /BM
              /WR_PROT
-

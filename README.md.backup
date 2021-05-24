@@ -46,7 +46,7 @@ Obviously this requires soldering skills and is likely not the cheapest hardware
 
 ### Acknowledgements 
 
-Many thanks to Seriosha Remmlinger and Volker Wunsch for helpful suggestions and to Christoph Dehmer for examining an alternative approach (GRUB menu choice through USB HID keyboard)
+Many thanks to Seriosha Remmlinger and Volker Wunsch for helpful suggestions and to Christoph Dehmer for examining an alternative approach (automatic menu choice through USB HID keyboard)
 
 ---
 
