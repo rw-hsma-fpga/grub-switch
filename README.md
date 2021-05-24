@@ -2,7 +2,7 @@
 
 #### (c)2019-2021 Ruediger Willenberg
 
-#### See [*quick_start.pdf*](./quick_start.pdf) for the fastest way to your custom boot configuration.
+#### See [*quickstart.pdf*](./quickstart.pdf) for the fastest way to your custom boot configuration.
 
 This project enables PC users to select the OS to be booted by *GRUB* through hardware.
 It has three independently usable components:
