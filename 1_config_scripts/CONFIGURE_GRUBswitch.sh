@@ -36,12 +36,12 @@ function show_status_menu {
 	then
 		if [ "${SUDO_WRITE_STATE}" = "ACTIVE" ]
 		then
-			echo -n " for read/write"
+			echo " for read/write"
 		else
-			echo -n " for read-only"
+			echo " for read-only"
 		fi
 
-		echo "  at ${LAST_SUDO_DATE}"
+		echo "                                at ${LAST_SUDO_DATE}"
 		echo "                                (this may expire and require password re-entry)"
 	else
 		echo
@@ -293,8 +293,6 @@ do
 	echo -e -n "$fgDEFAULT"
 	echo
 	echo "q - Quit"
-
-	echo
 	echo
 
 	GET_KEY
