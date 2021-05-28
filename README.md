@@ -46,11 +46,15 @@ Obviously this requires soldering skills and is likely not the cheapest hardware
 
 ### Acknowledgements 
 
-Many thanks to Seriosha Remmlinger and Volker Wunsch for helpful suggestions and to Christoph Dehmer for examining an alternative approach (GRUB menu choice by USB HID keyboard).
+Many thanks to Seriosha Remmlinger, Volker Wunsch and Andreas Flachsbarth for helpful feedback and suggestions and to Christoph Dehmer for examining an alternative approach (GRUB menu control by USB HID keyboard).
+
+We are grateful to [*pid.codes*](https://pid.codes/) for providing our firmware with a unique USB ID *(VID 1209 / PID 2015)*.
 
 Thank you to the GNU GRUB developers and maintainers for all their hard work.
 
 ---
+
+#### See [*quickstart.pdf*](./quickstart.pdf) for the fastest way to your custom boot configuration.
 
 The [*documentation*](./documentation/) directory holds more detailed information.
 

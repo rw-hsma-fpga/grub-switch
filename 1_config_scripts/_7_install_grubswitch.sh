@@ -57,6 +57,13 @@ fi
 echo -e "This action will re-generate the ${fBOLD}grub.cfg${fPLAIN} file by calling ${fBOLD}update-grub${fPLAIN}"
 echo -e "Do you want to proceed? (${fBOLD}y${fPLAIN})es / (${fBOLD}n${fPLAIN})o"
 
+
+### find tool paths
+UPDATEGRUB=`which update-grub`
+UPDATEGRUB2=`which update-grub2`
+GRUBMKCONFIG=`which grub-mkconfig`
+GRUBMKCONFIG2=`which grub2-mkconfig`
+
 while [[ true ]]
 do
 	GET_KEY
@@ -65,7 +72,30 @@ do
 				sudo cp ./modifier_script/99_grub_switch $CFG_SCRIPTS_DIR/
 				sudo chmod +x $CFG_SCRIPTS_DIR/99_grub_switch
 				echo ; echo "GRUBswitch modifier script installed" ; echo
-				sudo update-grub
+
+				if [ -z "$UPDATEGRUB" ]
+				then
+					if [ -z "$UPDATEGRUB2" ]
+					then
+						if [ -z "$GRUBMKCONFIG" ]
+						then
+							if [ -z "$GRUBMKCONFIG2" ]
+							then
+								echo "ERROR: No ${fBOLD}update-grub${fPLAIN} or ${fBOLD}grub-mkconfig${fPLAIN} tool was found."
+								EXIT_WITH_KEYPRESS
+							else
+								sudo ./_update-grub2.sh "${GRUB_CFG_DIR}/grub.cfg"
+							fi
+						else
+							sudo ./_update-grub.sh "${GRUB_CFG_DIR}/grub.cfg"
+						fi
+					else
+						sudo update-grub2
+					fi
+				else
+					sudo update-grub
+				fi
+
 				echo ; echo -e "${fBOLD}grub.cfg${fPLAIN} re-generated with GRUBswitch" ; echo
 				break
 				;;

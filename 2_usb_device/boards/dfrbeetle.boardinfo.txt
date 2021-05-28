@@ -1,3 +1,90 @@
+PROGRAMMING DFRobot Beetle WITH PREBUILT FIRMWARE (LINUX)
+=========================================================
+
+The GRUB Switch repository contains a prebuilt firmware image for the
+DFRobot Beetle, which you can find under:
+
+grub-switch/2_usb_device/prebuilt_images/GRUB_SWITCH_DFR_BEETLE.hex
+
+To program the Beetle under Linux, you need to install the command-line
+tool "avrdude". We have provided a bash script to facilitate programming on
+most PCs with a few simple steps:
+
+
+* Make sure that "avrdude" has been installed, for example in Ubuntu Linux with
+
+  > sudo apt-get install avrdude
+
+
+* Connect the board to USB if you haven't already.
+
+
+* Go to the images path, for example from  grub-switch/  with
+
+  > cd  2_usb_device/prebuilt_images/
+
+
+* Start the script with:
+
+  > sudo ./program_grubswitch_avrdude.sh GRUB_SWITCH_DFR_BEETLE.hex
+
+  (sudo might not be required on every machine, but doesn't hurt)
+
+
+* The script asks you to put the board into bootloader mode. The Beetle has
+  a group of 6 tiny pads on the bottom side below its USB connector:
+
+    1 3 5
+    # O O    (Pad number 1 is square, not round)
+    O O O
+    2 4 6
+  
+  Short the two adjacent round pads number 5 and 6 twice in short order with
+  a wire to put Beetle into bootloader mode.
+
+
+* The chip enters bootloader mode and remains in it for about 5-10 secs,
+  then returns to normal program operation.
+
+
+* Make sure to press any key inside this time margin to commence flashing
+  the firmware image onto the chip.
+  
+  
+* After successful programming, the board should reconnect as a flash drive
+  with the name "BOOTTHIS". Your Linux GUI might auto-mount the drive or offer
+  to do so.
+
+
+* If you have previously used the configuration tool "CONFIGURE_GRUBswitch.sh"
+  to generate a GRUB Switch configuration (grub-switch/bootfiles/.entries.txt),
+  you can copy this file onto the drive yourself, or you can use option "4" in
+  the  CONFIGURE_GRUBswitch  menu to auto-mount, copy and unmount the drive.
+
+
+Some background information on "avrdude", in case the script didn't work:
+(or if you just want to know...)
+-------------------------------------------------------------------------
+
+When putting the board into bootloader mode, it will identify as a USB UART,
+usually as  /dev/ttyACM0 . You can check by date if a special tty has just
+turned up:
+
+> ls -l /dev/tty* | grep "/dev/tty[^S0-9]"
+
+Remember that the bootloader will yield to the regular board program after
+a few seconds and the tty device will be gone again.
+
+During the bootloader time, avrdude can contact the bootloader for programming:
+
+> avrdude -v -F -p atmega32u4 -c avr109 -P /dev/ttyACM0 -Uflash:w:FIRMWARE.hex:i
+
+For more details, try the avrdude manual with
+
+> man avrdude
+
+
+
 SWITCH CONNECTIONS
 ==================
 

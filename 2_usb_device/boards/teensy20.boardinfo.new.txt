@@ -1,3 +1,28 @@
+PROGRAMMING ARDUINO MICRO WITH PREBUILT FIRMWARE (LINUX)
+========================================================
+
+The GRUB Switch repository contains a prebuilt firmware image for the
+Teensy 2.0 which you can find under:
+
+grub-switch/2_usb_device/prebuilt_images/GRUB_SWITCH_TEENSY20.hex
+
+Teensy 2.0 has a proprietary bootloader which works with its own GUI
+programming tool, Teensy Loader. You can find precise installation and
+usage instructions here:
+
+https://www.pjrc.com/teensy/loader_linux.html
+
+After successful programming, the board should reconnect as a flash drive
+with the name "BOOTTHIS". Your Linux GUI might auto-mount the drive or offer
+to do so.
+
+If you have previously used the configuration tool "CONFIGURE_GRUBswitch.sh"
+to generate a GRUB Switch configuration (grub-switch/bootfiles/.entries.txt),
+you can copy this file onto the drive yourself, or you can use option "4" in
+the  CONFIGURE_GRUBswitch  menu to auto-mount, copy and unmount the drive.
+
+
+
 SWITCH CONNECTIONS
 ==================
 

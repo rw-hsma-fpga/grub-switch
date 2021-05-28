@@ -1,0 +1,114 @@
+PROGRAMMING GRUB SWITCH CUSTOM HW REV.B  WITH PREBUILT FIRMWARE (LINUX)
+=======================================================================
+
+The GRUB Switch repository contains a prebuilt firmware image for GRUB Switch
+Custom HW (Rev.B) which you can find under:
+
+grub-switch/2_usb_device/prebuilt_images/GRUB_SWITCH_CUSTOMHW_REVB.hex
+
+To program the GRUB Switch Custom HW under Linux, you need to install
+the command-line tool "dfu-programmer". We have provided a bash script to
+facilitate programming on most PCs with a few simple steps:
+
+
+* Make sure that "dfu-programmer" has been installed, for example in Ubuntu Linux with
+
+  > sudo apt-get install dfu-programmer
+
+
+* Connect the board to USB if you haven't already.
+
+
+* Go to the images path, for example from  grub-switch/  with
+
+  > cd  2_usb_device/prebuilt_images/
+
+
+* Start the script with:
+
+  > sudo ./program_grubswitch_dfu.sh  GRUB_SWITCH_CUSTOMHW_REVB.hex
+
+  (sudo might not be required on every machine, but doesn't hurt)
+
+
+* The script asks you to put the board into bootloader mode. For the Custom HW
+  board, this is accomplished by pressing the board's PROG button. The chip
+  resets and reconnects as a DFU class USB device.
+
+
+* Press any key to commence flashing the firmware image onto the chip.
+  
+  
+* After successful programming, the board should reconnect as a flash drive
+  with the name "BOOTTHIS". Your Linux GUI might auto-mount the drive or offer
+  to do so.
+
+
+* If you have previously used the configuration tool "CONFIGURE_GRUBswitch.sh"
+  to generate a GRUB Switch configuration (grub-switch/bootfiles/.entries.txt),
+  you can copy this file onto the drive yourself, or you can use option "4" in
+  the  CONFIGURE_GRUBswitch  menu to auto-mount, copy and unmount the drive.
+
+
+Some background information on programming, in case the script didn't work:
+(or if you just want to know...)
+-------------------------------------------------------------------------
+
+When putting the ATmega32u4 chip into DFU bootloader mode, it will connect and
+identify as "Atmel Corp. atmega32u4 DFU bootloader" with VID 03eb, PID 2ff4.
+Calling the  lsusb  tool will show both this information as well as (decimal)
+bus and device numbers, for example:
+
+> lsusb
+(...other USB devices...)
+Bus 002 Device 017: ID 03eb:2ff4 Atmel Corp. atmega32u4 DFU bootloader
+(...other USB devices...)
+
+Caution: The device number changes everytime the chip reconnects.
+
+The bus and device number must be used - without leading zeroes - to invoke
+"dfu-programmer". First, the current flash programming should be erased:
+
+> dfu-programmer  atmega32u4:2,17  erase --force
+
+(sudo might be required on your installation)
+
+The actual programming is initiated with
+
+> dfu-programmer  atmega32u4:2,17  flash FIRMWARE.hex
+
+(remember that 2,17 are only examples for the bus and device numbers)
+
+The device can be induced to restart and reconnect with the flash programming:
+
+> dfu-programmer  atmega32u4:2,17  launch
+
+
+If you have programmed a device with the GRUB Switch firmware, it should
+identify with VID 1209, PID 2015 and likely the device name "InterBiometrics",
+which is the company that donated the 1209 USB ID range for community use:
+
+> lsubsb
+Bus 002 Device 018: ID 1209:2015 InterBiometrics
+
+
+For more details, try the dfu-programmer manual with
+
+> man dfu-programmer
+
+
+
+SWITCH CONNECTIONS
+==================
+
+The GRUB Switch Custom HW has been designed to directly mount some common
+rotary and toggle switches in 1-of-n mode, so no extra wiring is required.
+See
+
+  grub-switch/3_custom_hardware/
+
+and
+
+  grub-switch/documentation/3_custom_hardware.pdf
+
+for complete component placement information.
