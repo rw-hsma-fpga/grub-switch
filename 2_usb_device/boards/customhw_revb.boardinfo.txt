@@ -88,7 +88,7 @@ If you have programmed a device with the GRUB Switch firmware, it should
 identify with VID 1209, PID 2015 and likely the device name "InterBiometrics",
 which is the company that donated the 1209 USB ID range for community use:
 
-> lsubsb
+> lsusb
 Bus 002 Device 018: ID 1209:2015 InterBiometrics
 
 
