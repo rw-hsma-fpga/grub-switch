@@ -380,12 +380,8 @@ mkdir ./grub_switch_hashes
 
 #### TODO: change to reflect different times and colors for entries
 # create and fill .entries.txt (for use with custom grubswitch device)
-echo "### #1 specifies display time for subsequent entries" > ${BOOTFILES_DIR}/.entries.txt
-echo "### #2 specifies display colors for subsequent entries" >> ${BOOTFILES_DIR}/.entries.txt
-echo "### Uncommented lines are GRUB switch choices 1..15 (0x1..0xF)" >> ${BOOTFILES_DIR}/.entries.txt
-echo "### An empty line leads to the GRUB menu, as does choice 0" >> ${BOOTFILES_DIR}/.entries.txt
 
-echo -n "#1 " >> ./.entries.txt
+echo -n "#1 " > ./.entries.txt
 	printf %03d $SECS >> ./.entries.txt
 echo >> ./.entries.txt
 echo -n "#2 " >> ./.entries.txt
@@ -433,6 +429,16 @@ do
 		cd ..
 	fi
 done
+
+echo "### These comments may be cut off (without harm) if the file gets too large" >> ${BOOTFILES_DIR}/.entries.txt
+echo "### (ATmega32u4 has 960 bytes of available space, ATmega16u4 has only 448 bytes)" >> ${BOOTFILES_DIR}/.entries.txt
+echo "###" >> ${BOOTFILES_DIR}/.entries.txt
+echo "### #1 specifies display time for subsequent entries" >> ${BOOTFILES_DIR}/.entries.txt
+echo "### #2 specifies display colors for subsequent entries" >> ${BOOTFILES_DIR}/.entries.txt
+echo "###" >> ${BOOTFILES_DIR}/.entries.txt
+echo "### Uncommented lines above are GRUB switch choices 1..15 (0x1..0xF)" >> ${BOOTFILES_DIR}/.entries.txt
+echo "### An empty line leads to the GRUB menu, as does choice 0" >> ${BOOTFILES_DIR}/.entries.txt
+
 
 
 cd ${CURR_DIR}
