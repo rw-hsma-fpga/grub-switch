@@ -1,6 +1,6 @@
 #!/bin/sh
 exec tail -n +3 $0
-### GRUBswitch_script v0.9 ###
+### GRUBswitch_script v1.0 ###
 ### FINDING, HASH-CHECKING AND EXECUTING 'SWITCH.GRB' FILE ###
 
 ## Try to find SWITCH.GRB file in drives
@@ -51,7 +51,7 @@ else
 fi
 
 
-## execute SWITCH.GRB file if it exists and hashes checked out (or no hashes present)
+## execute SWITCH.GRB file if it exists and did not fail hash check
 if [ true = $MATCHED ]
 then
 	source ${SWITCH_GRB_FOLDER}/SWITCH.GRB
