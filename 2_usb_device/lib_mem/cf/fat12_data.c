@@ -66,32 +66,30 @@ const code unsigned char dir_table[0xc0] = {
 static U16 sleep_secs_start[MAX_NUM_ENTRIES];
 static U16 sleep_secs_length[MAX_NUM_ENTRIES];
 static U16 sleep_secs_choice_start;
-static U16 sleep_secs_choice_offset;
 
 static U16 highlight_color_start[MAX_NUM_ENTRIES];
 static U16 highlight_color_length[MAX_NUM_ENTRIES];
 static U16 highlight_color_choice_start;
-static U16 highlight_color_choice_offset;
 
 static U16 entry_start[MAX_NUM_ENTRIES];
 static U16 entry_length[MAX_NUM_ENTRIES];
 static U16 entry_choice_start;
-static U16 entry_choice_offset;
 
+static U16 entry_file_size;
 
 static const code char bootfile_string1[] = "grubswitch_sleep_secs='";
 static const code char bootfile_string2[] = "'\r\ngrubswitch_choice_color='";
 static const code char bootfile_string3[] = "'\r\ngrubswitch_choice='";
 static const code char bootfile_string4[] = "'\r\n";
-static U16 bootfile_string1_offset = 0; // TODO redundant, scratch later
+
+// SWITCH.GRB structure
+static U16 sleep_secs_choice_offset;
 static U16 bootfile_string2_offset;
+static U16 highlight_color_choice_offset;
 static U16 bootfile_string3_offset;
+static U16 entry_choice_offset;
 static U16 bootfile_string4_offset;
-
 static U16 bootfile_template_offset;
-
-static char bootfile_parameters[200]; // for longest colors, 3-digit sleep and 80-character menuentry titles;
-                                      // extend if more parameters become available 
 
 extern U8 bootfile_template_start;
 extern U8 bootfile_template_end;
@@ -101,9 +99,7 @@ static U16 bootfile_template_size;
 
 static U16 complete_bootfile_size;
 
-static U16 entry_file_size;
-
-
+// .bootpins.txt
 const code unsigned char bootpins_txt_label_binary[] = "Binary pick:  ";
 const code unsigned char bootpins_txt_label_1ofn[] = "11->1: ";
 
@@ -222,50 +218,39 @@ void build_bootfile_parameters(U8 choice)
       return;
    }
 
-
-
    // Sleep secs parameter on choice display
-   bootfile_string1_offset = bootfile_parameters_size; // TODO Remove later, useless but shows structure
    for(i=0; pgm_read_byte(bootfile_string1+i)!='\0'; i++)
       bootfile_parameters_size++;
-      //bootfile_parameters[bootfile_parameters_size++] = pgm_read_byte(bootfile_string1+i);
 
    sleep_secs_choice_offset = bootfile_parameters_size;
    sleep_secs_choice_start = sleep_secs_start[choice];
-   for(i=0; i<sleep_secs_length[choice]; i++)
-      bootfile_parameters_size++;
-      //bootfile_parameters[bootfile_parameters_size++] = read_entry_file(sleep_secs_start[choice] + i);
+   bootfile_parameters_size += sleep_secs_length[choice];
+
 
    // highlight color parameter on choice display
    bootfile_string2_offset = bootfile_parameters_size;
    for(i=0; pgm_read_byte(bootfile_string2+i)!='\0'; i++)
       bootfile_parameters_size++;
-      //bootfile_parameters[bootfile_parameters_size++] = pgm_read_byte(bootfile_string2+i);
 
    highlight_color_choice_offset = bootfile_parameters_size;
    highlight_color_choice_start = highlight_color_start[choice];
-   for(i=0; i<highlight_color_length[choice]; i++)
-      bootfile_parameters_size++;
-      //bootfile_parameters[bootfile_parameters_size++] = read_entry_file(highlight_color_start[choice] + i);
+   bootfile_parameters_size += highlight_color_length[choice];
 
 
    // Boot choice (boot menu default)
    bootfile_string3_offset = bootfile_parameters_size;
    for(i=0; pgm_read_byte(bootfile_string3+i)!='\0'; i++)
       bootfile_parameters_size++;
-      //bootfile_parameters[bootfile_parameters_size++] = pgm_read_byte(bootfile_string3+i);
 
    entry_choice_offset = bootfile_parameters_size;
    entry_choice_start = entry_start[choice];
-   for(i=0; i<entry_length[choice]; i++)
-      bootfile_parameters_size++;
-      //bootfile_parameters[bootfile_parameters_size++] = read_entry_file(entry_start[choice] + i);
+   bootfile_parameters_size += entry_length[choice];
 
 
    // separator line
    bootfile_string4_offset = bootfile_parameters_size;
    for(i=0; pgm_read_byte(bootfile_string4+i)!='\0'; i++)
-      bootfile_parameters[bootfile_parameters_size++] = pgm_read_byte(bootfile_string4+i);
+      bootfile_parameters_size++;
 
 
    // Finish with template part

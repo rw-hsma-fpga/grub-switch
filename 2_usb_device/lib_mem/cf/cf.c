@@ -302,3 +302,10 @@ Bool cf_write_sector (U32 pos, Uint16 nb_sector)
    return OK;                  // Write done
 }
 
+//#ifdef __AVR_ATmega32U4__
+//   #warning 32U4
+//#endif
+
+//#ifdef __AVR_ATmega16U4__
+//   #warning 16U4
+//#endif
