@@ -57,9 +57,9 @@ const code unsigned char dir_table[0xc0] = {
  // low-endian file size of .entries.txt 0x47c..0x47d - last two EEPROM bytes
 
  // AFTER:
- // SWITCH.GRB starting at 0x0A00 - from progmem
- // .entries   starting at 0x0E00 - RAM copy of EEPROM
- // .status    starting at 0x1200 - 18-byte switch status
+ // SWITCH.GRB      starting at 0x0A00 - from progmem
+ // .entries.txt    starting at 0x0E00 - RAM copy of EEPROM
+ // .bootpins.txt   starting at 0x1200 - 18-byte switch status
  // rest all 0x00
 
 
