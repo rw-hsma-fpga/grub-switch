@@ -62,6 +62,7 @@ const code unsigned char dir_table[0xc0] = {
  // .status    starting at 0x1200 - 18-byte switch status
  // rest all 0x00
 
+
 static U16 sleep_secs_start[MAX_NUM_ENTRIES];
 static U16 sleep_secs_length[MAX_NUM_ENTRIES];
 
@@ -70,6 +71,12 @@ static U16 highlight_color_length[MAX_NUM_ENTRIES];
 
 static U16 entry_start[MAX_NUM_ENTRIES];
 static U16 entry_length[MAX_NUM_ENTRIES];
+
+
+static const code char bootfile_string1[] = "grubswitch_sleep_secs='";
+static const code char bootfile_string2[] = "'\r\ngrubswitch_choice_color='";
+static const code char bootfile_string3[] = "'\r\ngrubswitch_choice='";
+static const code char bootfile_string4[] = "'\r\n";
 
 
 static char bootfile_parameters[200]; // for longest colors, 3-digit sleep and 80-character menuentry titles;
@@ -84,6 +91,10 @@ static U16 bootfile_template_size;
 static U16 complete_bootfile_size;
 
 static U16 entry_file_size;
+
+
+const code unsigned char bootpins_txt_label_binary[] = "Binary pick:  ";
+const code unsigned char bootpins_txt_label_1ofn[] = "11->1: ";
 
 
 U16 get_entryfile_size()
@@ -187,13 +198,8 @@ void parse_entry_file()
              (entry_file_pos != entry_file_size) );   // not end of file yet
 } 
 
-
 void build_bootfile_parameters(U8 choice)
 {
-   const char bootfile_string1[] = "grubswitch_sleep_secs='";
-   const char bootfile_string2[] = "'\r\ngrubswitch_choice_color='";
-   const char bootfile_string3[] = "'\r\ngrubswitch_choice='";
-   const char bootfile_string4[] = "'\r\n";
 
    U16 i;
 
@@ -207,32 +213,32 @@ void build_bootfile_parameters(U8 choice)
    bootfile_parameters_size = 0;
 
    // Sleep secs parameter on choice display
-   for(i=0; bootfile_string1[i]!='\0'; i++)
-      bootfile_parameters[bootfile_parameters_size++] = bootfile_string1[i];
+   for(i=0; pgm_read_byte(bootfile_string1+i)!='\0'; i++)
+      bootfile_parameters[bootfile_parameters_size++] = pgm_read_byte(bootfile_string1+i);
 
    for(i=0; i<sleep_secs_length[choice]; i++)
       bootfile_parameters[bootfile_parameters_size++] = read_entry_file(sleep_secs_start[choice] + i);
 
 
    // highlight color parameter on choice display
-   for(i=0; bootfile_string2[i]!='\0'; i++)
-      bootfile_parameters[bootfile_parameters_size++] = bootfile_string2[i];
+   for(i=0; pgm_read_byte(bootfile_string2+i)!='\0'; i++)
+      bootfile_parameters[bootfile_parameters_size++] = pgm_read_byte(bootfile_string2+i);
 
    for(i=0; i<highlight_color_length[choice]; i++)
       bootfile_parameters[bootfile_parameters_size++] = read_entry_file(highlight_color_start[choice] + i);
 
 
    // Boot choice (boot menu default)
-   for(i=0; bootfile_string3[i]!='\0'; i++)
-      bootfile_parameters[bootfile_parameters_size++] = bootfile_string3[i];
+   for(i=0; pgm_read_byte(bootfile_string3+i)!='\0'; i++)
+      bootfile_parameters[bootfile_parameters_size++] = pgm_read_byte(bootfile_string3+i);
 
    for(i=0; i<entry_length[choice]; i++)
       bootfile_parameters[bootfile_parameters_size++] = read_entry_file(entry_start[choice] + i);
 
 
    // separator line
-   for(i=0; bootfile_string4[i]!='\0'; i++)
-      bootfile_parameters[bootfile_parameters_size++] = bootfile_string4[i];
+   for(i=0; pgm_read_byte(bootfile_string4+i)!='\0'; i++)
+      bootfile_parameters[bootfile_parameters_size++] = pgm_read_byte(bootfile_string4+i);
 
     bootfile_template_size = &bootfile_template_end - &bootfile_template_start;
     complete_bootfile_size = bootfile_parameters_size + bootfile_template_size;
@@ -255,17 +261,17 @@ U8 read_file_BOOTPINS_TXT(U16 offset)
 {
    if (get_choice_mode() == Binary) // binary mode; show 4 bits and BIN suffix
    {
-      const unsigned char rest[] = "Binary pick:  ";
+      //const unsigned char rest[] = "Binary pick:  ";
       if (offset < 14)
-         return rest[offset];
+         return pgm_read_byte(bootpins_txt_label_binary+offset);
       else
          return ((get_raw_boot_pins() >> (3 - (offset - 14)) ) & 0x01) + 0x30;
    }
-   else // 1-aus-n mode; show all 11 selector bits
+   else // 1-of-n mode; show all 11 selector bits
    {
-      const unsigned char rest[] = "11->1: ";
+      //const unsigned char rest[] = "11->1: ";
       if (offset < 7)
-         return rest[offset];
+         return pgm_read_byte(bootpins_txt_label_1ofn+offset);
       else                     
          return ((get_raw_boot_pins() >> (10 - (offset - 7))) & 0x01) + 0x30;
    }
