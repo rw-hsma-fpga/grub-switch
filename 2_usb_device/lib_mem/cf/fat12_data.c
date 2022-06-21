@@ -78,9 +78,9 @@ static U16 entry_choice_start;
 static U16 entry_file_size;
 
 static const code char bootfile_string1[] = "grubswitch_sleep_secs='";
-static const code char bootfile_string2[] = "'\r\ngrubswitch_choice_color='";
-static const code char bootfile_string3[] = "'\r\ngrubswitch_choice='";
-static const code char bootfile_string4[] = "'\r\n";
+static const code char bootfile_string2[] = "'\ngrubswitch_choice_color='";
+static const code char bootfile_string3[] = "'\ngrubswitch_choice='";
+static const code char bootfile_string4[] = "'\n";
 
 // SWITCH.GRB structure
 static U16 sleep_secs_choice_offset;
