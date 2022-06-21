@@ -53,13 +53,26 @@ until [[ -z ${KEY} ]]; do read -s -t 0.1 -N 1 KEY; done # keyboard flush
 IFS=$OLD_IFS
 sleep 0.5
 
+ATMEGA_TYPE=""
 
-
-ATMEGA=`lsusb | grep "atmega32u4 DFU"`
+## try 32u4 first
+ATMEGA=`lsusb | grep "03eb:2ff4"`
+if [ "${ATMEGA}" != "" ]
+then
+	ATMEGA_TYPE="32u4"
+   echo "ATmega32u4 DFU device found."
+else
+   ATMEGA=`lsusb | grep "03eb:2ff3"`
+   if [ "${ATMEGA}" != "" ]
+   then
+   	ATMEGA_TYPE="16u4"
+      echo "ATmega16u4 DFU device found."
+   fi
+fi
 
 if [ "${ATMEGA}" = "" ]
 then
-	echo "ERROR: No ATmega32u4 DFU device found. Trigger DFU bootloader first."
+	echo "ERROR: No ATmegaXXu4 DFU device found. Trigger DFU bootloader first."
 	exit
 fi
 
@@ -80,11 +93,19 @@ then
 	exit
 fi
 
-dfu-programmer atmega32u4:${BUSNO},${DEVICENO} erase --force
+if [ "${ATMEGA_TYPE}" = "32u4" ]
+then
+   dfu-programmer atmega32u4:${BUSNO},${DEVICENO} erase --force
+   dfu-programmer atmega32u4:${BUSNO},${DEVICENO} flash ${HEXFILE}
+   dfu-programmer atmega32u4:${BUSNO},${DEVICENO} launch
+fi
 
-dfu-programmer atmega32u4:${BUSNO},${DEVICENO} flash ${HEXFILE}
-
-dfu-programmer atmega32u4:${BUSNO},${DEVICENO} launch
+if [ "${ATMEGA_TYPE}" = "16u4" ]
+then
+   dfu-programmer atmega16u4:${BUSNO},${DEVICENO} erase --force
+   dfu-programmer atmega16u4:${BUSNO},${DEVICENO} flash ${HEXFILE}
+   dfu-programmer atmega16u4:${BUSNO},${DEVICENO} launch
+fi
 
 echo
 echo "Waiting for USB device detection..."

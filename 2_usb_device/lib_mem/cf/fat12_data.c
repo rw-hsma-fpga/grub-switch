@@ -57,23 +57,39 @@ const code unsigned char dir_table[0xc0] = {
  // low-endian file size of .entries.txt 0x47c..0x47d - last two EEPROM bytes
 
  // AFTER:
- // SWITCH.GRB starting at 0x0A00 - from progmem
- // .entries   starting at 0x0E00 - RAM copy of EEPROM
- // .status    starting at 0x1200 - 18-byte switch status
+ // SWITCH.GRB      starting at 0x0A00 - from progmem
+ // .entries.txt    starting at 0x0E00 - RAM copy of EEPROM
+ // .bootpins.txt   starting at 0x1200 - 18-byte switch status
  // rest all 0x00
+
 
 static U16 sleep_secs_start[MAX_NUM_ENTRIES];
 static U16 sleep_secs_length[MAX_NUM_ENTRIES];
+static U16 sleep_secs_choice_start;
 
 static U16 highlight_color_start[MAX_NUM_ENTRIES];
 static U16 highlight_color_length[MAX_NUM_ENTRIES];
+static U16 highlight_color_choice_start;
 
 static U16 entry_start[MAX_NUM_ENTRIES];
 static U16 entry_length[MAX_NUM_ENTRIES];
+static U16 entry_choice_start;
 
+static U16 entry_file_size;
 
-static char bootfile_parameters[200]; // for longest colors, 3-digit sleep and 80-character menuentry titles;
-                                      // extend if more parameters become available 
+static const code char bootfile_string1[] = "grubswitch_sleep_secs='";
+static const code char bootfile_string2[] = "'\ngrubswitch_choice_color='";
+static const code char bootfile_string3[] = "'\ngrubswitch_choice='";
+static const code char bootfile_string4[] = "'\n";
+
+// SWITCH.GRB structure
+static U16 sleep_secs_choice_offset;
+static U16 bootfile_string2_offset;
+static U16 highlight_color_choice_offset;
+static U16 bootfile_string3_offset;
+static U16 entry_choice_offset;
+static U16 bootfile_string4_offset;
+static U16 bootfile_template_offset;
 
 extern U8 bootfile_template_start;
 extern U8 bootfile_template_end;
@@ -83,7 +99,9 @@ static U16 bootfile_template_size;
 
 static U16 complete_bootfile_size;
 
-static U16 entry_file_size;
+// .bootpins.txt
+const code unsigned char bootpins_txt_label_binary[] = "Binary pick:  ";
+const code unsigned char bootpins_txt_label_1ofn[] = "11->1: ";
 
 
 U16 get_entryfile_size()
@@ -187,67 +205,86 @@ void parse_entry_file()
              (entry_file_pos != entry_file_size) );   // not end of file yet
 } 
 
-
 void build_bootfile_parameters(U8 choice)
 {
-   const char bootfile_string1[] = "grubswitch_sleep_secs='";
-   const char bootfile_string2[] = "'\r\ngrubswitch_choice_color='";
-   const char bootfile_string3[] = "'\r\ngrubswitch_choice='";
-   const char bootfile_string4[] = "'\r\n";
 
    U16 i;
 
+   bootfile_parameters_size = 0;
+
    if ((choice==0) || (entry_length[choice]==0))
    {
-      bootfile_parameters_size = 0;
       complete_bootfile_size = 0;
       return;
    }
 
-   bootfile_parameters_size = 0;
-
    // Sleep secs parameter on choice display
-   for(i=0; bootfile_string1[i]!='\0'; i++)
-      bootfile_parameters[bootfile_parameters_size++] = bootfile_string1[i];
+   for(i=0; pgm_read_byte(bootfile_string1+i)!='\0'; i++)
+      bootfile_parameters_size++;
 
-   for(i=0; i<sleep_secs_length[choice]; i++)
-      bootfile_parameters[bootfile_parameters_size++] = read_entry_file(sleep_secs_start[choice] + i);
+   sleep_secs_choice_offset = bootfile_parameters_size;
+   sleep_secs_choice_start = sleep_secs_start[choice];
+   bootfile_parameters_size += sleep_secs_length[choice];
 
 
    // highlight color parameter on choice display
-   for(i=0; bootfile_string2[i]!='\0'; i++)
-      bootfile_parameters[bootfile_parameters_size++] = bootfile_string2[i];
+   bootfile_string2_offset = bootfile_parameters_size;
+   for(i=0; pgm_read_byte(bootfile_string2+i)!='\0'; i++)
+      bootfile_parameters_size++;
 
-   for(i=0; i<highlight_color_length[choice]; i++)
-      bootfile_parameters[bootfile_parameters_size++] = read_entry_file(highlight_color_start[choice] + i);
+   highlight_color_choice_offset = bootfile_parameters_size;
+   highlight_color_choice_start = highlight_color_start[choice];
+   bootfile_parameters_size += highlight_color_length[choice];
 
 
    // Boot choice (boot menu default)
-   for(i=0; bootfile_string3[i]!='\0'; i++)
-      bootfile_parameters[bootfile_parameters_size++] = bootfile_string3[i];
+   bootfile_string3_offset = bootfile_parameters_size;
+   for(i=0; pgm_read_byte(bootfile_string3+i)!='\0'; i++)
+      bootfile_parameters_size++;
 
-   for(i=0; i<entry_length[choice]; i++)
-      bootfile_parameters[bootfile_parameters_size++] = read_entry_file(entry_start[choice] + i);
+   entry_choice_offset = bootfile_parameters_size;
+   entry_choice_start = entry_start[choice];
+   bootfile_parameters_size += entry_length[choice];
 
 
    // separator line
-   for(i=0; bootfile_string4[i]!='\0'; i++)
-      bootfile_parameters[bootfile_parameters_size++] = bootfile_string4[i];
+   bootfile_string4_offset = bootfile_parameters_size;
+   for(i=0; pgm_read_byte(bootfile_string4+i)!='\0'; i++)
+      bootfile_parameters_size++;
 
-    bootfile_template_size = &bootfile_template_end - &bootfile_template_start;
-    complete_bootfile_size = bootfile_parameters_size + bootfile_template_size;
+
+   // Finish with template part
+   bootfile_template_offset = bootfile_parameters_size;
+
+   bootfile_template_size = &bootfile_template_end - &bootfile_template_start;
+   complete_bootfile_size = bootfile_parameters_size + bootfile_template_size;
 }
 
 
 U8 read_file_SWITCH_GRB(U16 offset)
 {
-    if ((offset) < bootfile_parameters_size)
-        return bootfile_parameters[offset];
-    else
-    {
-        offset -= bootfile_parameters_size;
-    }
-        return pgm_read_byte((&bootfile_template_start) + offset);
+   if ((offset) < sleep_secs_choice_offset)
+      return pgm_read_byte(bootfile_string1 + offset);
+
+   if ((offset) < bootfile_string2_offset)
+      return read_entry_file(sleep_secs_choice_start + (offset - sleep_secs_choice_offset));
+
+   if ((offset) < highlight_color_choice_offset)
+      return pgm_read_byte(bootfile_string2 + (offset - bootfile_string2_offset));
+
+   if ((offset) < bootfile_string3_offset)
+      return read_entry_file(highlight_color_choice_start + (offset - highlight_color_choice_offset));
+
+   if ((offset) < entry_choice_offset)
+      return pgm_read_byte(bootfile_string3 + (offset - bootfile_string3_offset));
+
+   if ((offset) < bootfile_string4_offset)
+      return read_entry_file(entry_choice_start + (offset - entry_choice_offset));
+
+   if ((offset) < bootfile_template_offset)
+      return pgm_read_byte(bootfile_string4 + (offset - bootfile_string4_offset));
+
+   return pgm_read_byte((&bootfile_template_start) + (offset - bootfile_template_offset));
 }
 
 
@@ -255,17 +292,15 @@ U8 read_file_BOOTPINS_TXT(U16 offset)
 {
    if (get_choice_mode() == Binary) // binary mode; show 4 bits and BIN suffix
    {
-      const unsigned char rest[] = "Binary pick:  ";
       if (offset < 14)
-         return rest[offset];
+         return pgm_read_byte(bootpins_txt_label_binary+offset);
       else
          return ((get_raw_boot_pins() >> (3 - (offset - 14)) ) & 0x01) + 0x30;
    }
-   else // 1-aus-n mode; show all 11 selector bits
+   else // 1-of-n mode; show all 11 selector bits
    {
-      const unsigned char rest[] = "11->1: ";
       if (offset < 7)
-         return rest[offset];
+         return pgm_read_byte(bootpins_txt_label_1ofn+offset);
       else                     
          return ((get_raw_boot_pins() >> (10 - (offset - 7))) & 0x01) + 0x30;
    }

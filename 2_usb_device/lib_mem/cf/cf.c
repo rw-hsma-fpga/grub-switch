@@ -55,11 +55,11 @@ void cf_init (void)
 {
    boot_choice_init();
 
-   U16 file_size = eeprom_read_word((const uint16_t*)1022);
+   U16 file_size = eeprom_read_word((const uint16_t*)ENTRIES_TXT_SIZE_EEP_ADDR);
 
    // limit file size to maximum if stored too big
-   if (file_size > 960)
-      file_size = 960;
+   if (file_size > ENTRIES_TXT_MAX_SIZE)
+      file_size = ENTRIES_TXT_MAX_SIZE;
 
    set_entryfile_size(file_size);
 
@@ -161,8 +161,8 @@ Bool cf_read_sector (U32 pos, Uint16 nb_sector)
             else if ( (curr_read_addr >= SWITCH_GRB_ADDR) && (curr_read_addr < (SWITCH_GRB_ADDR + get_bootfile_size() )) )
                Usb_write_byte(read_file_SWITCH_GRB(curr_read_addr - SWITCH_GRB_ADDR));
             
-            // file '.entries.txt'; maximum size is 960 bytes, 64 bytes in EEPROM reserved
-            else if ((curr_read_addr >= ENTRIES_TXT_ADDR) && (curr_read_addr < (ENTRIES_TXT_ADDR + 960)))
+            // file '.entries.txt'; maximum size is 960 bytes in ATmega32u4, 448 in ATmega16u4; 64 bytes in EEPROM reserved
+            else if ((curr_read_addr >= ENTRIES_TXT_ADDR) && (curr_read_addr < (ENTRIES_TXT_ADDR + ENTRIES_TXT_MAX_SIZE)))
                Usb_write_byte(read_entry_file(curr_read_addr - ENTRIES_TXT_ADDR));
 
             // file '.bootpins.txt' -  data is changed based on switch bits
@@ -266,12 +266,12 @@ Bool cf_write_sector (U32 pos, Uint16 nb_sector)
                   MSB(file_size) = usb_rx_buffer[j];
 
                   // limit file size to maximum if stored too big
-                  if (file_size > 960)
-                     file_size = 960;
+                  if (file_size > ENTRIES_TXT_MAX_SIZE)
+                     file_size = ENTRIES_TXT_MAX_SIZE;
 
                   set_entryfile_size(file_size);
 
-                  eeprom_write_word((uint16_t*)1022, file_size);
+                  eeprom_write_word((uint16_t*)ENTRIES_TXT_SIZE_EEP_ADDR, file_size);
 
                   parse_entry_file();
                   build_bootfile_parameters(get_boot_choice());
@@ -282,7 +282,7 @@ Bool cf_write_sector (U32 pos, Uint16 nb_sector)
 
             // copy 64 bytes to EEPROM if it was file .entries.txt
             U16 last_block_address = curr_write_addr - 64;
-            if ( (last_block_address >= ENTRIES_TXT_ADDR) && (last_block_address < (ENTRIES_TXT_ADDR + 960) ))
+            if ( (last_block_address >= ENTRIES_TXT_ADDR) && (last_block_address < (ENTRIES_TXT_ADDR + ENTRIES_TXT_MAX_SIZE) ))
                eeprom_write_block((U8*)usb_rx_buffer, (U8*)(last_block_address-ENTRIES_TXT_ADDR), 64);
          }
 

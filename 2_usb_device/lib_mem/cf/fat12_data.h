@@ -24,6 +24,20 @@
 #define HIGHLIGHT_COLOR_LENGTH 16
 #define SLEEP_SECS_LENGTH 4
 
+// .entries.txt EEPROM STORAGE
+#ifdef __AVR_ATmega32U4__
+   #define ENTRIES_TXT_MAX_SIZE 960
+   #define ENTRIES_TXT_SIZE_EEP_ADDR 1022
+#else
+   #ifdef __AVR_ATmega16U4__
+      #define ENTRIES_TXT_MAX_SIZE 448
+      #define ENTRIES_TXT_SIZE_EEP_ADDR 510
+   #else
+      #error NO_SUPPORTED_CHIP
+   #endif
+#endif
+
+
 
 // unchanged bootsector data 0x0000..0x00bf
 extern const code unsigned char sector0[0xC0];
