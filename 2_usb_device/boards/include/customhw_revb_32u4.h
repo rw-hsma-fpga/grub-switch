@@ -1,9 +1,9 @@
-#ifndef CUSTOMHW_REVB_H
-#define CUSTOMHW_REVB_H
+#ifndef CUSTOMHW_REVB_32U4_H
+#define CUSTOMHW_REVB_32U4_H
 
 
 #include "config.h"
-#ifdef TARGET_BOARD_CUSTOMHW_REVB
+#ifdef TARGET_BOARD_CUSTOMHW_REVB_32U4
 
 #define VALID_TARGET_BOARD_DEFINED
 
@@ -60,7 +60,7 @@
 #define  CHOICE_PIN11       5
 
 
-#endif   // TARGET_BOARD==CUSTOMHW_REVB
+#endif   // TARGET_BOARD==CUSTOMHW_REVB_32U4
 
 
-#endif   // CUSTOMHW_REVB_H
+#endif   // CUSTOMHW_REVB_32U4_H
