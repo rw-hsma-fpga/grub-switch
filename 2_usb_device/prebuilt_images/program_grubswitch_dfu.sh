@@ -4,6 +4,7 @@ if [ "${BASH_SOURCE[0]}" != "$0" ]; then
 	echo "(sourcing pollutes the environment with variables)."; echo
 	return; fi
 
+#set -x
 
 # terminal format macros
 fPLAIN="\e[0m"
@@ -17,6 +18,36 @@ then
 	echo -e "ERROR: ${fBOLD}dfu-programmer${fPLAIN} not installed or not executable."
 	exit
 fi
+
+
+DV=$(dfu-programmer --version 2>&1)
+DV_major=$(echo $DV | cut -d' ' -f 2 | cut -d. -f 1)
+DV_minor=$(echo $DV | cut -d' ' -f 2 | cut -d. -f 2)
+
+DFU_ERASE_COMMAND=""
+DFU_LAUNCH_COMMAND=""
+
+if [[ "$DV_major" != "0" ]]
+then
+	echo "ERROR: Unknown major version of dfu-programmer."
+	exit
+fi
+
+if [[ "$DV_minor" == "6" ]]
+then
+	DFU_ERASE_COMMAND=" erase "
+	DFU_LAUNCH_COMMAND=" reset "
+else
+	if [[ "$DV_minor" = "7" ]]
+	then
+		DFU_ERASE_COMMAND=" erase --force "
+		DFU_LAUNCH_COMMAND=" launch "
+	else
+		echo "ERROR: Unknown minor version of dfu-programmer."
+		exit
+	fi
+fi
+
 
 
 
@@ -93,19 +124,9 @@ then
 	exit
 fi
 
-if [ "${ATMEGA_TYPE}" = "32u4" ]
-then
-   dfu-programmer atmega32u4:${BUSNO},${DEVICENO} erase --force
-   dfu-programmer atmega32u4:${BUSNO},${DEVICENO} flash ${HEXFILE}
-   dfu-programmer atmega32u4:${BUSNO},${DEVICENO} launch
-fi
-
-if [ "${ATMEGA_TYPE}" = "16u4" ]
-then
-   dfu-programmer atmega16u4:${BUSNO},${DEVICENO} erase --force
-   dfu-programmer atmega16u4:${BUSNO},${DEVICENO} flash ${HEXFILE}
-   dfu-programmer atmega16u4:${BUSNO},${DEVICENO} launch
-fi
+dfu-programmer atmega${ATMEGA_TYPE}:${BUSNO},${DEVICENO} ${DFU_ERASE_COMMAND}
+dfu-programmer atmega${ATMEGA_TYPE}:${BUSNO},${DEVICENO} flash ${HEXFILE}
+dfu-programmer atmega${ATMEGA_TYPE}:${BUSNO},${DEVICENO} ${DFU_LAUNCH_COMMAND}
 
 echo
 echo "Waiting for USB device detection..."
@@ -122,3 +143,5 @@ else
 	echo -e "${fBOLD}lsusb${fPLAIN} found flashed GRUBswitch device:"
 	echo $NEWDEV
 fi
+
+#set +x
