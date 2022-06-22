@@ -10,8 +10,8 @@ BOARD = TEENSY20
 # General Flags
 CC = avr-gcc
 MCU = atmega32u4
-TARGET_NAME = GRUB_SWITCH
-
+TARGET_NAME = GS
+PREBUILT = "prebuilt_images/"
 PROJECT = $(TARGET_NAME)_$(BOARD)
 
 
@@ -49,7 +49,7 @@ OBJECTS  = $(CSRCS:.c=.o) $(ASSRCS:.S=.o)
 #allboards: 
 
 .PHONY: all
-all: $(PROJECT).elf $(PROJECT).hex size
+all: $(PROJECT).elf $(PROJECT).hex copy_prebuilt size
 	@echo "Target built: $(BOARD)"
 	@echo ""
 
@@ -90,9 +90,16 @@ $(PROJECT).elf: $(OBJECTS)
 	@$(CC) $(LDFLAGS) $(addprefix $(OUTPUT)/,$(notdir $(OBJECTS))) -o $(PROJECT).elf
 
 
+## Make hex file
 %.hex: $(PROJECT).elf
 	@echo "Create hex file"
 	@avr-objcopy -O ihex $(HEX_FLASH_FLAGS)  $< $@
+
+
+## copy to prebuilt
+copy_prebuilt: $(PROJECT).hex
+	@$(shell cp $< $(PREBUILT) )
+
 
 size: $(PROJECT).elf
 	@avr-size -C --mcu=${MCU} $(PROJECT).elf
