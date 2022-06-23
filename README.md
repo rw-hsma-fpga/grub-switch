@@ -1,6 +1,8 @@
-## THE GRUB SWITCH ##
+# THE GRUB SWITCH #
 
-#### (c)2019-2021 Ruediger Willenberg
+#### (c)2019-2022 Ruediger Willenberg
+
+![GRUB SWITCH Panel](documentation/src/grub_switch_panel_medium.png) 
 
 #### See [*quickstart.pdf*](./quickstart.pdf) for the fastest way to your custom boot configuration.
 
