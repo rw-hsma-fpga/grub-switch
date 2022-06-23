@@ -1,4 +1,4 @@
-# THE GRUB SWITCH #
+# THE GRUB SWITCH &nbsp;&nbsp;[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 #### (c)2019-2022 Ruediger Willenberg
 
