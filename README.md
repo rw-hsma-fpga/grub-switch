@@ -1,4 +1,4 @@
-# THE GRUB SWITCH &nbsp;&nbsp; [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT) ![Maintainer](https://img.shields.io/badge/Maintainer-Ruediger%20Willenberg-red) [![email](https://img.shields.io/badge/email-grubswitch%40gmail.com-green)](mailto://grubswitch@gmail.com)
+# THE GRUB SWITCH&nbsp;&nbsp; [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT) ![Maintainer](https://img.shields.io/badge/Maintainer-Ruediger%20Willenberg-red) [![email](https://img.shields.io/badge/email-grubswitch%40gmail.com-800000)](mailto://grubswitch@gmail.com)
 
 #### (c)2019-2022 Ruediger Willenberg
 
