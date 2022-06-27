@@ -1,19 +1,28 @@
-PROGRAMMING GRUB SWITCH CUSTOM HW REV.B  WITH PREBUILT FIRMWARE (LINUX)
+PROGRAMMING GRUB SWITCH CUSTOM HW WITH PREBUILT FIRMWARE (LINUX)
 =======================================================================
 
-The GRUB Switch repository contains a prebuilt firmware image for GRUB Switch
-Custom HW (Rev.B) which you can find under:
+The GRUB Switch repository contains prebuilt firmware images for GRUB Switch
+Custom HW with ATmega32U4 or ATmega16U4 MCUs which you can find under:
 
-grub-switch/2_usb_device/prebuilt_images/GRUB_SWITCH_CUSTOMHW_REVB.hex
+grub-switch/2_usb_device/prebuilt_images/GS_CUSTOMHW_REVB_32U4.hex
+grub-switch/2_usb_device/prebuilt_images/GS_CUSTOMHW_REVB_16U4.hex
 
 To program the GRUB Switch Custom HW under Linux, you need to install
 the command-line tool "dfu-programmer". We have provided a bash script to
 facilitate programming on most PCs with a few simple steps:
 
 
-* Make sure that "dfu-programmer" has been installed, for example in Ubuntu Linux with
+* Make sure that "dfu-programmer" has been installed; for example in
+  Ubuntu Linux, a version 0.6.1 package is available for install with
 
   > sudo apt-get install dfu-programmer
+
+  alternatively, you can download/make/install the most recent 0.7.2
+  version from
+
+  https://sourceforge.net/projects/dfu-programmer/files/latest/download
+
+  Both versions work and are automatically supported by our script.
 
 
 * Connect the board to USB if you haven't already.
@@ -26,9 +35,12 @@ facilitate programming on most PCs with a few simple steps:
 
 * Start the script with:
 
-  > sudo ./program_grubswitch_dfu.sh  GRUB_SWITCH_CUSTOMHW_REVB.hex
+  > sudo ./program_grubswitch_dfu.sh  GRUB_SWITCH_CUSTOMHW_REVB_32U4.hex
+   or
+  > sudo ./program_grubswitch_dfu.sh  GRUB_SWITCH_CUSTOMHW_REVB_16U4.hex
 
-  (sudo might not be required on every machine, but doesn't hurt)
+  (sudo might not be required on EVERY machine, but you might get access
+   failures like "can't find device" if you regular use doesn't have the rights)
 
 
 * The script asks you to put the board into bootloader mode. For the Custom HW
@@ -54,42 +66,59 @@ Some background information on programming, in case the script didn't work:
 (or if you just want to know...)
 -------------------------------------------------------------------------
 
-When putting the ATmega32u4 chip into DFU bootloader mode, it will connect and
-identify as "Atmel Corp. atmega32u4 DFU bootloader" with VID 03eb, PID 2ff4.
+When putting the ATmega**U4 chip into DFU bootloader mode, it will connect and
+identify as either
+  "Atmel Corp. atmega32u4 DFU bootloader" with VID 03eb, PID 2ff4
+    or
+  "Atmel Corp. atmega16u4 DFU bootloader" with VID 03eb, PID 2ff3
+
 Calling the  lsusb  tool will show both this information as well as (decimal)
 bus and device numbers, for example:
 
 > lsusb
-(...other USB devices...)
+ (...other USB devices...)
 Bus 002 Device 017: ID 03eb:2ff4 Atmel Corp. atmega32u4 DFU bootloader
-(...other USB devices...)
+ (...other USB devices...)
 
-Caution: The device number changes everytime the chip reconnects.
+Caution: The device number changes EVERYTIME the chip reconnects.
+
+
+If you aren't sure which version of dfu-programmer you have, find out with
+
+> dfu-programmer --version
+
+as you will need to use slightly different commands for each.
+
+In all subsequent examples, substitute "**" with "32" or "16" depending on the
+chip used on your board and FIRMWARE.hex with the appropriate firmware file.
 
 The bus and device number must be used - without leading zeroes - to invoke
 "dfu-programmer". First, the current flash programming should be erased:
 
-> dfu-programmer  atmega32u4:2,17  erase --force
+> dfu-programmer  atmega**u4:2,17  erase             (for v.0.6.x)
+> dfu-programmer  atmega**u4:2,17  erase --force     (for v.0.7.x)
 
-(sudo might be required on your installation)
+(sudo might be required on your installation!)
 
 The actual programming is initiated with
 
-> dfu-programmer  atmega32u4:2,17  flash FIRMWARE.hex
+> dfu-programmer  atmega**u4:2,17  flash FIRMWARE.hex    (all versions)
 
 (remember that 2,17 are only examples for the bus and device numbers)
 
 The device can be induced to restart and reconnect with the flash programming:
 
-> dfu-programmer  atmega32u4:2,17  launch
+> dfu-programmer  atmega**u4:2,17  reset        (for v.0.6.x)
+> dfu-programmer  atmega**u4:2,17  launch       (for v.0.7.x)
 
 
 If you have programmed a device with the GRUB Switch firmware, it should
-identify with VID 1209, PID 2015 and likely the device name "InterBiometrics",
-which is the company that donated the 1209 USB ID range for community use:
+identify with VID 1209, PID 2015 and either "The GRUB SWITCH"
+or "InterBiometrics", which is the company that donated the
+1209 USB ID range for community use:
 
 > lsusb
-Bus 002 Device 018: ID 1209:2015 InterBiometrics
+Bus 002 Device 018: ID 1209:2015 The GRUB SWITCH
 
 
 For more details, try the dfu-programmer manual with
