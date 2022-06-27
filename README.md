@@ -1,10 +1,10 @@
 # THE GRUB SWITCH&nbsp;&nbsp; [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT) ![Maintainer](https://img.shields.io/badge/Maintainer-Ruediger%20Willenberg-red) [![email](https://img.shields.io/badge/email-grubswitch%40gmail.com-C00000)](mailto://grubswitch@gmail.com)
 
-#### (c)2019-2022 Ruediger Willenberg
+#### See [*quickstart.pdf*](./quickstart.pdf) for the fastest way to your custom boot configuration.
 
 ![GRUB SWITCH Panel](documentation/src/grub_switch_panel_medium.png) 
 
-#### See [*quickstart.pdf*](./quickstart.pdf) for the fastest way to your custom boot configuration.
+#### (c) 2019-2022 Ruediger Willenberg
 
 This project enables PC users to select the OS to be booted by *GRUB* through hardware.
 It has three independently usable components:
@@ -24,7 +24,7 @@ When using several USB flash drives for the boot choices (small, old ones will d
 
 ### 2. USB device firmware
 
-The **2_usb_device** directory holds firmware source code for *Microchip/Atmel ATmega32u4* MCUs that can act as USB devices. It has build support and pre-built firmware images for common maker boards like *Teensy 2.0*, *Arduino Micro*, *Adafruit ItsyBitsy* and *Sparkfun Pro Micro*. Other boards with the ATmega32u4 can be easily added.
+The **2_usb_device** directory holds firmware source code for *Microchip/Atmel ATmega32U4* MCUs that can act as USB devices. It has build support and pre-built firmware images for common maker boards like *Teensy 2.0*, *Arduino Micro*, *Adafruit ItsyBitsy* and *Sparkfun Pro Micro*. Other boards with the ATmega32u4 can be easily added.
 
 A board with the firmware installed will register as a regular USB flash drive when plugged in and provide one of the generated files for the regular flash drives; however, you can control which file (i.e. which boot choice) is picked through pins on the board.
 
@@ -34,7 +34,7 @@ Boards can be connected to common *rotary*, *toggle* or *binary-encoding* switch
 
 ### 3. Custom USB Hardware 
 
-For easier panel and case mounting (and for fun), we designed our own *ATmega32u4* PCB. *EAGLE* and *Gerber* files and all other required information can be found in **3_custom_hardware**. It features:
+For easier panel and case mounting (and for fun), we designed our own PCB for *ATmega32U4* or *ATmega16U4* chips. *EAGLE* and *Gerber* files and all other required information can be found in **3_custom_hardware**. It features:
 
 * Solder pads for common *1-of-12-rotary encoder* and *on/off/on-toggle* switches with front panel mounting threads; no soldering cables required.
 * Supports USB connection both by *Mini-B*-plug or directly by internal ribbon cable to motherboard USB pinheaders.
@@ -49,6 +49,8 @@ Obviously this requires soldering skills and is likely not the cheapest hardware
 ### Acknowledgements 
 
 Many thanks to Seriosha Remmlinger, Volker Wunsch and Andreas Flachsbarth for helpful feedback and suggestions and to Christoph Dehmer for examining an alternative approach (GRUB menu control by USB HID keyboard).
+
+Stephen Holdaway has a very cool [*Hackaday* project](https://hackaday.io/project/179539-hardware-boot-selection-switch) doing something similar with an *STM32* controller. He's built a very neat way to define the FAT file structure in his C code.
 
 We are grateful to [*pid.codes*](https://pid.codes/) for providing our firmware with a unique USB ID *(VID 1209 / PID 2015)*.
 
