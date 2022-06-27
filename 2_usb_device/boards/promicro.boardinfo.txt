@@ -4,8 +4,8 @@ PROGRAMMING PRO MICRO (3V/5V) WITH PREBUILT FIRMWARE (LINUX)
 The GRUB Switch repository contains prebuilt firmware images for both the
 3V and 5V versions of the SparkFun Pro Micro, which you can find under:
 
-grub-switch/2_usb_device/prebuilt_images/GRUB_SWITCH_PROMICRO_3V.hex
-grub-switch/2_usb_device/prebuilt_images/GRUB_SWITCH_PROMICRO_5V.hex
+grub-switch/2_usb_device/prebuilt_images/GS_PROMICRO_3V.hex
+grub-switch/2_usb_device/prebuilt_images/GS_PROMICRO_5V.hex
 
 To program the Pro Micro under Linux, you need to install the command-line
 tool "avrdude". We have provided a bash script to facilitate programming on
@@ -27,9 +27,9 @@ most PCs with a few simple steps:
 
 * Start the script with:
 
-  > sudo ./program_grubswitch_avrdude.sh GRUB_SWITCH_PROMICRO_3V.hex
+  > sudo ./program_grubswitch_avrdude.sh GS_PROMICRO_3V.hex
    or
-  > sudo ./program_grubswitch_avrdude.sh GRUB_SWITCH_PROMICRO_5V.hex
+  > sudo ./program_grubswitch_avrdude.sh GS_PROMICRO_5V.hex
 
   (sudo might not be required on every machine, but doesn't hurt)
 

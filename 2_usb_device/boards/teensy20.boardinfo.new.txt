@@ -4,7 +4,7 @@ PROGRAMMING ARDUINO MICRO WITH PREBUILT FIRMWARE (LINUX)
 The GRUB Switch repository contains a prebuilt firmware image for the
 Teensy 2.0 which you can find under:
 
-grub-switch/2_usb_device/prebuilt_images/GRUB_SWITCH_TEENSY20.hex
+grub-switch/2_usb_device/prebuilt_images/GS_TEENSY20.hex
 
 Teensy 2.0 has a proprietary bootloader which works with its own GUI
 programming tool, Teensy Loader. You can find precise installation and

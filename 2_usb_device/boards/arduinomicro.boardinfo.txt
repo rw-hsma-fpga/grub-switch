@@ -4,7 +4,7 @@ PROGRAMMING ARDUINO MICRO WITH PREBUILT FIRMWARE (LINUX)
 The GRUB Switch repository contains a prebuilt firmware image for the Arduino
 Micro which you can find under:
 
-grub-switch/2_usb_device/prebuilt_images/GRUB_SWITCH_ARDUINO_MICRO.hex
+grub-switch/2_usb_device/prebuilt_images/GS_ARDUINO_MICRO.hex
 
 To program the Arduino Micro under Linux, you need to install the command-line
 tool "avrdude". We have provided a bash script to facilitate programming on
@@ -26,7 +26,7 @@ most PCs with a few simple steps:
 
 * Start the script with:
 
-  > sudo ./program_grubswitch_avrdude.sh GRUB_SWITCH_ARDUINO_MICRO.hex
+  > sudo ./program_grubswitch_avrdude.sh GS_ARDUINO_MICRO.hex
 
   (sudo might not be required on every machine, but doesn't hurt)
 
