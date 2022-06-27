@@ -1,0 +1,31 @@
+(Last updated: Jun 27, 2022)
+
+I currently still have a few dozen Rev.B  PCBs collecting dust.
+If you'd like one or two instead of triggering your own PCB order,
+I can mail them to you.
+
+First, send me an email at
+  grubswitch@gmail.com
+to check if this is still true and whether I can get it to you
+cheaply (i.e. postage).
+
+--
+
+I have kept all Rev.B files here in the _legacy_RevB folder;
+the only differences to Rev.C are:
+
+* A moved /BINARY_MODE pin (therefore, there are separate *REVB*
+  hex images and header files in 2_usb_device)
+
+* No pads for the smaller VQFN44-packages (*-MU codes)
+
+* No contact pads for an AVR ISP programmer
+  (required for VQFN44 b/c they have no bootloader)
+
+* /HWB signal is at the wrong pin. If you ever want to reflash
+  the chip with a new HEX image, you'll have to solder one wire
+  to fix this (see section 4.1 of
+  _legacy_RevB/documentation/3_custom_hardware.pdf)
+
+Cheers,
+Ruediger
