@@ -1,0 +1,50 @@
+OS-prober change in GRUB version 2.06 (included in Ubuntu 22.04)
+================================================================
+
+The problem
+-----------
+
+Starting with GRUB v2.06 released this year, calling
+
+>  update-grub
+
+which builds the /boot/grub/grub.cfg script and therefore the
+GRUB boot menu, doesn't run a helper script called
+"*_os-prober"  anymore; this script was responsible for
+including Windows entries in the GRUB boot menu.
+This is ostensibly for security reasons. I can't speak to that,
+but on private multi-boot PCs, it is surely a damn nuisance.
+
+Ubuntu 22.04 LTS has, reasonably, updated to Grub 2.06,
+originally following the policy of not running os-prober.
+
+With a lot of confused people not finding Windows anymore in
+their boot menu, they have, for now, implemented a workaround.
+os-prober  is run during the first post-installation boot, and
+if it finds a Windows installation, it's called on subsequent
+runs. Since this seems unreliable and maybe prone to change,
+I recommend applying the fix below pre-emptively.
+
+
+The fix
+-------
+
+Make sure that  os-prober  is installed with
+
+>  sudo apt-get install os-prober
+(or whatever your OS with GRUB 2.06 uses for package install)
+
+It's likely already there, but can't hurt to make sure.
+
+Open the root-owned "/etc/default/grub" file and add the line
+GRUB_DISABLE_OS_PROBER=false
+
+for example with
+
+> sudo nano /etc/default/grub
+
+And afterwards run  update-grub  at least once with
+
+> sudo update-grub
+
+before using our GRUB SWITCH command-line tools. Done, fixed!
