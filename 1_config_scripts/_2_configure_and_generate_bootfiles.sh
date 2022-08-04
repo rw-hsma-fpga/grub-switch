@@ -194,8 +194,8 @@ while [[ ${REPEAT_LIST_CONFIG} = true ]] ; do
 	clear
 	### CHOICE-ORDER ENTRY OUTPUT TO CONFIRM
 	while [[ true ]] ; do
-		echo "Switch positions chosen assigned:"
-		echo "---------------------------------"
+		echo "Switch positions chosen:"
+		echo "------------------------"
 		echo "0 : GRUB Menu (Fixed)"
 		for j in 1 2 3 4 5 6 7 8 9 a b c d e f
 		do
