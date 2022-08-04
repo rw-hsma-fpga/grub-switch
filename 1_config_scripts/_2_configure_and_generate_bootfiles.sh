@@ -335,8 +335,8 @@ while [[ ${REPEAT_DISPLAY_CONFIG} = true ]] ; do
 			echo       " seconds"
 			echo
 			echo -e    "${fgDEFAULT}${bgDEFAULT}${fPLAIN}"
-			echo -e		"(Caution: Not all Linux terminals can display the"
-			echo -e		" complete range of colors that GRUB supports)"
+			echo -e		"(Caution: Not all Linux terminals show the"
+			echo -e		" exact range of colors that GRUB supports)"
 			echo
 
 			GET_KEY
