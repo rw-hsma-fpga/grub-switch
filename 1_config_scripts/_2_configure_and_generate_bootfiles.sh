@@ -86,6 +86,8 @@ IFS=$OLD_IFS
 ## (throw out comments)
 unset lastconfig_entries
 lastconfig_entries+=("#") ## setting entry 0 for indexing and so it's not empty
+lastconfig_time=0
+lastconfig_color=""
 
 ### check menu entry list availability
 OLD_IFS=$IFS
@@ -96,6 +98,22 @@ then
 	do
 		# strip DOS line separator \r
 		line="${unstripped_line//$'\r'/}"
+
+		if [[ $line =~ ^#1.*$ ]] # wait time setting
+		then
+			lastconfig_time=$(expr ${line:3} + 0)
+			echo "Wait time:"
+			echo $lastconfig_time
+			echo
+		fi
+
+		if [[ $line =~ ^#2.*$ ]] # color setting
+		then
+			lastconfig_color=${line:3}
+			echo "Color setting:"
+			echo $lastconfig_color
+			echo
+		fi
 
 		if [[ $line =~ ^#.*$ ]] # comment line
 		then	:
@@ -121,12 +139,12 @@ echo
 
 ## PRINT ENTRIES AND NUMBER - ALSO USING THIS TO MAKE CHOICE ARRAY FOR NOW
 unset CHOICEPOS
-echo
-echo "Grub menu entries:"
+#echo
+#echo "Grub menu entries:"
 for printline in "${boot_entries[@]}"
 do
 	CHOICEPOS+=(".")
-	echo "$printline"
+	#echo "$printline"
 done
 
 echo
@@ -147,16 +165,16 @@ do
 			if [ $j -lt 10 ]
 			then
 				CHOICEPOS[$i]="$j"
-				echo $j
+				#echo $j
 			else
 				hexchar=$((j+87))
-				echo $hexchar
+				#echo $hexchar
 				CHOICEPOS[$i]="$(printf \\$(printf '%03o' $hexchar))"
 			fi
 		fi
 	done
 done
-#sleep 10
+sleep 8
 
 
 if [[ ${NUM_ENTRIES} = "0" ]]
@@ -298,8 +316,19 @@ done # while - CHOICE LIST CONFIGURATION AND LIST CONFIRMATION
 
 ### DISPLAY SECONDS AND COLOR CONFIGURATION LOOPS
 REPEAT_DISPLAY_CONFIG=true
-SECS=0
+
+SECS=$lastconfig_time
+
 colorindex=0
+NUM_COLORS=${#grubcolors[@]}
+for (( i = 0 ; i < ${NUM_COLORS}; i++ ))
+do
+	if [[ "${lastconfig_color}" == "${grubcolors[$i]}" ]]
+	then
+		colorindex=$i
+	fi
+done
+
 while [[ ${REPEAT_DISPLAY_CONFIG} = true ]] ; do
 
 	clear
