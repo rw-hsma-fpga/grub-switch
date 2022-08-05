@@ -82,20 +82,82 @@ done < ${BOOTFILES_DIR}/grubmenu_all_entries.lst
 IFS=$OLD_IFS
 
 
+## READ LAST CONFIGURATION FROM .entries.txt IF IT EXISTS
+## (throw out comments)
+unset lastconfig_entries
+lastconfig_entries+=("#") ## setting entry 0 for indexing and so it's not empty
+
+### check menu entry list availability
+OLD_IFS=$IFS
+IFS=$'\t\n'
+if [[ -e "${BOOTFILES_DIR}/grubmenu_all_entries.lst" ]]
+then
+	while read unstripped_line
+	do
+		# strip DOS line separator \r
+		line="${unstripped_line//$'\r'/}"
+
+		if [[ $line =~ ^#.*$ ]] # comment line
+		then	:
+		else
+			if [ -z "$line" ]
+			then
+				lastconfig_entries+=(" ")
+			else
+				lastconfig_entries+=($line)
+			fi
+		fi
+	done < ${BOOTFILES_DIR}/.entries.txt
+fi
+IFS=$OLD_IFS
+
+NUM_ENTRIES=${#boot_entries[@]}
+NUM_LASTCONFIG_ENTRIES=${#lastconfig_entries[@]}
+let "MAX_ENTRY=$NUM_ENTRIES - 1"
+
+echo
+echo "There are ${NUM_ENTRIES} entries from 0 to ${MAX_ENTRY}"
+echo
+
 ## PRINT ENTRIES AND NUMBER - ALSO USING THIS TO MAKE CHOICE ARRAY FOR NOW
 unset CHOICEPOS
+echo
+echo "Grub menu entries:"
 for printline in "${boot_entries[@]}"
 do
 	CHOICEPOS+=(".")
 	echo "$printline"
 done
 
-NUM_ENTRIES=${#boot_entries[@]}
-let "MAX_ENTRY=$NUM_ENTRIES - 1"
+echo
+echo "Last config entries:"
+for printline in "${lastconfig_entries[@]}"
+do
+	echo "$printline"
+done
 
-echo
-echo "There are ${NUM_ENTRIES} entries from 0 to ${MAX_ENTRY}"
-echo
+
+## PRE-ASSIGN CHOICES BASED ON LAST CONFIG
+for (( i = 0 ; i < ${NUM_ENTRIES}; i++ ))
+do
+	for (( j = 0 ; j < ${NUM_LASTCONFIG_ENTRIES}; j++ ))
+	do
+		if [[ "${boot_entries[$i]}" == "${lastconfig_entries[$j]}" ]]
+		then
+			if [ $j -lt 10 ]
+			then
+				CHOICEPOS[$i]="$j"
+				echo $j
+			else
+				hexchar=$((j+87))
+				echo $hexchar
+				CHOICEPOS[$i]="$(printf \\$(printf '%03o' $hexchar))"
+			fi
+		fi
+	done
+done
+#sleep 10
+
 
 if [[ ${NUM_ENTRIES} = "0" ]]
 then
@@ -120,7 +182,7 @@ while [[ ${REPEAT_LIST_CONFIG} = true ]] ; do
 		echo -e    "  [The ${fBOLD}0${fPLAIN} position is reserved for the GRUB Menu]"
 		echo -e    "* Press ${fBOLD}Delete${fPLAIN} to remove choice position from current entry"
 		echo -e    "* Press ${fBOLD}Insert${fPLAIN} to assign/remove all positions in order"
-		echo -e    "* Press ${fBOLD}q${fPLAIN} to quit"
+		echo -e    "* Press ${fBOLD}q${fPLAIN} to quit without changes"
 		echo -e    "* Press ${fBOLD}Enter${fPLAIN} to continue"
 		echo       "-----------------------------------------------------------"
 		echo -e    " ${fBOLD}POS${fPLAIN} | ${fBOLD}ENTRY${fPLAIN}"
@@ -212,7 +274,7 @@ while [[ ${REPEAT_LIST_CONFIG} = true ]] ; do
 		echo       "--------------------------------------------"
 		echo -e    "* Press ${fBOLD}Enter${fPLAIN} to confirm selection"
 		echo -e    "* Press ${fBOLD}Backspace <-${fPLAIN} to change configuration"
-		echo -e    "* Press ${fBOLD}q${fPLAIN} to quit"
+		echo -e    "* Press ${fBOLD}q${fPLAIN} to quit without changes"
 
 		GET_KEY
 
@@ -250,7 +312,7 @@ while [[ ${REPEAT_DISPLAY_CONFIG} = true ]] ; do
 		echo -e    "* Press ${fBOLD}Cursor Right/ Cursor Left${fPLAIN} to change +/- 1 second"
 
 		echo -e    "* Press ${fBOLD}Enter${fPLAIN} to confirm selection"
-		echo -e    "* Press ${fBOLD}q${fPLAIN} to quit"
+		echo -e    "* Press ${fBOLD}q${fPLAIN} to quit without changes"
 		echo       "--------------------------------------------------------"
 		echo
 
@@ -313,7 +375,7 @@ while [[ ${REPEAT_DISPLAY_CONFIG} = true ]] ; do
 
 			echo -e    "* Press ${fBOLD}Enter${fPLAIN} to confirm selection"
 			echo -e    "* Press ${fBOLD}Backspace <-${fPLAIN} to go back and change display time"
-			echo -e    "* Press ${fBOLD}q${fPLAIN} to quit"
+			echo -e    "* Press ${fBOLD}q${fPLAIN} to quit without changes"
 			echo       "-------------------------------------------------------"
 			echo
 
