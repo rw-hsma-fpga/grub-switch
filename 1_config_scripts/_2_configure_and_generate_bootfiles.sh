@@ -147,12 +147,12 @@ do
 	#echo "$printline"
 done
 
-echo
-echo "Last config entries:"
-for printline in "${lastconfig_entries[@]}"
-do
-	echo "$printline"
-done
+# echo
+# echo "Last config entries:"
+# for printline in "${lastconfig_entries[@]}"
+# do
+# 	echo "$printline"
+# done
 
 
 ## PRE-ASSIGN CHOICES BASED ON LAST CONFIG
@@ -174,7 +174,7 @@ do
 		fi
 	done
 done
-sleep 8
+#sleep 8
 
 
 if [[ ${NUM_ENTRIES} = "0" ]]
@@ -199,7 +199,8 @@ while [[ ${REPEAT_LIST_CONFIG} = true ]] ; do
 		echo -e    "  by pressing the keys ${fBOLD}1..9${fPLAIN} or ${fBOLD}a..f${fPLAIN}(=10..15)"
 		echo -e    "  [The ${fBOLD}0${fPLAIN} position is reserved for the GRUB Menu]"
 		echo -e    "* Press ${fBOLD}Delete${fPLAIN} to remove choice position from current entry"
-		echo -e    "* Press ${fBOLD}Insert${fPLAIN} to assign/remove all positions in order"
+		echo -e    "* Press ${fBOLD}Backspace${fPLAIN} to clear all positions"
+		echo -e    "* Press ${fBOLD}Insert${fPLAIN} to assign all positions in order"
 		echo -e    "* Press ${fBOLD}q${fPLAIN} to quit without changes"
 		echo -e    "* Press ${fBOLD}Enter${fPLAIN} to continue"
 		echo       "-----------------------------------------------------------"
@@ -240,23 +241,17 @@ while [[ ${REPEAT_LIST_CONFIG} = true ]] ; do
 				;;
 			"Insert")
 				CHOICEKEYS=( "1" "2" "3" "4" "5" "6" "7" "8" "9" "a" "b" "c" "d" "e" "f" )
-				REMOVE_ALL=true
 				for (( i = 0 ; i < ${NUM_ENTRIES}; i++ ))
 				do
-					if [[ ${CHOICEPOS[$i]} != ${CHOICEKEYS[$i]} ]]
-					then
-						REMOVE_ALL=false
-					fi
 					CHOICEPOS[$i]=${CHOICEKEYS[$i]}
 				done
+				;;
+			"Backspace")
 				# remove all if they were all set in order before
-				if [[ ${REMOVE_ALL} = true ]]
-				then
-					for (( i = 0 ; i < ${NUM_ENTRIES}; i++ ))
-					do
-						CHOICEPOS[$i]="."
-					done
-				fi
+				for (( i = 0 ; i < ${NUM_ENTRIES}; i++ ))
+				do
+					CHOICEPOS[$i]="."
+				done
 				;;
 			[a-f1-9])
 				for (( i = 0 ; i < ${NUM_ENTRIES}; i++ ))
