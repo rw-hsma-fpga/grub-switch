@@ -42,7 +42,7 @@ For easier panel and case mounting (and for fun), we designed our own PCB for *A
 * Switch- or jumper-controlled *write-protect*
 * Can be used with self-written firmware for other purposes, like any commercial board; provides up to 13 I/O-pins with 5V logic.
 
-Obviously this requires soldering skills and is likely not the cheapest hardware option, especially because have to order your own PCB. But it's fun!
+Obviously this requires soldering skills and is likely not the cheapest hardware option, especially because you have to order your own PCB. But it's fun!
 
 ---
 
