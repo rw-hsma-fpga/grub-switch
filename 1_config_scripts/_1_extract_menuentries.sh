@@ -90,17 +90,16 @@ else
 	#    the word "submenu" or "menuentry", followed by a space and an apostrophe
 	#     the title to be extracted: multiple characters, anything but an apostrophe
 	#    an apostrophe and a space, followed by anything until the end of the line
-	# Results written one each per line into .entries.txt.all with submenu hierarchy>
-	# Note: '.entries.txt.all' is hidden and only visible with 'ls -a' option
+	# Results written one each per line into grubmenu_all_entries.lst with submenu hierarchy>
 	while read line
 	do
 		# menuentry
 		if [[ $line =~ ^\t*menuentry.*$ ]]
 		then
 			entry_hierarchy=""
-			#echo $line
 			menuentry_open=true
-			menuentry=`echo ${line} | sed -n 's/^\o011*menuentry\o040\o047\([^\o047]*\)\o047\o040.*$/\1/p'`
+			# RegEx fixed, now works with ' and " - thanks to Maxime Gado
+			menuentry=`echo ${line} | sed -n 's/^\o011*menuentry\o040[\o042\o047]\([^\o042^\o047]*\)[\o042\o047].*$/\1/p'`
 
 			for (( i=1 ; i<=${submenu_level} ; i++ ))
 			do
@@ -114,9 +113,9 @@ else
 		# submenu
 		if [[ $line =~ ^\t*submenu.*$ ]]
 		then
-			#echo $line
 			let submenu_level++
-			submenu[${submenu_level}]=`echo ${line} | sed -n 's/^\o011*submenu\o040\o047\([^\o047]*\)\o047\o040.*$/\1/p'`
+			# RegEx fixed, now works with ' and " - thanks to Maxime Gado
+			submenu[${submenu_level}]=`echo ${line} | sed -n 's/^\o011*submenu\o040[\o042\o047]\([^\o042^\o047]*\)[\o042\o047].*$/\1/p'`
 			
 		fi
 
