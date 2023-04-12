@@ -1,3 +1,3 @@
 #!/bin/sh
 set -e
-exec grub-mkconfig -o "$1"
+exec grub2-mkconfig -o "$1"
