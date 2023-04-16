@@ -118,7 +118,13 @@ function show_status_menu {
 		moddate=`stat -c %Y ${GRUB_CFG_DIR}/grub.cfg`
 		echo "-> last modified at" `date -d @"${moddate}" +"%d %b %Y - %H:%M:%S"`
 
-		CURR_GRUBCFG_VER=`cat ${GRUB_CFG_PATH} | grep GRUBswitch_script`
+		if $GRUB_CFG_NEEDS_SUDO
+		then
+			CURR_GRUBCFG_VER=`sudo cat ${GRUB_CFG_PATH} | grep GRUBswitch_script`
+		else
+			CURR_GRUBCFG_VER=`cat ${GRUB_CFG_PATH} | grep GRUBswitch_script`
+		fi
+
 		if [ -z "$CURR_GRUBCFG_VER" ]
 		then
 			echo "   No GRUBswitch code included"
@@ -167,14 +173,18 @@ function check_or_find_paths {
 
 	### check grub.cfg existence and readability, acquire sudo if required
 	GRUB_CFG_PATH="${GRUB_CFG_DIR}/grub.cfg"
+	# remove sudo so we check requirement correctly
+	sudo -K 
 	if [[ -e "${GRUB_CFG_PATH}" ]]
 	then
 		if [[ -r "${GRUB_CFG_PATH}" ]]
 		then
 			echo "grub.cfg exists and is readable."
+			GRUB_CFG_NEEDS_SUDO=false
 		else
 			# not readable, so try to get sudo
 			echo "grub.cfg exists but sudo rights required to read:"
+			GRUB_CFG_NEEDS_SUDO=true
 			check_request_sudo
 			if [ ${LAST_SUDO_STATE} = "INACTIVE" ]
 			then
