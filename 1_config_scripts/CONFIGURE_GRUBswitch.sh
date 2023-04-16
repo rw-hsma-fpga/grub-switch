@@ -30,23 +30,6 @@ function show_status_menu {
 
 	## check sudo state
 	check_sudo
-	echo -n "Last sudo (super user) status:  ${LAST_SUDO_STATE}"
-
-	if [ "${LAST_SUDO_STATE}" = "ACTIVE" ]
-	then
-		if [ "${SUDO_WRITE_STATE}" = "ACTIVE" ]
-		then
-			echo " for read/write"
-		else
-			echo " for read-only"
-		fi
-
-		echo "                                at ${LAST_SUDO_DATE}"
-		echo "                                (this may expire and require password re-entry)"
-	else
-		echo
-		echo
-	fi
 
 	echo
 
