@@ -86,7 +86,7 @@ IFS=$OLD_IFS
 ## (throw out comments)
 unset lastconfig_entries
 lastconfig_entries+=("#") ## setting entry 0 for indexing and so it's not empty
-lastconfig_time=0
+lastconfig_time=3
 lastconfig_color=""
 
 ### check menu entry list availability
