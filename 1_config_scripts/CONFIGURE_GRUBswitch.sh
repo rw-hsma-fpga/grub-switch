@@ -15,6 +15,18 @@ if [[ "`pwd`" =~ ^.*/1_config_scripts$ ]]; then : ; else
 ## Master script that controls, sequences all GRUBswitch configuration scripts
 
 
+check_tools_availability
+
+if $TOOLS_ALL_THERE
+then
+	:
+else
+	echo
+	echo "ERROR: Required tools missing; exiting..." >&2
+	echo
+	exit -1
+fi
+
 
 
 ### FUNCTIONS

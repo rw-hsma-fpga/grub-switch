@@ -39,6 +39,108 @@ function EXIT_WITH_KEYPRESS () {
 } # END function EXIT_WITH_KEYPRESS
 
 
+function check_tools_availability {
+
+	TOOLS_ALL_THERE=true
+
+	# GNU coreutils
+	ACHECK=$(cat --version 2>/dev/null)
+	if [ "$?" -ne 0 ]
+	then
+		echo
+		echo -e "${fBOLD}cat${fUNBOLD} tool missing."
+		echo -e "Please install ${fBOLD}GNU coreutils${fUNBOLD} before continuing."
+		TOOLS_ALL_THERE=false
+	fi
+
+	# sudo
+	ACHECK=$(sudo --version 2>/dev/null)
+	if [ "$?" -ne 0 ]
+	then
+		echo
+		echo -e "${fBOLD}sudo${fUNBOLD} command missing."
+		echo -e "Please install ${fBOLD}sudo${fUNBOLD} package as root before continuing."
+		echo -e "Afterwards, please give a non-root user ${fBOLD}sudo${fUNBOLD} privileges"
+		echo -e "and run GRUBswitch tools as that user. Doing all boot"
+		echo -e "manipulations as a full root user invites trouble."
+		TOOLS_ALL_THERE=false
+	fi
+
+	# which
+	ACHECK=$(which cat 2>/dev/null)
+	if [ "$?" -ne 0 ]
+	then
+		echo
+		echo -e "${fBOLD}which${fUNBOLD} tool missing."
+		echo -e "Please install ${fBOLD}which${fUNBOLD} package before continuing."
+		TOOLS_ALL_THERE=false
+	fi
+
+	# grep
+	ACHECK=$(grep --version 2>/dev/null)
+	if [ "$?" -ne 0 ]
+	then
+		echo
+		echo -e "${fBOLD}grep${fUNBOLD} tool missing."
+		echo -e "Please install ${fBOLD}grep${fUNBOLD} package before continuing."
+		TOOLS_ALL_THERE=false
+	fi
+
+	# sed
+	ACHECK=$(sed --version 2>/dev/null)
+	if [ "$?" -ne 0 ]
+	then
+		echo
+		echo -e "${fBOLD}sed${fUNBOLD} tool missing."
+		echo -e "Please install ${fBOLD}sed${fUNBOLD} package before continuing."
+		TOOLS_ALL_THERE=false
+	fi
+
+	# Bash version 4 or higher
+	ACHECK=$(/bin/bash --version | head -n 1 | sed 's@^[^0-9]*\([0-9]\).*@\1@' 2>/dev/null)
+	if [ "$ACHECK" -lt 4 ]
+	then
+		echo
+		echo -e "${fBOLD}bash${fUNBOLD} shell is version 3.x or lower."
+		echo -e "Please install ${fBOLD}bash${fUNBOLD} version 4.x or higher before continuing."
+		TOOLS_ALL_THERE=false
+	fi	
+
+	# mount
+	ACHECK=$(mount --version 2>/dev/null)
+	if [ "$?" -ne 0 ]
+	then
+		echo
+		echo -e "${fBOLD}mount${fUNBOLD} tool missing."
+		echo -e "Please install package containing ${fBOLD}mount${fUNBOLD} command before continuing."
+		TOOLS_ALL_THERE=false
+	fi
+
+	# umount
+	ACHECK=$(umount --version 2>/dev/null)
+	if [ "$?" -ne 0 ]
+	then
+		echo
+		echo -e "${fBOLD}umount${fUNBOLD} tool missing."
+		echo -e "Please install package containing ${fBOLD}umount${fUNBOLD} command before continuing."
+		TOOLS_ALL_THERE=false
+	fi
+
+	# lsblk
+	ACHECK=$(lsblk --version 2>/dev/null)
+	if [ "$?" -ne 0 ]
+	then
+		echo
+		echo -e "${fBOLD}lsblk${fUNBOLD} tool missing."
+		echo -e "Please install package containing ${fBOLD}lsblk${fUNBOLD} command before continuing."
+		TOOLS_ALL_THERE=false
+	fi
+
+
+	return
+}
+
+
 function check_sudo {
 	local sudostate=`sudo -n whoami 2> /dev/null`
 	if [ "$sudostate" = "root" ]
