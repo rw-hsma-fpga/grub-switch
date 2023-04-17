@@ -4,7 +4,7 @@
 
 ![GRUB SWITCH Panel](documentation/src/grub_switch_panel_medium.png) 
 
-#### (c) 2019-2022 Ruediger Willenberg
+#### (c) 2019-2023 Ruediger Willenberg
 
 This project enables PC users to select the OS to be booted by *GRUB* through hardware.
 It has three independently usable components:
