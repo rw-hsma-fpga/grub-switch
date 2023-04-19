@@ -49,10 +49,10 @@ echo -e "Do you want to proceed? (${fBOLD}y${fPLAIN})es / (${fBOLD}n${fPLAIN})o"
 
 
 ### find tool paths
-UPDATEGRUB=`which update-grub  2>/dev/null`
-UPDATEGRUB2=`which update-grub2  2>/dev/null`
-GRUBMKCONFIG=`which grub-mkconfig  2>/dev/null`
-GRUBMKCONFIG2=`which grub2-mkconfig  2>/dev/null`
+UPDATEGRUB=`sudo which update-grub  2>/dev/null`
+UPDATEGRUB2=`sudo which update-grub2  2>/dev/null`
+GRUBMKCONFIG=`sudo which grub-mkconfig  2>/dev/null`
+GRUBMKCONFIG2=`sudo which grub2-mkconfig  2>/dev/null`
 
 while [[ true ]]
 do
