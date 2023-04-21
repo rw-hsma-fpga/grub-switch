@@ -228,6 +228,49 @@ function get_path_arguments {
 }
 
 
+function find_update_grub_tool {
+
+	check_sudo_reacquire_or_exit
+	EXIT_ON_FAIL
+
+	### find tool paths
+	UPDATEGRUB=`sudo which update-grub  2>/dev/null`
+	UPDATEGRUB2=`sudo which update-grub2  2>/dev/null`
+	GRUBMKCONFIG=`sudo which grub-mkconfig  2>/dev/null`
+	GRUBMKCONFIG2=`sudo which grub2-mkconfig  2>/dev/null`	
+}
+
+
+function run_update_grub_tool {
+
+	check_sudo_reacquire_or_exit
+	EXIT_ON_FAIL
+
+	if [ -z "$UPDATEGRUB" ]
+	then
+		if [ -z "$UPDATEGRUB2" ]
+		then
+			if [ -z "$GRUBMKCONFIG" ]
+			then
+				if [ -z "$GRUBMKCONFIG2" ]
+				then
+					echo -e "ERROR: No ${fBOLD}update-grub${fPLAIN} or ${fBOLD}grub-mkconfig${fPLAIN} tool was found."
+					EXIT_WITH_KEYPRESS
+				else
+					sudo ./_update-grub2.sh "${GRUB_CFG_DIR}/grub.cfg"
+				fi
+			else
+				sudo ./_update-grub.sh "${GRUB_CFG_DIR}/grub.cfg"
+			fi
+		else
+			sudo update-grub2
+		fi
+	else
+		sudo update-grub
+	fi
+
+}
+
 function GET_KEY () {
 
 	local OLD_IFS=$IFS
