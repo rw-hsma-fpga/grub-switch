@@ -26,6 +26,40 @@ get_path_arguments $@
 check_sudo_reacquire_or_exit
 EXIT_ON_FAIL
 
+# optional update-grub
+echo -e "Before extracting GRUB menu entries, we recommend re-generating the"
+echo -e "${fBOLD}grub.cfg${fPLAIN} file by calling ${fBOLD}update-grub${fPLAIN}. This way, you can be sure the"
+echo -e "extracted list of entries is up-to-date. However, this is optional."
+echo -e "Do you want to re-generate grub.cfg?  (${fBOLD}y${fPLAIN})es / (${fBOLD}n${fPLAIN})o"
+
+### find tool path
+find_update_grub_tool
+
+while [[ true ]]
+do
+	GET_KEY
+	case ${INPUT} in
+			"y")
+				check_sudo_reacquire_or_exit
+				EXIT_ON_FAIL
+
+				echo
+				run_update_grub_tool
+
+				echo ; echo -e "${fBOLD}grub.cfg${fPLAIN} re-generated." ; echo
+				sleep 1
+				break
+				;;
+			"n")
+				echo ; echo "Re-generation skipped." ; echo
+				sleep 1
+				break
+				;;
+			"*")
+				;;
+	esac
+done
+
 GRUB_CFG_PATH="${GRUB_CFG_DIR}/grub.cfg"
 sudo test -e ${GRUB_CFG_PATH}
 if [ "$?" -eq "0" ]
