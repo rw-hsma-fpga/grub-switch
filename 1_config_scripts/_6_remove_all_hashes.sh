@@ -6,7 +6,7 @@ if [ "${BASH_SOURCE[0]}" != "$0" ]; then
 
 if [[ "`pwd`" =~ ^.*/1_config_scripts$ ]]; then : ; else
 	echo -e "ERROR: Script not started from \e[1m1_config_scripts\e[0m directory" >&2
-	echo ; exit; fi
+	echo ; exit 13 ; fi  ## ERROR_PERMISSION_DENIED
 
 . _shared_objects.sh
 
@@ -14,13 +14,8 @@ if [[ "`pwd`" =~ ^.*/1_config_scripts$ ]]; then : ; else
 #### _6_remove_all_hashes.sh ####
 ## removes grub_switch_hashes from boot dir
 
-clear
-echo -e -n "$fBOLD"
-echo "6 - Remove all hashes"	
-echo "---------------------"
-echo -e -n "$fPLAIN"
-check_request_sudo
-
+check_sudo_reacquire_or_exit
+EXIT_ON_FAIL
 
 ### parse commandline parameters for grub dir
 get_path_arguments $@
@@ -45,6 +40,8 @@ do
 	GET_KEY
 	case ${INPUT} in
 			"y")
+				check_sudo_reacquire_or_exit
+				EXIT_ON_FAIL
 				sudo rm -rf ${GRUB_CFG_DIR}/grub_switch_hashes
 				echo ; echo "Hashes removed." ; echo
 				break

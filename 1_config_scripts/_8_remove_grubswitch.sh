@@ -6,7 +6,7 @@ if [ "${BASH_SOURCE[0]}" != "$0" ]; then
 
 if [[ "`pwd`" =~ ^.*/1_config_scripts$ ]]; then : ; else
 	echo -e "ERROR: Script not started from \e[1m1_config_scripts\e[0m directory" >&2
-	echo ; exit; fi
+	echo ; exit 13 ; fi  ## ERROR_PERMISSION_DENIED
 
 . _shared_objects.sh
 
@@ -15,12 +15,8 @@ if [[ "`pwd`" =~ ^.*/1_config_scripts$ ]]; then : ; else
 ## deletes modifier script from /etc/...
 ## runs update-grub
 
-clear
-echo -e -n "$fBOLD"
-echo "8 - Remove GRUBswitch from grub.cfg"	
-echo "-----------------------------------"
-echo -e -n "$fPLAIN"
-check_request_sudo
+check_sudo_reacquire_or_exit
+EXIT_ON_FAIL
 
 
 ### parse commandline parameters for grub dir and script dir
@@ -32,14 +28,14 @@ sudo test -w "${GRUB_CFG_DIR}"
 if [ "$?" -ne "0" ]
 then
 	echo "ERROR: GRUB boot directory not writable" >&2
-	exit -1	
+	EXIT_WITH_KEYPRESS	
 fi
 
 sudo test -w "${CFG_SCRIPTS_DIR}"
 if [ "$?" -ne "0" ]
 then
 	echo "ERROR: GRUB script directory not writable" >&2
-	exit -1	
+	EXIT_WITH_KEYPRESS
 fi
 
 
@@ -47,6 +43,8 @@ fi
 echo -e "This action will re-generate the ${fBOLD}grub.cfg${fPLAIN} file by calling ${fBOLD}update-grub${fPLAIN}"
 echo -e "Do you want to proceed? (${fBOLD}y${fPLAIN})es / (${fBOLD}n${fPLAIN})o"
 
+check_sudo_reacquire_or_exit
+EXIT_ON_FAIL
 
 ### find tool paths
 UPDATEGRUB=`sudo which update-grub  2>/dev/null`
@@ -97,8 +95,4 @@ do
 	esac
 done
 
-
-echo
-echo "Press any key to return to main menu."
-echo
-GET_ANY_KEYPRESS
+EXIT_WITH_KEYPRESS

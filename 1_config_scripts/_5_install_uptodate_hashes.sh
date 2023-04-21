@@ -6,7 +6,7 @@ if [ "${BASH_SOURCE[0]}" != "$0" ]; then
 
 if [[ "`pwd`" =~ ^.*/1_config_scripts$ ]]; then : ; else
 	echo -e "ERROR: Script not started from \e[1m1_config_scripts\e[0m directory" >&2
-	echo ; exit; fi
+	echo ; exit 13 ; fi  ## ERROR_PERMISSION_DENIED
 
 . _shared_objects.sh
 
@@ -14,13 +14,8 @@ if [[ "`pwd`" =~ ^.*/1_config_scripts$ ]]; then : ; else
 #### _5_install_uptodate_hashes.sh ####
 ## copies ../bootfiles/grub_switch_hashes to boot dir
 
-clear
-echo -e -n "$fBOLD"
-echo "5 - Install up-to-date hashes"	
-echo "-----------------------------"
-echo -e -n "$fPLAIN"
-check_request_sudo
-
+check_sudo_reacquire_or_exit
+EXIT_ON_FAIL
 
 ### parse commandline parameters for grub dir
 get_path_arguments $@
@@ -39,7 +34,7 @@ fi
 if [[ -e "../bootfiles/grub_switch_hashes" ]]
 then :
 else
-	echo "ERROR: ../bootfiles/grub_switch_hashes path not present" >&2
+	echo "ERROR: ../bootfiles/grub_switch_hashes path not present - no boot config generated yet?" >&2
 	EXIT_WITH_KEYPRESS
 fi
 
@@ -53,6 +48,8 @@ do
 	GET_KEY
 	case ${INPUT} in
 			"y")
+				check_sudo_reacquire_or_exit
+				EXIT_ON_FAIL
 				sudo rm -rf ${GRUB_CFG_DIR}/grub_switch_hashes
 				sudo cp -rf ../bootfiles/grub_switch_hashes ${GRUB_CFG_DIR}/
 				echo ; echo "Hashes installed." ; echo

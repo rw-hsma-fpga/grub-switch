@@ -6,7 +6,7 @@ if [ "${BASH_SOURCE[0]}" != "$0" ]; then
 
 if [[ "`pwd`" =~ ^.*/1_config_scripts$ ]]; then : ; else
 	echo -e "ERROR: Script not started from \e[1m1_config_scripts\e[0m directory" >&2
-	echo ; exit; fi
+	echo ; exit 13 ; fi  ## ERROR_PERMISSION_DENIED
 
 . _shared_objects.sh
 
@@ -14,24 +14,15 @@ if [[ "`pwd`" =~ ^.*/1_config_scripts$ ]]; then : ; else
 #### CONFIGURE_GRUBswitch.sh ####
 ## Master script that controls, sequences all GRUBswitch configuration scripts
 
-
-check_tools_availability
-
-if $TOOLS_ALL_THERE
-then
-	:
-else
-	echo
-	echo "ERROR: Required tools missing; exiting..." >&2
-	echo
-	exit -1
-fi
-
-
-
 ### FUNCTIONS
 
 function show_status_menu {
+
+	clear
+
+	## check sudo state
+	check_sudo_reacquire_or_exit
+	EXIT_ON_FAIL
 
 	clear
 
@@ -40,8 +31,6 @@ function show_status_menu {
 	echo "============================="
 	echo -e -n "$fPLAIN"
 
-	## check sudo state
-	check_sudo
 
 	echo
 
@@ -94,10 +83,11 @@ function show_status_menu {
 
 	# grub_switch_hashes/*
 	echo -e -n "$fgCYAN"
-	echo "Permitted SWITCH.GRB file hashes  (${GRUB_CFG_DIR}/grub_switch_hashes/*):"
-	if [[ -e "${GRUB_CFG_DIR}/grub_switch_hashes/" ]]
+	echo "Permitted SWITCH.GRB file hashes  (${GRUB_CFG_DIR}grub_switch_hashes/*):"
+	sudo test -e "${GRUB_CFG_DIR}/grub_switch_hashes/"
+	if [ "$?" -eq "0" ]	
 	then
-		moddate=`stat -c %Y ${GRUB_CFG_DIR}/grub_switch_hashes/`
+		moddate=`sudo stat -c %Y ${GRUB_CFG_DIR}/grub_switch_hashes/`
 		echo "-> last updated at" `date -d @"${moddate}" +"%d %b %Y - %H:%M:%S"`
 	else
 		echo "-> not present (no permission checking)"
@@ -107,18 +97,14 @@ function show_status_menu {
 
 	# grub.cfg
 	echo -e -n "$fgGREEN"
-	echo "GRUB menu config file  (${GRUB_CFG_DIR}/grub.cfg):"
-	if [[ -f "${GRUB_CFG_DIR}/grub.cfg" ]]
+	echo "GRUB menu config file  (${GRUB_CFG_DIR}grub.cfg):"
+	sudo test -f "${GRUB_CFG_DIR}/grub.cfg"
+	if [ "$?" -eq "0" ]	
 	then
-		moddate=`stat -c %Y ${GRUB_CFG_DIR}/grub.cfg`
+		moddate=`sudo stat -c %Y ${GRUB_CFG_DIR}/grub.cfg`
 		echo "-> last modified at" `date -d @"${moddate}" +"%d %b %Y - %H:%M:%S"`
 
-		if $GRUB_CFG_NEEDS_SUDO
-		then
-			CURR_GRUBCFG_VER=`sudo cat ${GRUB_CFG_PATH} | grep GRUBswitch_script`
-		else
-			CURR_GRUBCFG_VER=`cat ${GRUB_CFG_PATH} | grep GRUBswitch_script`
-		fi
+		CURR_GRUBCFG_VER=`sudo cat ${GRUB_CFG_PATH} | grep GRUBswitch_script`
 
 		if [ -z "$CURR_GRUBCFG_VER" ]
 		then
@@ -147,58 +133,46 @@ function check_or_find_paths {
 	### check specified or default grub.cfg dirs
 	if [ "" = "${GRUB_CFG_DIR}" ]
 	then
-		echo "No valid GRUB boot directory specified."
+		echo "No GRUB boot directory argument specified on command-line."
 		echo "Trying default path /boot/grub/..."
 		GRUB_CFG_DIR="/boot/grub/"
-		if [[ -e "${GRUB_CFG_DIR}" ]]
+		sudo test -e ${GRUB_CFG_DIR}
+		if [ "$?" -eq "0" ]
 		then
 			echo "...path exists."
 		else
 			echo "Trying default path /boot/grub2/..."
 			GRUB_CFG_DIR="/boot/grub2/"
-			if [[ -e "${GRUB_CFG_DIR}" ]]
+			sudo test -e ${GRUB_CFG_DIR}
+			if [ "$?" -eq "0" ]
 			then
 				echo "...path exists."
 			else
 				echo "ERROR: No valid specified or default path for GRUB boot files" >&2
-				return -1
+				return "$ERROR_NO_SUCH_FILE_OR_DIR"
 			fi
 		fi
 	fi
 
-	### check grub.cfg existence and readability, acquire sudo if required
+	### check grub.cfg existence and readability
 	GRUB_CFG_PATH="${GRUB_CFG_DIR}/grub.cfg"
-	# remove sudo so we check requirement correctly
-	sudo -K 
-	if [[ -e "${GRUB_CFG_PATH}" ]]
+	sudo test -e ${GRUB_CFG_PATH}
+	if [ "$?" -eq "0" ]
 	then
-		if [[ -r "${GRUB_CFG_PATH}" ]]
+		echo "grub.cfg exists"
+		check_sudo_reacquire_or_exit
+		EXIT_ON_FAIL
+		sudo test -r ${GRUB_CFG_PATH}
+		if [ "$?" -ne "0" ]
 		then
-			echo "grub.cfg exists and is readable."
-			GRUB_CFG_NEEDS_SUDO=false
+			echo "sudo rights acquired. Still no read access to ${GRUB_CFG_PATH} possible."
+			return "$ERROR_PERMISSION_DENIED"
 		else
-			# not readable, so try to get sudo
-			echo "grub.cfg exists but sudo rights required to read:"
-			GRUB_CFG_NEEDS_SUDO=true
-			check_request_sudo
-			if [ ${LAST_SUDO_STATE} = "INACTIVE" ]
-			then
-				echo "ERROR: Failed getting sudo access to grub.cfg" >&2
-				return -1
-			else
-				sudo test -r ${GRUB_CFG_PATH}
-				if [ "$?" -ne "0" ]
-				then
-					echo "sudo rights acquired. Still no read access to ${GRUB_CFG_PATH} possible."
-					return -1
-				else
-					echo "sudo rights acquired, can read grub.cfg"
-				fi
-			fi
+			echo "sudo rights acquired, can read grub.cfg"
 		fi
 	else
 		echo "ERROR: grub.cfg does not exist in specified directory" >&2
-		return -1
+		return "$ERROR_NO_SUCH_FILE_OR_DIR"
 	fi
 
 	### check specified script dir for grub.cfg rebuilds, otherwise extra from grub.cfg
@@ -207,52 +181,59 @@ function check_or_find_paths {
 		echo "No directory for grub.cfg build scripts specified."
 		echo "Trying to extract from grub.cfg comments..."
 		# read grub.cfg and find first comment that indicates a generation script, extract full path except file name itself
-
-		# TODO check HOW and WHETHER to require sudo
-		test -r ${GRUB_CFG_PATH}
-		if [ "$?" -ne "0" ]
-		then
-			check_request_sudo
-			CFG_SCRIPTS_DIR=`sudo cat ${GRUB_CFG_PATH} | grep -m 1 "### BEGIN "| sed -n 's/^### BEGIN\o040\(\o057[^\o040]*\o057\).*###$/\1/p'`
-		else
-			CFG_SCRIPTS_DIR=`cat ${GRUB_CFG_PATH} | grep -m 1 "### BEGIN "| sed -n 's/^### BEGIN\o040\(\o057[^\o040]*\o057\).*###$/\1/p'`
-		fi
+		CFG_SCRIPTS_DIR=`sudo cat ${GRUB_CFG_PATH} | grep -m 1 "### BEGIN "| sed -n 's/^### BEGIN\o040\(\o057[^\o040]*\o057\).*###$/\1/p'`
 		echo "Extracted ${CFG_SCRIPTS_DIR}..."
 	fi
 
 	### check path existence
-	if [[ -e "${CFG_SCRIPTS_DIR}" ]]
+	sudo test -e ${CFG_SCRIPTS_DIR}
+	if [ "$?" -eq "0" ]
 	then :
 	else
 		echo "ERROR: specified or extracted directory for grub.cfg generation scripts does not exist" >&2
-		return -1
+		return "$ERROR_NO_SUCH_FILE_OR_DIR"
 	fi
-
+#exit # TODO REMOVE
 	return 0 # success
 }
 
 
 ### UNSET/INIT RELEVANT VARIABLES
 
-SUDO_WRITE_STATE="INACTIVE"
 
 
 ### TODO: CHECKING TOOL AVAILABILITY
+check_tools_availability
 
+if $TOOLS_ALL_THERE
+then
+	:
+else
+	echo
+	echo "ERROR: Required tools missing; exiting..." >&2
+	echo
+	exit "$ERROR_NO_SUCH_COMMAND"
+fi
+
+
+### get sudo
+LAST_SUDO_STATE="INACTIVE"
+initial_sudo_acquisition
+EXIT_ON_FAIL
 
 ### check bootfiles availability
 if [[ -e "../bootfiles/" ]]
 then :
 else
 	echo "ERROR: ../bootfiles/ path not present" >&2
-	exit -1
+	exit "$ERROR_NO_SUCH_FILE_OR_DIR"
 fi
 
 if [[ -f "../bootfiles/template" ]]
 then :
 else
 	echo "ERROR: ../bootfiles/template not present" >&2
-	exit -1
+	exit "$ERROR_NO_SUCH_FILE_OR_DIR"
 fi
 
 
@@ -260,10 +241,7 @@ fi
 ### parse commandline parameters for grub dirs, check existence/access
 get_path_arguments $@
 check_or_find_paths
-if [ "$?" -ne "0" ]
-then
-	exit -1
-fi
+EXIT_ON_FAIL
 
 
 ### MAIN LOOP
@@ -307,14 +285,37 @@ do
 				clear
 				echo "Exited GRUBswitch configuration."
 				echo
-				exit ;;
+				exit "$SUCCESS"
+				;;
 			"1")
+				clear
+				echo -e -n "${fBOLD}"
+				echo "1 - Extract all menu entries from grub.cfg"
+				echo "------------------------------------------"
+				echo -e -n "${fPLAIN}"
+				echo
+
+				check_sudo_reacquire_or_exit
+				EXIT_ON_FAIL
 				./_1_extract_menuentries.sh -g $GRUB_CFG_DIR
+				EXIT_ON_FAIL
 				;;
 			"2")
+				clear
+				echo -e -n "$fBOLD"
+				echo "2 - Configure and generate bootfiles"	
+				echo "------------------------------------"
+				echo -e -n "$fPLAIN"
+				echo
 				./_2_configure_and_generate_bootfiles.sh
 				;;
 			"3")
+				clear
+				echo -e -n "${fBOLD}"
+				echo "3 -   Remove generated files (bootfiles and hashes)"
+				echo "---------------------------------------------------"
+				echo -e -n "${fPLAIN}"
+				echo
 				./_3_remove_generated_files.sh
 				;;
 			"4")
@@ -323,8 +324,12 @@ do
 				echo "4 - Write .entries.txt to GRUBswitch USB device"	
 				echo "-----------------------------------------------"
 				echo -e -n "$fPLAIN"
-				check_request_sudo_write_state
+				echo
+
+				check_sudo_reacquire_or_exit
+				EXIT_ON_FAIL
 				./_4_write_entries_to_usb_device.sh
+				EXIT_ON_FAIL
 				;;
 			"5")
 				clear
@@ -332,8 +337,12 @@ do
 				echo "5 - Install up-to-date hashes"	
 				echo "-----------------------------"
 				echo -e -n "$fPLAIN"
-				check_request_sudo_write_state
+				echo
+
+				check_sudo_reacquire_or_exit
+				EXIT_ON_FAIL
 				./_5_install_uptodate_hashes.sh -g $GRUB_CFG_DIR
+				EXIT_ON_FAIL
 				;;
 			"6")
 				clear
@@ -341,8 +350,12 @@ do
 				echo "6 - Remove all hashes"	
 				echo "---------------------"
 				echo -e -n "$fPLAIN"
-				check_request_sudo_write_state
+				echo
+
+				check_sudo_reacquire_or_exit
+				EXIT_ON_FAIL
 				./_6_remove_all_hashes.sh -g $GRUB_CFG_DIR
+				EXIT_ON_FAIL
 				;;
 			"7")
 				clear
@@ -350,8 +363,12 @@ do
 				echo "7 - Install GRUBswitch into grub.cfg"	
 				echo "------------------------------------"
 				echo -e -n "$fPLAIN"
-				check_request_sudo_write_state
+				echo
+
+				check_sudo_reacquire_or_exit
+				EXIT_ON_FAIL
 				./_7_install_grubswitch.sh -g $GRUB_CFG_DIR -s $CFG_SCRIPTS_DIR
+				EXIT_ON_FAIL
 				;;
 			"8")
 				clear
@@ -359,8 +376,12 @@ do
 				echo "8 - Remove GRUBswitch from grub.cfg"	
 				echo "-----------------------------------"
 				echo -e -n "$fPLAIN"
-				check_request_sudo_write_state
+				echo
+
+				check_sudo_reacquire_or_exit
+				EXIT_ON_FAIL
 				./_8_remove_grubswitch.sh -g $GRUB_CFG_DIR -s $CFG_SCRIPTS_DIR
+				EXIT_ON_FAIL
 				;;
 			"9")
 				#

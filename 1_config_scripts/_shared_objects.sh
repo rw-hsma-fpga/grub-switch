@@ -19,6 +19,12 @@ bgBLUE="\e[44m" ; bgMAGENTA="\e[45m" ; bgCYAN="\e[46m" ; bgLIGHTGRAY="\e[47m"
 bgDARKGRAY="\e[100m" ; bgLIGHTRED="\e[101m" ; bgLIGHTGREEN="\e[102m" ; bgLIGHTYELLOW="\e[103m"
 bgLIGHTBLUE="\e[104m" ; bgLIGHTMAGENTA="\e[105m" ; bgLIGHTCYAN="\e[106m" ; bgWHITE="\e[107m"
 
+# bash exit codes
+SUCCESS=0
+ERROR_NO_SUCH_FILE_OR_DIR=1
+ERROR_PERMISSION_DENIED=13
+ERROR_NO_SUCH_COMMAND=127
+
 
 # clean leave
 function EXIT_WITH_KEYPRESS () {
@@ -35,8 +41,16 @@ function EXIT_WITH_KEYPRESS () {
 
 	IFS=$OLD_IFS
 
-	exit
+	exit "$SUCCESS" # means won't leave CONFIGURE script
 } # END function EXIT_WITH_KEYPRESS
+
+
+function EXIT_ON_FAIL {
+	if [ "$?" -ne "0" ] # failure on paths
+	then
+		exit "$?"
+	fi	
+}
 
 
 function check_tools_availability {
@@ -141,70 +155,55 @@ function check_tools_availability {
 }
 
 
-function check_sudo {
-	local sudostate=`sudo -n whoami 2> /dev/null`
+function initial_sudo_acquisition {
+
+	clear
+	sudo -K
+	echo "Most GRUBswitch actions require sudo (super user) access"
+	echo "- please provide your password"
+	echo
+
+	local sudostate=$(sudo whoami 2>/dev/null)
+
 	if [ "$sudostate" = "root" ]
 	then
+		echo
 		LAST_SUDO_STATE="ACTIVE"
+		return "$SUCCESS"
 	else
+		echo
+		echo "ERROR: Failed to acquire sudo access; exiting tool." >&2
+		echo
 		LAST_SUDO_STATE="INACTIVE"
+		return "$ERROR_PERMISSION_DENIED"
 	fi
-	LAST_SUDO_DATE=`date`
 }
 
 
-function check_request_sudo {
-	local sudostate=`sudo -n whoami 2> /dev/null`
-
-	if [ "$sudostate" = "root" ]
-	then :
-	else
-		sudostate=`sudo whoami`
-	fi
+function check_sudo_reacquire_or_exit {
+	local sudostate=$(sudo -n whoami 2>/dev/null)
 
 	if [ "$sudostate" = "root" ]
 	then
 		LAST_SUDO_STATE="ACTIVE"
+		return "$SUCCESS"
 	else
-		LAST_SUDO_STATE="INACTIVE"
-	fi
-	LAST_SUDO_DATE=`date`
-}
-
-
-function check_request_sudo_write_state {
-
-	if [ "$SUDO_WRITE_STATE" = "INACTIVE" ]
-	then
-		echo; echo "This action requires sudo (super user) write access." ;	echo
-		sleep 1
-		sudo -K
-		check_request_sudo
-		if [ "$LAST_SUDO_STATE" = "ACTIVE" ]
-		then
-			SUDO_WRITE_STATE="ACTIVE"
-			echo ; echo "sudo write access acquired."
-			sleep 2
-		else
-			echo ; echo "No sudo acquired. Returning to menu."
-			sleep 2
-		fi
-	else # sudo write ACTIVE
-		check_sudo
-		if [ "$LAST_SUDO_STATE" = "INACTIVE" ]
-		then
-			echo; echo "This action requires sudo (super user) write access." ;	echo
-			sleep 1
-			check_request_sudo
-			if [ "$LAST_SUDO_STATE" = "ACTIVE" ]
+		echo
+		echo "sudo (super user) access timed out; password required again."
+		echo
+			sudostate=$(sudo whoami 2>/dev/null)
+			if [ "$sudostate" = "root" ]
 			then
-				echo ; echo "sudo write access acquired."
-				sleep 2
+				echo
+				LAST_SUDO_STATE="ACTIVE"
+				return "$SUCCESS"
 			else
-				echo ; echo "No sudo acquired. Returning to menu."
-				sleep 2
+				echo
+				echo "ERROR: Failed to reacquire sudo access; exiting tool." >&2
+				echo
+				LAST_SUDO_STATE="INACTIVE"
+				return "$ERROR_PERMISSION_DENIED"
 			fi
-		fi
 	fi
 }
 

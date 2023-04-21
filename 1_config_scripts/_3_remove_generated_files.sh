@@ -6,20 +6,13 @@ if [ "${BASH_SOURCE[0]}" != "$0" ]; then
 
 if [[ "`pwd`" =~ ^.*/1_config_scripts$ ]]; then : ; else
 	echo -e "ERROR: Script not started from \e[1m1_config_scripts\e[0m directory" >&2
-	echo ; exit; fi
+	echo ; exit 13 ; fi  ## ERROR_PERMISSION_DENIED
 
 . _shared_objects.sh
 
 
 #### _3_remove_generated_files ####
 ## removes .entries.txt, boot.*/*, grub_switch hashes
-
-clear
-echo -e -n "${fBOLD}"
-echo "3 -   Remove generated files (bootfiles and hashes)"
-echo "---------------------------------------------------"
-echo -e -n "${fPLAIN}"
-echo
 
 ### check bootfiles availability
 if [[ -e "../bootfiles/" ]]

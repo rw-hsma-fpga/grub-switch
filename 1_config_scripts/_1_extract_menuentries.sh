@@ -6,7 +6,7 @@ if [ "${BASH_SOURCE[0]}" != "$0" ]; then
 
 if [[ "`pwd`" =~ ^.*/1_config_scripts$ ]]; then : ; else
 	echo -e "ERROR: Script not started from \e[1m1_config_scripts\e[0m directory" >&2
-	echo ; exit; fi
+	echo ; exit 13 ; fi  ## ERROR_PERMISSION_DENIED
 
 . _shared_objects.sh
 
@@ -15,12 +15,6 @@ if [[ "`pwd`" =~ ^.*/1_config_scripts$ ]]; then : ; else
 ## Script to extract all menuentry titles from 'grub.cfg' and write them to
 ## 'grubmenu_all_entries.lst' and '.entries.txt.all' files
 
-clear
-echo -e -n "${fBOLD}"
-echo "1 - Extract all menu entries from grub.cfg"
-echo "------------------------------------------"
-echo -e -n "${fPLAIN}"
-echo
 
 BOOTFILES_DIR="../bootfiles/"
 
@@ -28,34 +22,26 @@ BOOTFILES_DIR="../bootfiles/"
 ### parse commandline parameters for grub dirs, check existence/access
 get_path_arguments $@
 
-### check grub.cfg existence and readability, acquire sudo if required
+### check grub.cfg existence and readability
+check_sudo_reacquire_or_exit
+EXIT_ON_FAIL
+
 GRUB_CFG_PATH="${GRUB_CFG_DIR}/grub.cfg"
-if [[ -e "${GRUB_CFG_PATH}" ]]
+sudo test -e ${GRUB_CFG_PATH}
+if [ "$?" -eq "0" ]
 then
-	if [[ -r "${GRUB_CFG_PATH}" ]]
+	sudo test -r ${GRUB_CFG_PATH}
+	if [ "$?" -eq "0" ]
 	then
 		echo "grub.cfg exists and is readable."
-		GRUB_CFG_DATA=`cat "${GRUB_CFG_PATH}"`
+		GRUB_CFG_DATA=`sudo cat "${GRUB_CFG_PATH}"`
 	else
-		# not readable, so try to get sudo
-		echo "grub.cfg exists but sudo rights required to read:"
-		check_request_sudo
-		if [ "${last_sudo_state}" = "INACTIVE" ]
-		then
-			echo "ERROR: Failed getting sudo access to grub.cfg" >&2
-		else
-			sudo test -r ${GRUB_CFG_PATH}
-			if [ "$?" -ne "0" ]
-			then
-				echo "sudo rights acquired. Still no read access to ${GRUB_CFG_PATH} possible."
-			else
-				echo "sudo rights acquired, can read grub.cfg"
-				GRUB_CFG_DATA=`sudo cat "${GRUB_CFG_PATH}"`
-			fi
-		fi
+		echo "No read access to ${GRUB_CFG_PATH} possible despite sudo."
+		EXIT_WITH_KEYPRESS
 	fi
 else
 	echo "ERROR: grub.cfg does not exist in specified directory" >&2
+	EXIT_WITH_KEYPRESS
 fi
 
 
@@ -139,7 +125,7 @@ else
 	IFS=$OLD_IFS
 
 	echo
-	echo -e "Wrote all menu entries to \e[1m${BOOTFILES_DIR}/grubmenu_all_entries.lst\e[0m ..."
+	echo -e "Wrote all menu entries to ${fBOLD}${BOOTFILES_DIR}grubmenu_all_entries.lst${fPLAIN} ..."
 fi
 
 EXIT_WITH_KEYPRESS

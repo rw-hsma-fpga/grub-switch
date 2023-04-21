@@ -6,7 +6,7 @@ if [ "${BASH_SOURCE[0]}" != "$0" ]; then
 
 if [[ "`pwd`" =~ ^.*/1_config_scripts$ ]]; then : ; else
 	echo -e "ERROR: Script not started from \e[1m1_config_scripts\e[0m directory" >&2
-	echo ; exit; fi
+	echo ; exit 13 ; fi  ## ERROR_PERMISSION_DENIED
 
 . _shared_objects.sh
 
@@ -16,11 +16,6 @@ if [[ "`pwd`" =~ ^.*/1_config_scripts$ ]]; then : ; else
 ## configure choice display
 ## generate bootfiles and hash files
 
-clear
-echo -e -n "$fBOLD"
-echo "2 - Configure and generate bootfiles"	
-echo "------------------------------------"
-echo -e -n "$fPLAIN"
 sleep 2
 
 

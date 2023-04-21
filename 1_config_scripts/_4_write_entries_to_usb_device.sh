@@ -6,19 +6,13 @@ if [ "${BASH_SOURCE[0]}" != "$0" ]; then
 
 if [[ "`pwd`" =~ ^.*/1_config_scripts$ ]]; then : ; else
 	echo -e "ERROR: Script not started from \e[1m1_config_scripts\e[0m directory" >&2
-	echo ; exit; fi
+	echo ; exit 13 ; fi  ## ERROR_PERMISSION_DENIED
 
 . _shared_objects.sh
 
 
 #### _4_write_entries_to_usb_device.sh ####
 ### Script to move generated/edited '.entries.txt' file onto the GRUB Switch USB device
-
-clear
-echo -e -n "$fBOLD"
-echo "4 - Write .entries.txt to GRUBswitch USB device"	
-echo "-----------------------------------------------"
-echo -e -n "$fPLAIN"
 
 BOOTFILES_DIR="../bootfiles/"
 
@@ -30,18 +24,18 @@ else
 	EXIT_WITH_KEYPRESS
 fi
 
+check_sudo_reacquire_or_exit
+EXIT_ON_FAIL
+
 # checking if GRUB Switch is connected
-GRUB_SWITCH_UUID_PRESENT=`lsblk -o UUID | grep 1985-1955`
+GRUB_SWITCH_UUID_PRESENT=`sudo lsblk -o UUID | grep 1985-1955`
 if [[ "$GRUB_SWITCH_UUID_PRESENT" = "1985-1955" ]]
 then	:
 else
-	1>&2 echo -e "ERROR: \e[1mGRUBswitch\e[0m block device not present."
+	1>&2 echo -e "ERROR: ${fBOLD}GRUBswitch${fPLAIN} block device not present."
 	1>&2 echo -e "       Make sure device is plugged into a working USB slot"
 	EXIT_WITH_KEYPRESS
 fi
-
-
-check_request_sudo
 
 # checking if root; necessary for mounting
 if [ "${LAST_SUDO_STATE}" = "INACTIVE" ]
@@ -73,9 +67,9 @@ fi
 
 if sudo cp "${BOOTFILES_DIR}/.entries.txt" "${BOOTFILES_DIR}/grub-switch-mount/.entries.txt"
 then
-	echo -e "Copied \e[1m.entries.txt\e[0m to USB device"
+	echo -e "Copied ${fBOLD}.entries.txt${fPLAIN} to USB device"
 else
-	echo -e "ERROR: Copying \e[1m.entries.txt\e[0m to USB device failed"
+	echo -e "ERROR: Copying ${fBOLD}.entries.txt${fPLAIN} to USB device failed"
 	EXIT_WITH_KEYPRESS
 fi
 
