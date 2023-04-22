@@ -41,7 +41,12 @@ then
 		if [ false = $MATCHED ]
 		then
 			echo "SWITCH.GRB didn't match any of the stored hashes and won't be run."
-			sleep 5
+			sleep 3
+			# show menu for sure
+			unset timeout
+			unset default
+			unset fallback
+			timeout_style="menu"
 		fi
 	else
 		echo "Didn't find hash folder."
