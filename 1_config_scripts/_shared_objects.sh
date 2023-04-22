@@ -212,7 +212,7 @@ function get_path_arguments {
 
 	OPTIND=1
 
-	while getopts ":g:s:" callarg
+	while getopts ":g:s:b:" callarg
 	do
 		case ${callarg} in
 			g)
@@ -220,6 +220,9 @@ function get_path_arguments {
 				;;
 			s)
 				CFG_SCRIPTS_DIR=${OPTARG}
+				;;
+			b)
+				BLS_CONF_DIR=${OPTARG}
 				;;
 			*)
 				;;

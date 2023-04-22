@@ -193,7 +193,27 @@ function check_or_find_paths {
 		echo "ERROR: specified or extracted directory for grub.cfg generation scripts does not exist" >&2
 		return "$ERROR_NO_SUCH_FILE_OR_DIR"
 	fi
-#exit # TODO REMOVE
+
+	echo "Looking for Boot Loader Specification (BLS) entries path"
+	echo "(Fedora Linux etc.) :"
+	### BootLoaderSpecification conf file dir (only used by Fedora et al. so far)
+	if [ "" = "${BLS_CONF_DIR}" ]
+	then
+		# No BLS config directory argument specified on command-line.
+		echo "No BLS config directory argument specified on command-line;"
+		BLS_CONF_DIR="/boot/loader/entries"
+		echo "Trying standard path at ${BLS_CONF_DIR}"
+	fi
+
+	sudo test -e ${BLS_CONF_DIR}
+	if [ "$?" -eq "0" ]
+	then
+		echo "Found BLS entries path at ${BLS_CONF_DIR}"
+	else
+		echo "No valid BLS entries path found." >&2
+		BLS_CONF_DIR=""
+	fi
+exit
 	return 0 # success
 }
 
