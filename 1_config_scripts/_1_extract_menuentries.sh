@@ -60,6 +60,9 @@ do
 	esac
 done
 
+check_sudo_reacquire_or_exit
+EXIT_ON_FAIL
+
 GRUB_CFG_PATH="${GRUB_CFG_DIR}/grub.cfg"
 sudo test -e ${GRUB_CFG_PATH}
 if [ "$?" -eq "0" ]
@@ -89,16 +92,43 @@ fi
 
 
 
+### printing title comment into grubmenu_all_entries.lst
+echo "### All entries, extracted from current GRUB menu" > ${BOOTFILES_DIR}/grubmenu_all_entries.lst
+
+# BLS menu entries first
+if [ "" != "${BLS_CONF_DIR}" ]
+then
+	echo "Checking Boot Level Specification entries..."
+	OLD_IFS=$IFS
+	IFS=$'\t\n'
+
+	BLS_CONF_LS=($(sudo ls "${BLS_CONF_DIR}" | sort -r))
+	for i in ${BLS_CONF_LS[@]}
+	do
+		if [[ "$i" =~ ^.*conf$ ]]
+		then
+
+			BLS_CONF_FILE="${BLS_CONF_DIR}/$i"
+			BLS_CONF_DATA=`sudo cat "${BLS_CONF_FILE}"`
+			while read line
+			do
+				# title
+				if [[ $line =~ ^.*title.*$ ]]
+				then
+					echo ${line} | sed -n  's/^[\o040\o011]*title[\o040\o011]\+\([^\o011]*\)*$/\1/p' >> ${BOOTFILES_DIR}/grubmenu_all_entries.lst
+				fi
+			done < <(echo "$BLS_CONF_DATA")
+		fi
+	done
+
+	IFS=$OLD_IFS
+fi
+
+
 if [ -z "$GRUB_CFG_DATA" ]
 then
 	echo "reading in grub.cfg did not succeed"
 else
-
-	### printing title comment into grubmenu_all_entries.lst
-	echo "### All entries, extracted from current GRUB menu" > ${BOOTFILES_DIR}/grubmenu_all_entries.lst
-
-
-
 	### find menuentry, submenu and closing brace '}' lines
 	OLD_IFS=$IFS
 	IFS=$'\t\n'
@@ -157,9 +187,9 @@ else
 
 	done < <(echo "$GRUB_CFG_DATA")
 	IFS=$OLD_IFS
-
-	echo
-	echo -e "Wrote all menu entries to ${fBOLD}${BOOTFILES_DIR}grubmenu_all_entries.lst${fPLAIN} ..."
 fi
+
+echo
+echo -e "Wrote all menu entries to ${fBOLD}${BOOTFILES_DIR}grubmenu_all_entries.lst${fPLAIN} ..."
 
 EXIT_WITH_KEYPRESS

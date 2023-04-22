@@ -194,6 +194,7 @@ function check_or_find_paths {
 		return "$ERROR_NO_SUCH_FILE_OR_DIR"
 	fi
 
+	echo
 	echo "Looking for Boot Loader Specification (BLS) entries path"
 	echo "(Fedora Linux etc.) :"
 	### BootLoaderSpecification conf file dir (only used by Fedora et al. so far)
@@ -317,7 +318,7 @@ do
 
 				check_sudo_reacquire_or_exit
 				EXIT_ON_FAIL
-				./_1_extract_menuentries.sh -g $GRUB_CFG_DIR
+				./_1_extract_menuentries.sh -g $GRUB_CFG_DIR -b ${BLS_CONF_DIR}
 				EXIT_ON_FAIL
 				;;
 			"2")
