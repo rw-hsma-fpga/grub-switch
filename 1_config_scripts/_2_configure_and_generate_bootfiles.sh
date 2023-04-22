@@ -81,7 +81,7 @@ IFS=$OLD_IFS
 ## (throw out comments)
 unset lastconfig_entries
 lastconfig_entries+=("#") ## setting entry 0 for indexing and so it's not empty
-lastconfig_time=3
+lastconfig_time=2
 lastconfig_color=""
 
 ### check menu entry list availability
@@ -325,7 +325,7 @@ while [[ ${REPEAT_DISPLAY_CONFIG} = true ]] ; do
 	while [[ true ]]  ## SETTING DISPLAY SECONDS
 	do
 		echo       "--------------------------------------------------------"
-		echo       "Set boot choice display time:"
+		echo       "Set boot choice display time (min 2 secs) :"
 
 		echo -e    "* Press ${fBOLD}Cursor Up / Cursor Down${fPLAIN} to change +/- 10 seconds"
 		echo -e    "* Press ${fBOLD}Cursor Right/ Cursor Left${fPLAIN} to change +/- 1 second"
@@ -357,12 +357,12 @@ while [[ ${REPEAT_DISPLAY_CONFIG} = true ]] ; do
 
 				"CursorDown")
 					let "SECS=( $SECS - 10 )"
-					[[ $SECS -lt 0 ]] && SECS=0
+					[[ $SECS -lt 2 ]] && SECS=2
 					;;
 
 				"CursorLeft")
 					let "SECS=( $SECS - 1 )"
-					[[ $SECS -lt 0 ]] && SECS=0
+					[[ $SECS -lt 2 ]] && SECS=2
 					;;
 
 				"CursorRight")
@@ -371,7 +371,7 @@ while [[ ${REPEAT_DISPLAY_CONFIG} = true ]] ; do
 					;;
 
 				"Delete")
-					let "SECS=0"
+					let "SECS=2"
 					;;
 		esac
 		clear
