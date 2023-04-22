@@ -508,6 +508,12 @@ do
 		cd boot.${j}
 		sha512sum SWITCH.GRB > ../grub_switch_hashes/${j}.sha512
 		cd ..
+
+		# make empty SWITCH.GRB hash
+		touch SWITCH.GRB
+		sha512sum SWITCH.GRB > grub_switch_hashes/0.sha512
+		rm SWITCH.GRB
+
 	fi
 done
 
