@@ -213,7 +213,7 @@ function check_or_find_paths {
 		echo "No valid BLS entries path found." >&2
 		BLS_CONF_DIR=""
 	fi
-exit
+
 	return 0 # success
 }
 
