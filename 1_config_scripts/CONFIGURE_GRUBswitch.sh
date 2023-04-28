@@ -283,17 +283,17 @@ do
 	echo "1 - Extract all menu entries from grub.cfg"
 	echo "2 - Configure GRUBswitch order and generate bootfiles and hashes"
 	echo "3 -   Remove generated files"
-	echo "4 - Write GRUBswitch bootfile to GRUBswitch USB device        (requires sudo)"
+	echo "4 - Write GRUBswitch bootfile to GRUBswitch USB device        " # (requires sudo)"
 	echo -e -n "$fgDEFAULT"
 	echo
 	echo -e -n "$fgCYAN"
-	echo "5 - Install up-to-date hashes for permitted SWITCH.GRB files  (requires sudo)"
-	echo "6 -   Remove all hashes, no permission checking               (requires sudo)"
+	echo "5 - Install up-to-date hashes for permitted SWITCH.GRB files  " # (requires sudo)"
+	echo "6 -   Remove all hashes, no permission checking               " #(requires sudo)"
 	echo -e -n "$fgDEFAULT"
 	echo
 	echo -e -n "$fgGREEN"
-	echo "7 - Install GRUBswitch into grub.cfg                          (requires sudo)"
-	echo "8 -   Remove GRUBswitch from grub.cfg                         (requires sudo)"
+	echo "7 - Install GRUBswitch into grub.cfg                          " #(requires sudo)"
+	echo "8 -   Remove GRUBswitch from grub.cfg                         " #(requires sudo)"
 	echo -e -n "$fgDEFAULT"
 	echo
 	echo "q - Quit"
