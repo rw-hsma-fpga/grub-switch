@@ -1,5 +1,5 @@
-OS-prober change in GRUB version 2.06 (included in Ubuntu 22.04)
-================================================================
+OS-prober change in GRUB version 2.06
+=====================================
 
 The problem
 -----------
@@ -11,11 +11,12 @@ Starting with GRUB v2.06 released this year, calling
 which builds the /boot/grub/grub.cfg script and therefore the
 GRUB boot menu, doesn't run a helper script called
 "*_os-prober"  anymore; this script was responsible for
-including Windows entries in the GRUB boot menu.
-This is ostensibly for security reasons. I can't speak to that,
-but on private multi-boot PCs, it is surely a damn nuisance.
+including Windows and Linux entries from other partitions
+in the GRUB boot menu. This is ostensibly for security reasons.
+I can't speak to that, but on private multi-boot PCs, it is
+surely a damn nuisance.
 
-Ubuntu 22.04 LTS has, reasonably, updated to Grub 2.06,
+Ubuntu 22.04 and others have, reasonably, updated to GRUB 2.06,
 originally following the policy of not running os-prober.
 
 With a lot of confused people not finding Windows anymore in
