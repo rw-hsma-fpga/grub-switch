@@ -1,0 +1,3 @@
+* Fritzing diagram for connecting a toggle switch to Arduino Micro
+* Made by Pina Merkert
+* Free to reuse and remix - credit author where possible

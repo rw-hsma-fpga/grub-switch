@@ -20,7 +20,7 @@ A suite of *bash* scripts in **1_config_scripts**, all controlled by one easy-to
 
 When using several USB flash drives for the boot choices (small, old ones will do), no further hardware is necessary.
 
-*GRUB* does not need to be patched, rebuilt or reinstalled. The employed extension of **grub.cfg** is robust against unavailable or malformed data. Any unexpected choices or scripts will just lead to the regular, unchanged *GRUB* boot menu.
+*GRUB* does not need to be patched, rebuilt or reinstalled. The employed extension of **grub.cfg** is robust against unavailable or malformed data. Any unexpected choices or scripts will be ignored. You can always get to the regular *GRUB* boot menu.
 
 ### 2. USB device firmware
 
@@ -44,11 +44,18 @@ For easier panel and case mounting (and for fun), we designed our own PCB for *A
 
 Obviously this requires soldering skills and is likely not the cheapest hardware option, especially because you have to order your own PCB. But it's fun!
 
+### NEW: Miscellaneous contributions
+In directory *4_misc*, you can find community contributions like case designs and wiring diagrams that could be helpful with GRUB Switch building, mounting, etc.
+
+
+
 ---
 
 ### Acknowledgements 
 
 Many thanks to Seriosha Remmlinger, Volker Wunsch and Andreas Flachsbarth for helpful feedback and suggestions and to Christoph Dehmer for examining an alternative approach (GRUB menu control by USB HID keyboard).
+
+Thank you to Pina Merkert from Germany's biggest computer magazine [*c't*](https://www.heise.de/ct) for helping me write and publish an article about this, and for her cool contributions in *4_misc*.
 
 Stephen Holdaway has a very cool [*Hackaday* project](https://hackaday.io/project/179539-hardware-boot-selection-switch) doing something similar with an *STM32* controller. He's built a very neat way to define the FAT file structure in his C code.
 

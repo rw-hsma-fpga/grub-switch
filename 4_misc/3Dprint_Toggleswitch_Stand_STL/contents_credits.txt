@@ -1,0 +1,6 @@
+* 3d-printable stand for mounting recommended GRUBswitch toggle switches.
+  * fits custom USB PCB with switch soldered in
+  * includes STL for washers (might need several!)
+  * should fit on top of Minitower PCs
+* Made by Ruediger Willenberg
+* Free to reuse and remix - credit author where possible

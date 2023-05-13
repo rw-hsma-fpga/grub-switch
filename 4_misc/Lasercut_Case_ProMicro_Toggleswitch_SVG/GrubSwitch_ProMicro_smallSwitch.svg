@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="66.148201mm"
+   height="81.494041mm"
+   viewBox="0 0 66.148199 81.494042"
+   version="1.1"
+   id="svg53"
+   sodipodi:docname="GrubSwitch_small.svg"
+   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:i="http://ns.adobe.com/AdobeIllustrator/10.0/">
+  <defs
+     id="defs57" />
+  <sodipodi:namedview
+     id="namedview55"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="2.8284271"
+     inkscape:cx="75.306873"
+     inkscape:cy="229.98648"
+     inkscape:window-width="2486"
+     inkscape:window-height="1376"
+     inkscape:window-x="74"
+     inkscape:window-y="417"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg53"
+     inkscape:snap-bbox="true"
+     inkscape:snap-smooth-nodes="true"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     inkscape:snap-bbox-midpoints="true"
+     inkscape:snap-nodes="true"
+     inkscape:snap-global="true"
+     inkscape:snap-intersection-paths="true"
+     inkscape:snap-bbox-edge-midpoints="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0">
+    <sodipodi:guide
+       position="8.1477511,78.000002"
+       orientation="0,-1"
+       id="guide1050" />
+    <sodipodi:guide
+       position="65.548201,33.750002"
+       orientation="1,0"
+       id="guide2204" />
+    <sodipodi:guide
+       position="9.7480547,28.949744"
+       orientation="0,-1"
+       id="guide7420" />
+    <sodipodi:guide
+       position="12.748388,31.950076"
+       orientation="1,0"
+       id="guide7422" />
+  </sodipodi:namedview>
+  <!--
+BasedBox - Fully closed box on a base
+
+
+This box is more of a building block than a finished item.
+Use a vector graphics program (like Inkscape) to add holes or adjust the base
+plate. The width of the "brim" can also be adjusted with the **edge_width**
+ parameter in the **Finger Joints Settings**.
+ 
+See ClosedBox for variant without a base.
+
+
+
+Created with Boxes.py (https://festi.info/boxes.py)
+Creation date: 2023-04-30 18:04:24
+Command line (remove spaces between dashes): boxes BasedBox - -x=18 - -y=39 - -h=12.9 - -outside=0
+Url: http://www.festi.info/boxes.py/BasedBox?FingerJoint_angle=90.0&FingerJoint_style=rectangular&FingerJoint_surroundingspaces=2.0&FingerJoint_bottom_lip=0.0&FingerJoint_edge_width=1.0&FingerJoint_extra_length=0.0&FingerJoint_finger=2.0&FingerJoint_play=0.0&FingerJoint_space=2.0&FingerJoint_width=1.0&x=18&y=39&h=12.9&outside=0&thickness=3.0&format=svg&tabs=0.0&qr_code=0&debug=0&labels=0&labels=1&reference=100&inner_corners=loop&burn=0.1&language=en&render=2
+Url short: http://www.festi.info/boxes.py/BasedBox?x=18&y=39&h=12.9&outside=0
+SettingsUrl: http://www.festi.info/boxes.py/BasedBox?FingerJoint_angle=90.0&FingerJoint_style=rectangular&FingerJoint_surroundingspaces=2.0&FingerJoint_bottom_lip=0.0&FingerJoint_edge_width=1.0&FingerJoint_extra_length=0.0&FingerJoint_finger=2.0&FingerJoint_play=0.0&FingerJoint_space=2.0&FingerJoint_width=1.0&x=18&y=39&h=12.9&outside=0&thickness=3.0&format=svg&tabs=0.0&qr_code=0&debug=0&labels=0&labels=1&reference=100&inner_corners=loop&burn=0.1&language=en&render=2
+SettingsUrl short: http://www.festi.info/boxes.py/BasedBox?x=18&y=39&h=12.9&outside=0
+-->
+  <title
+     id="title2">BasedBox</title>
+  <metadata
+     id="metadata4">
+    <rdf:RDF>
+      <cc:Work>
+        <dc:title>BasedBox</dc:title>
+        <dc:date>2023-04-30 18:04:24</dc:date>
+        <dc:source>http://www.festi.info/boxes.py/BasedBox?FingerJoint_angle=90.0&amp;FingerJoint_style=rectangular&amp;FingerJoint_surroundingspaces=2.0&amp;FingerJoint_bottom_lip=0.0&amp;FingerJoint_edge_width=1.0&amp;FingerJoint_extra_length=0.0&amp;FingerJoint_finger=2.0&amp;FingerJoint_play=0.0&amp;FingerJoint_space=2.0&amp;FingerJoint_width=1.0&amp;x=18&amp;y=39&amp;h=12.9&amp;outside=0&amp;thickness=3.0&amp;format=svg&amp;tabs=0.0&amp;qr_code=0&amp;debug=0&amp;labels=0&amp;labels=1&amp;reference=100&amp;inner_corners=loop&amp;burn=0.1&amp;language=en&amp;render=2</dc:source>
+        <dc:source>http://www.festi.info/boxes.py/BasedBox?x=18&amp;y=39&amp;h=12.9&amp;outside=0</dc:source>
+        <dc:description>Fully closed box on a base
+
+This box is more of a building block than a finished item.
+Use a vector graphics program (like Inkscape) to add holes or adjust the base
+plate. The width of the &quot;brim&quot; can also be adjusted with the **edge_width**
+ parameter in the **Finger Joints Settings**.
+ 
+See ClosedBox for variant without a base.
+
+
+Created with Boxes.py (https://festi.info/boxes.py)
+Command line: boxes BasedBox --FingerJoint_angle=90.0 --FingerJoint_style=rectangular --FingerJoint_surroundingspaces=2.0 --FingerJoint_bottom_lip=0.0 --FingerJoint_edge_width=1.0 --FingerJoint_extra_length=0.0 --FingerJoint_finger=2.0 --FingerJoint_play=0.0 --FingerJoint_space=2.0 --FingerJoint_width=1.0 --x=18 --y=39 --h=12.9 --outside=0 --thickness=3.0 --format=svg --tabs=0.0 --qr_code=0 --debug=0 --labels=0 --labels=1 --reference=100 --inner_corners=loop --burn=0.1
+Command line short: boxes BasedBox --x=18 --y=39 --h=12.9 --outside=0
+Url: http://www.festi.info/boxes.py/BasedBox?FingerJoint_angle=90.0&amp;FingerJoint_style=rectangular&amp;FingerJoint_surroundingspaces=2.0&amp;FingerJoint_bottom_lip=0.0&amp;FingerJoint_edge_width=1.0&amp;FingerJoint_extra_length=0.0&amp;FingerJoint_finger=2.0&amp;FingerJoint_play=0.0&amp;FingerJoint_space=2.0&amp;FingerJoint_width=1.0&amp;x=18&amp;y=39&amp;h=12.9&amp;outside=0&amp;thickness=3.0&amp;format=svg&amp;tabs=0.0&amp;qr_code=0&amp;debug=0&amp;labels=0&amp;labels=1&amp;reference=100&amp;inner_corners=loop&amp;burn=0.1&amp;language=en&amp;render=2
+Url short: http://www.festi.info/boxes.py/BasedBox?x=18&amp;y=39&amp;h=12.9&amp;outside=0
+SettingsUrl: http://www.festi.info/boxes.py/BasedBox?FingerJoint_angle=90.0&amp;FingerJoint_style=rectangular&amp;FingerJoint_surroundingspaces=2.0&amp;FingerJoint_bottom_lip=0.0&amp;FingerJoint_edge_width=1.0&amp;FingerJoint_extra_length=0.0&amp;FingerJoint_finger=2.0&amp;FingerJoint_play=0.0&amp;FingerJoint_space=2.0&amp;FingerJoint_width=1.0&amp;x=18&amp;y=39&amp;h=12.9&amp;outside=0&amp;thickness=3.0&amp;format=svg&amp;tabs=0.0&amp;qr_code=0&amp;debug=0&amp;labels=0&amp;labels=1&amp;reference=100&amp;inner_corners=loop&amp;burn=0.1&amp;language=en&amp;render=2
+SettingsUrl short: http://www.festi.info/boxes.py/BasedBox?x=18&amp;y=39&amp;h=12.9&amp;outside=0
+</dc:description>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <path
+     id="path13"
+     style="fill:none;stroke:#ff0000;stroke-width:0.2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+     d="m 0.24808721,61.793862 c -0.055,0 -0.10877847,0.046 -0.0997355,0.100253 v 2.999817 3.449918 c 0,0.055 0.0447355,0.100253 0.0997355,0.100253 H 3.6481685 v 5.800161 H 0.24808721 c -0.055,0 -0.0997355,0.04474 -0.0997355,0.09974 v 3.449918 c 0,0.055 0.0447355,0.100253 0.0997355,0.100253 H 3.7484207 9.6483188 v 3.400079 c 0,0.055 0.044736,0.09974 0.099736,0.09974 h 6.0001502 c 0.055,0 0.100252,-0.04474 0.100252,-0.09974 v -3.400079 h 5.899897 3.499817 c 0.055,0 0.100253,-0.04525 0.100253,-0.100253 v -3.449918 c 0,-0.055 -0.04525,-0.09974 -0.100253,-0.09974 h -3.400079 v -5.800161 h 3.400079 c 0.055,0 0.100253,-0.04525 0.100253,-0.100253 v -3.449918 -2.999817 c 0,-0.055 -0.04525,-0.100253 -0.100253,-0.100253 H 21.748354 3.7484207 Z M 7.4630601,63.094043 H 18.03306 V 69.33242 H 7.4630601 Z"
+     sodipodi:nodetypes="sscssccssssccssssccssssccsscssccsccccc" />
+  <g
+     id="p-2"
+     style="fill:none;stroke:#ff0000;stroke-width:0.2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+     transform="translate(-9.6517949,-21.505961)">
+    <path
+       d="m 39.1,99.4 h 10.4 v 3.4 l 0.1,0.1 h 6 l 0.1,-0.1 v -3.4 h 5.8 v 3.4 l 0.1,0.1 h 6 l 0.1,-0.1 v -3.4 h 4.399996 l 0.1,-0.1 v -3.35 h 3.4 l 0.1,-0.1 v -6 l -0.1,-0.1 h -3.4 V 82.9 l -0.1,-0.1 H 67.6 l -0.1,0.1 v 3.4 h -5.8 v -3.4 l -0.1,-0.1 h -6 l -0.1,0.1 v 3.4 H 49.7 V 82.9 L 49.6,82.8 H 39.1 L 39,82.9 v 6.85 h -3.4 l -0.1,0.1 v 6 l 0.1,0.1 H 39 v 3.35 l 0.1,0.1"
+       stroke="#000000"
+       stroke-width="0.2"
+       id="path18"
+       style="stroke:#ff0000;stroke-width:0.2;stroke-miterlimit:4;stroke-dasharray:none"
+       sodipodi:nodetypes="ccccccccccccccccccccccccccccccccccccccccccccc" />
+  </g>
+  <g
+     id="p-3"
+     style="fill:none;stroke:#ff0000;stroke-width:0.2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+     transform="translate(-9.6517949,-21.505961)">
+    <path
+       d="m 39.1,78.8 h 10.4 v 0 3.4 l 0.1,0.1 h 6 l 0.1,-0.1 v -3.4 0 h 5.8 v 0 3.4 l 0.1,0.1 h 6 l 0.1,-0.1 v -3.4 0 h 4.399996 l 0.1,-0.1 v -3.35 0 h 3.4 l 0.1,-0.1 v -6 l -0.1,-0.1 h -3.4 v 0 -3.35 -3.5 l -0.1,-0.1 H 67.6 l -0.1,0.1 v 3.4 0 h -5.8 v 0 -3.4 l -0.1,-0.1 h -6 l -0.1,0.1 v 3.4 0 h -5.8 v 0 -3.4 L 49.6,62.2 H 39.1 L 39,62.3 v 3.5 3.35 0 h -3.4 l -0.1,0.1 v 6 l 0.1,0.1 H 39 v 0 3.35 l 0.1,0.1"
+       stroke="#000000"
+       stroke-width="0.2"
+       id="path23"
+       style="stroke:#ff0000;stroke-width:0.2;stroke-miterlimit:4;stroke-dasharray:none"
+       sodipodi:nodetypes="ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc" />
+  </g>
+  <path
+     d="m 3.7,36.105692 h 5.9 v 3.4 l 0.1,0.1 h 6 l 0.1,-0.1 v -3.4 h 5.9 l 0.1,-0.1 v -10.4 h 3.4 l 0.1,-0.1 v -6 l -0.1,-0.1 h -3.4 v -5.8 h 3.4 l 0.1,-0.1 V 7.5056925 l -0.1,-0.1 H 21.8 V 3.0056926 l -0.1,-0.1 h -18 l -0.1,0.1 V 7.4056925 H 0.2 l -0.1,0.1 v 5.9999995 l 0.1,0.1 h 3.4 v 5.8 H 0.2 l -0.1,0.1 v 6 l 0.1,0.1 h 3.4 v 10.4 l 0.1,0.1"
+     stroke="#000000"
+     stroke-width="0.2"
+     id="path33"
+     sodipodi:nodetypes="ccccccccccccccccccccccccccccccccccccccc"
+     style="fill:none;stroke:#ff0000;stroke-width:0.2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none" />
+  <path
+     id="path42372"
+     style="fill:none;stroke:#ff0000;stroke-width:0.2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+     d="m 30.448189,0.10013188 c -0.055,0 -0.09974,0.04473 -0.09974,0.09973 V 8.0940315 h 3.299829 v 5.7996445 h -3.299829 v 6.20014 h 3.299829 v 5.800162 h -2.799829 l -3.529499,0.02377 c -2.430052,0 -4.399732,1.970193 -4.399732,4.400248 0,2.430052 1.96968,4.39973 4.399732,4.39973 h 3.529499 v 5.1762 h 8.999969 v -3.299828 h 5.799645 v 3.299828 h 8.999969 v -5.1762 h 3.529499 c 2.430053,0 4.39973,-1.969678 4.39973,-4.39973 0,-2.430055 -1.969677,-4.400248 -4.39973,-4.400248 l -3.529499,-0.02377 h -2.799831 v -5.800162 h 3.299831 v -6.20014 H 51.848201 V 8.0940315 h 3.299831 V 0.19986688 c 0,-0.055 -0.04482,-0.1026513 -0.09974,-0.09973 H 45.648065 V 3.3999659 H 39.84842 V 0.10013688 Z M 27.318952,28.817835 c 0.828558,-9.2e-5 1.500259,0.671611 1.500166,1.500169 9.2e-5,0.828557 -0.671609,1.500258 -1.500166,1.500166 -0.828355,-1.93e-4 -1.499742,-0.671811 -1.49965,-1.500166 -9.3e-5,-0.828356 0.671294,-1.499976 1.49965,-1.500169 z m 30.858581,0 c 0.828357,1.93e-4 1.499744,0.671812 1.499651,1.500169 9.2e-5,0.828356 -0.671295,1.499973 -1.499651,1.500166 -0.828557,9.2e-5 -1.500258,-0.671609 -1.500166,-1.500166 -9.3e-5,-0.828558 0.671608,-1.500261 1.500166,-1.500169 z"
+     sodipodi:nodetypes="sscccccccccssccccccccsscccccccccssccccscccccccccc" />
+  <path
+     style="color:#000000;fill:#0000ff;stroke:#0000ff;stroke-width:0.2;stroke-miterlimit:4;stroke-dasharray:none"
+     d="m 5.4119446,50.766865 1.845703,0.269531 v 1.324219 l -1.845703,-0.01563 z m 2.230469,0.324219 1.34375,0.18164 -0.002,1.09961 -1.341797,-0.0078 z m 1.341797,1.634765 v 1.09961 l -1.341797,0.183593 0.002,-1.273437 z m -1.724609,0.01953 -0.002,1.314454 -1.845703,0.261718 v -1.572265 z"
+     id="path47449"
+     sodipodi:nodetypes="cccccccccccccccccccc" />
+  <g
+     id="g50583"
+     transform="translate(-10.187273,-21.244436)">
+    <g
+       id="g49519"
+       inkscape:transform-center-x="-1.5528933"
+       inkscape:transform-center-y="0.27398763"
+       transform="matrix(0.5484381,0.94992265,-0.94979968,0.5483671,82.995414,6.1113469)"
+       style="stroke-width:0.911739">
+      <path
+         style="color:#000000;fill:#0000ff;stroke:#0000ff;stroke-width:0.182348;stroke-miterlimit:4;stroke-dasharray:none"
+         d="m 28.507812,72.525391 c 0.116574,0 0.230733,0.01554 0.341797,0.03906 0.03974,0.175147 0.132561,0.319089 0.303476,0.414541 0.170887,0.09539 0.340429,0.100102 0.514884,0.0464 0.209285,0.220691 0.316505,0.498485 0.365234,0.789062 h -0.488281 c -0.116406,-0.467186 -0.524013,-0.826172 -1.03711,-0.826172 -0.11227,0 -0.216088,0.02787 -0.318359,0.05859 l -0.245454,-0.4204 c 0.177847,-0.06566 0.367147,-0.101082 0.563813,-0.101081 z"
+         id="path73"
+         sodipodi:nodetypes="scccccsccs" />
+      <ellipse
+         i:knockout="Off"
+         cx="29.450071"
+         cy="72.469032"
+         id="circle79"
+         style="fill:#0000ff;stroke:#0000ff;stroke-width:0.182348;stroke-miterlimit:4;stroke-dasharray:none"
+         rx="0.30199999"
+         ry="0.29141533" />
+    </g>
+    <g
+       id="g49529"
+       inkscape:transform-center-x="0.28021442"
+       inkscape:transform-center-y="-1.2992587"
+       transform="matrix(0.54833158,-0.94986114,0.94986115,0.54847359,-57.635575,60.298865)"
+       style="stroke-width:0.911739">
+      <path
+         style="color:#000000;fill:#0000ff;stroke:#0000ff;stroke-width:0.182348;stroke-miterlimit:4;stroke-dasharray:none"
+         d="m 28.507812,72.525391 c 0.116574,0 0.230733,0.01554 0.341797,0.03906 0.03974,0.175147 0.132561,0.319089 0.303476,0.414541 0.170887,0.09539 0.340429,0.100102 0.514884,0.0464 0.209285,0.220691 0.316505,0.498485 0.365234,0.789062 h -0.488281 c -0.116406,-0.467186 -0.524013,-0.826172 -1.03711,-0.826172 -0.11227,0 -0.216088,0.02787 -0.318359,0.05859 l -0.247006,-0.420959 c 0.177847,-0.06566 0.368699,-0.100523 0.565365,-0.100522 z"
+         id="path49525"
+         sodipodi:nodetypes="scccccsccs" />
+      <ellipse
+         i:knockout="Off"
+         cx="29.450071"
+         cy="72.469032"
+         id="ellipse49527"
+         style="fill:#0000ff;stroke:#0000ff;stroke-width:0.182348;stroke-miterlimit:4;stroke-dasharray:none"
+         rx="0.30199999"
+         ry="0.29141533" />
+    </g>
+    <g
+       id="g49535"
+       inkscape:transform-center-x="0.75962242"
+       inkscape:transform-center-y="1.0121978"
+       transform="matrix(-1.0967697,-6.1493343e-5,-6.1489461e-5,-1.0968407,59.614841,155.00129)"
+       style="stroke-width:0.911739">
+      <path
+         style="color:#000000;fill:#0000ff;stroke:#0000ff;stroke-width:0.182348;stroke-miterlimit:4;stroke-dasharray:none"
+         d="m 28.507812,72.525391 c 0.116574,0 0.230733,0.01554 0.341797,0.03906 0.03974,0.175147 0.132561,0.319089 0.303476,0.414541 0.170887,0.09539 0.340429,0.100102 0.514884,0.0464 0.209285,0.220691 0.316505,0.498485 0.365234,0.789062 h -0.488281 c -0.116406,-0.467186 -0.524013,-0.826172 -1.03711,-0.826172 -0.11227,0 -0.216088,0.02787 -0.318359,0.05859 l -0.234278,-0.405781 c 0.177847,-0.06566 0.355971,-0.115701 0.552637,-0.1157 z"
+         id="path49531"
+         sodipodi:nodetypes="scccccsccs" />
+      <ellipse
+         i:knockout="Off"
+         cx="29.450071"
+         cy="72.469032"
+         id="ellipse49533"
+         style="fill:#0000ff;stroke:#0000ff;stroke-width:0.182348;stroke-miterlimit:4;stroke-dasharray:none"
+         rx="0.30199999"
+         ry="0.29141533" />
+    </g>
+  </g>
+  <path
+     id="path7338"
+     style="fill:none;stroke:#ff0000;stroke-width:0.2;stroke-linecap:round;stroke-linejoin:round"
+     d="m 14.848388,52.544296 a 2.0999999,2.0999999 0 0 1 -2.1,2.1 2.0999999,2.0999999 0 0 1 -2.1,-2.1 2.0999999,2.0999999 0 0 1 2.1,-2.1 2.0999999,2.0999999 0 0 1 2.1,2.1 z M 0.24808721,40.694086 c -0.055,0 -0.0997355,0.04474 -0.0997355,0.09974 v 3.500332 3.449918 c 0,0.055 0.0447355,0.09974 0.0997355,0.09974 H 3.6481685 v 5.800161 H 0.24808721 c -0.055,0 -0.0997355,0.04525 -0.0997355,0.100253 v 3.449918 c 0,0.055 0.0447355,0.09974 0.0997355,0.09974 H 3.7484207 9.6483188 v 3.400082 c 0,0.055 0.044736,0.100253 0.099736,0.100253 h 6.0001502 c 0.055,0 0.100252,-0.04525 0.100252,-0.100253 v -3.400082 h 5.899897 3.499817 c 0.055,0 0.100253,-0.04474 0.100253,-0.09974 v -3.449922 c 0,-0.055 -0.04525,-0.100253 -0.100253,-0.100253 h -3.400079 v -5.800161 h 3.400079 c 0.055,0 0.108142,-0.04531 0.100253,-0.09974 v -3.449916 -3.500332 c 0,-0.055 -0.04525,-0.09974 -0.100253,-0.09974 h -3.499817 -6.000149 c -0.055,0 -0.100252,0.04474 -0.100252,0.09974 v 3.400079 H 9.8483068 v -3.400079 c 0,-0.055 -0.045442,-0.104308 -0.1002522,-0.09974 H 3.7484207 Z" />
+</svg>
