@@ -1,5 +1,8 @@
 PROGRAMMING ARDUINO MICRO WITH PREBUILT FIRMWARE (LINUX)
 ========================================================
+(Note: The Arduino Micro and Leonardo binaries are identical
+ because the pin assignments, voltage and clock frequency are,
+ too. However, the external wiring diagrams below differ.)
 
 The GRUB Switch repository contains a prebuilt firmware image for the Arduino
 Micro which you can find under:

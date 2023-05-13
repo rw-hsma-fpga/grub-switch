@@ -1,0 +1,250 @@
+PROGRAMMING ARDUINO LEONARDO WITH PREBUILT FIRMWARE (LINUX)
+===========================================================
+(Note: The Arduino Micro and Leonardo binaries are identical
+ because the pin assignments, voltage and clock frequency are,
+ too. However, the external wiring diagrams below differ.)
+
+The GRUB Switch repository contains a prebuilt firmware image for the Arduino
+Leonardo which you can find under:
+
+grub-switch/2_usb_device/prebuilt_images/GS_ARDUINO_LEONARDO.hex
+
+To program the Arduino Leonardo under Linux, you need to install the command-line
+tool "avrdude". We have provided a bash script to facilitate programming on
+most PCs with a few simple steps:
+
+
+* Make sure that "avrdude" has been installed, for example in Ubuntu Linux with
+
+  > sudo apt-get install avrdude
+
+
+* Connect the board to USB if you haven't already.
+
+
+* Go to the images path, for example from  grub-switch/  with
+
+  > cd  2_usb_device/prebuilt_images/
+
+
+* Start the script with:
+
+  > sudo ./program_grubswitch_avrdude.sh GS_ARDUINO_LEONARDO.hex
+
+  (sudo might not be required on every machine, but doesn't hurt)
+
+
+* The script asks you to put the board into bootloader mode. For the Arduino
+  Leonardo, this is accomplished by pressing the board's button twice in short
+  order. The chip enters bootloader mode and remains in it for about 5-10 secs,
+  then returns to normal program operation.
+
+
+* Make sure to press any key inside this time margin to commence flashing
+  the firmware image onto the chip.
+  
+  
+* After successful programming, the board should reconnect as a flash drive
+  with the name "BOOTTHIS". Your Linux GUI might auto-mount the drive or offer
+  to do so.
+
+
+* If you have previously used the configuration tool "CONFIGURE_GRUBswitch.sh"
+  to generate a GRUB Switch configuration (grub-switch/bootfiles/.entries.txt),
+  you can copy this file onto the drive yourself, or you can use option "4" in
+  the  CONFIGURE_GRUBswitch  menu to auto-mount, copy and unmount the drive.
+
+
+Some background information on "avrdude", in case the script didn't work:
+(or if you just want to know...)
+-------------------------------------------------------------------------
+
+When putting the board into bootloader mode, it will identify as a USB UART,
+usually as  /dev/ttyACM0 . You can check by date if a special tty has just
+turned up:
+
+> ls -l /dev/tty* | grep "/dev/tty[^S0-9]"
+
+Remember that the bootloader will yield to the regular board program after
+a few seconds and the tty device will be gone again.
+
+During the bootloader time, avrdude can contact the bootloader for programming:
+
+> avrdude -v -F -p atmega32u4 -c avr109 -P /dev/ttyACM0 -Uflash:w:FIRMWARE.hex:i
+
+For more details, try the avrdude manual with
+
+> man avrdude
+
+
+
+SWITCH CONNECTIONS
+==================
+
+1-OF-N MODE  with  ON/OFF/ON toggle switch:
+-------------------------------------------
+
+To choose this mode, pin PF1 needs to stay UNCONNECTED.
+
+The Write Protect against modifying boot entry configurations is activated
+by tieing/jumpering pin PF6 to GND or PF7 (adjacent pad, driving a low level).
+
+Using a three-position on/off/on switch permits choosing between two
+OS options, while the neutral middle position leads to the GRUB menu
+
+
+                            #####               [1]
+          .---------------o=#   #          ////
+          |                 #   #||    ////
+          |           .---o=#   #||////         [0] Menu
+          |           |     #   #||
+          |   .-------|---o=#   #
+          |   |       |     #####               [2]
+          |   |       |
+          |   |       |
+.---------+---+-------+--------------------------------------------------------------.
+| .---.   O   O   O   O   O   O   O   O   O   O       O   O   O   O   O   O   O   O  |
+| | R |  D3  D2 AREF GND D13 D12 D11 D10 D9  D8      D7  D6  D5  D4  D3  D2  D1  D0  |
+| '---'  PD0 PD1         PC7 PD6 PB7 PB6 PB5 PB4     PE6 PD7 PC6 PD4 PD0 PD1 PD3 PD2 |
+|                                                                                    |
+|========#                                                                           |
+| USB    #                                                                            \
+| MICRO-B#                                                                             |
+|========#                                                                             |
+|                               ARDUINO LEONARDO                                   O O |
+|                               (width stretched,)                                 O O |
+|                               (is UNO R3 shape )                                 O O |
+|                                                                                      |
+|                                                                                      |
+|  LED(PC7)                                                                            |
+|                                                                                      |
+|==========#                                                                           |
+|          #                                                                           |
+|  +5V     #                                                 PF7 PF6 PF5 PF4 PF1 PF0   |
+|  JACK    #             NC IORF RST 3V3 5V0 GND GND VIN      A0  A1  A2  A3  A4  A5  /
+|==========#              O   O   O   O   O   O   O   O       O   O   O   O   O   O  |
+'-------------------------------------------------------------+---+------------------'
+                                                              |   |
+                                                              |   |
+                                                                ?
+                                                            /WR_PROT
+
+
+
+1-OF-N MODE with rotary switch: (Motto: "This one goes to 11!")
+---------------------------------------------------------------
+
+To choose this mode, pin PF1 needs to stay UNCONNECTED.
+
+The Write Protect against modifying boot entry configurations is activated
+by tieing/jumpering pin PF6 to GND or PF7 (adjacent pad, driving a low level).
+
+Common rotary switches have up to 12 positions (some can be limited to fewer
+positions with a mechanical keyring). Keeping the first position [0] unconnected
+permits choosing the GRUB menu and leaves 11 boot choices, which is the maximum
+number of pins sampled. Connecting one of the pins PD1..PD6 to GND
+therefore reflects boot choices 1..11 (hexadecimal 0x1..0xB). Accidentally
+connecting multiple pins results in the lowest-order entry being chosen.
+
+
+                      .---------------------------------------------------------------------.
+                      |                                                                     |
+                      |       .---------------------------------------------o [11/0xB]      |
+                      |       |   .---------------------------------------o [10/0xA]        |
+                      |       |   |   .----------------------------------o [9]              |
+                      |       |   |   |   .-----------------------------o [8]               |
+                      |       |   |   |   |   .------------------------o [7]                |
+                      |       |   |   |   |   |       .----------------o [6]          x-----o
+                      |       |   |   |   |   |       |   .------------o [5]         /
+                      |       |   |   |   |   |       |   |   .---------o [4]       /
+                      |       |   |   |   |   |       |   |   |   .------o [3]     /
+                      |       |   |   |   |   |       |   |   |   |   .---o [2]   /
+                      |       |   |   |   |   |       |   |   |   |   |   .-o [1]
+                      |       |   |   |   |   |       |   |   |   |   |   |   o [0] Menu
+                      |       |   |   |   |   |       |   |   |   |   |   |
+.---------------------+-------+---+---+---+---+-------+---+---+---+---+---+----------.
+| .---.   O   O   O   O   O   O   O   O   O   O       O   O   O   O   O   O   O   O  |
+| | R |  D3  D2 AREF GND D13 D12 D11 D10 D9  D8      D7  D6  D5  D4  D3  D2  D1  D0  |
+| '---'  PD0 PD1         PC7 PD6 PB7 PB6 PB5 PB4     PE6 PD7 PC6 PD4 PD0 PD1 PD3 PD2 |
+|                                                                                    |
+|========#                                                                           |
+| USB    #                                                                            \
+| MICRO-B#                                                                             |
+|========#                                                                             |
+|                               ARDUINO LEONARDO                                   O O |
+|                               (width stretched,)                                 O O |
+|                               (is UNO R3 shape )                                 O O |
+|                                                                                      |
+|                                                                                      |
+|  LED(PC7)                                                                            |
+|                                                                                      |
+|==========#                                                                           |
+|          #                                                                           |
+|  +5V     #                                                 PF7 PF6 PF5 PF4 PF1 PF0   |
+|  JACK    #             NC IORF RST 3V3 5V0 GND GND VIN      A0  A1  A2  A3  A4  A5  /
+|==========#              O   O   O   O   O   O   O   O       O   O   O   O   O   O  |
+'-------------------------------------------------------------+---+------------------'
+                                                              |   |
+                                                              |   |
+                                                                ?
+                                                            /WR_PROT
+
+
+
+BINARY MODE:
+------------
+
+To choose this mode, pin PF1 needs to be tied to GND or adjacent pad PF0.
+
+The Write Protect against modifying boot entry configurations is activated
+by tieing/jumpering pin PF6 to GND or PF7 (adjacent pad, driving a low level).
+
+Common binary-encoding rotary switches have 10 to 16 positions and connect
+the corresponding bit values 1,2,4,8 [LSB..MSB] to the 'C'-contacts; using the
+device's binary mode means tieing the four pins PD1..PC6 [LSB..MSB] to GND/0V
+as to encode the corresponding boot choices 0(GRUB Menu) up to 15(0xF).
+Obviously a proper nerd can also use four separate switches to encode the
+choice in binary herself!
+(Reminder: The device interprets a pin tied to GND as a '1', so all four
+connections mean choice 15/0xF, while no connection means 0.
+
+
+                                               .---------------.
+                                               |               |
+                                            .--+ 2    ---    4 +--.
+                                            |  |     /   \     |  |
+                      .---------------------|--+ C  | --> |  C |  |
+                      |                     |  |     \   /     |  |
+                      |                  .--|--+ 8    ---    1 +--|-------.
+                      |                  |  |  |               |  |       |
+                      |                  |  |  '---------------'  |       |
+                      |                  |  '---------------------|---.   |
+                      |                  |                        |   |   |
+                      |                  '--------------------.   |   |   |
+                      |                                       |   |   |   |
+.---------------------+---------------------------------------+---+---+---+----------.
+| .---.   O   O   O   O   O   O   O   O   O   O       O   O   O   O   O   O   O   O  |
+| | R |  D3  D2 AREF GND D13 D12 D11 D10 D9  D8      D7  D6  D5  D4  D3  D2  D1  D0  |
+| '---'  PD0 PD1         PC7 PD6 PB7 PB6 PB5 PB4     PE6 PD7 PC6 PD4 PD0 PD1 PD3 PD2 |
+|                                                                                    |
+|========#                                                                           |
+| USB    #                                                                            \
+| MICRO-B#                                                                             |
+|========#                                                                             |
+|                               ARDUINO LEONARDO                                   O O |
+|                               (width stretched,)                                 O O |
+|                               (is UNO R3 shape )                                 O O |
+|                                                                                      |
+|                                                                                      |
+|  LED(PC7)                                                                            |
+|                                                                                      |
+|==========#                                                                           |
+|          #                                                                           |
+|  +5V     #                                                 PF7 PF6 PF5 PF4 PF1 PF0   |
+|  JACK    #             NC IORF RST 3V3 5V0 GND GND VIN      A0  A1  A2  A3  A4  A5  /
+|==========#              O   O   O   O   O   O   O   O       O   O   O   O   O   O  |
+'-------------------------------------------------------------+---+-----------+---+--'
+                                                              |   |           |   |
+                                                              |   |           '---'
+                                                                ?              /BM
+                                                            /WR_PROT
