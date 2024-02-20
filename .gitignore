@@ -7,10 +7,10 @@ bootfiles/boot.*
 bootfiles/boot.*/*
 bootfiles/grub_switch_hashes/*
 
-usb_device/build/**
+2_usb_device/build/**
 
-usb_device/*.hex
-usb_device/*.map
-usb_device/*.elf
+2_usb_device/*.hex
+2_usb_device/*.map
+2_usb_device/*.elf
 
 
